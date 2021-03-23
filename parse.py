@@ -9,6 +9,7 @@ xldate = test_sheet.address(address="J19")
 xlhour = test_sheet.address(address="K19")
 xltime = xldate + xlhour
 
+
 def _from_xl_time(xltime):
     _epoch = dt.datetime(1900, 1, 1)
     time_delta = dt.timedelta(days=xltime-2)
@@ -17,4 +18,5 @@ def _from_xl_time(xltime):
 
 date = _from_xl_time(xltime)
 
-print(date)
+if '__name__' == '__main__':
+    print(date)
