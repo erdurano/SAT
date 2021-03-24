@@ -4,16 +4,19 @@ import datetime as dt
 
 def parse_duration_str(xlduration_str):
     dur_pieces = xlduration_str.split(" ")
+
     if 'min' in dur_pieces[-1]:
         return dt.timedelta(minutes=int(dur_pieces[-2]))
+
     if 'hour' in dur_pieces[-1]:
-        return dt.timedelta(hours=int(dur_pieces[-2]))
-    if 'day' in dur_pieces[-1]:
         if '.' in dur_pieces[-2]:
             nums = dur_pieces[-2].split('.')
             return dt.timedelta(hours=int(nums[0]), minutes=int(nums[1]))
         else:
-            return dt.timedelta(days=int(dur_pieces[-2]))
+            return dt.timedelta(hours=int(dur_pieces[-2]))
+
+    if 'day' in dur_pieces[-1]:
+        return dt.timedelta(days=int(dur_pieces[-2]))
 
 
 workbook = load_workbook(filename='./example/5_NB67_SAT_Schedule_Rev_3.xlsx')
