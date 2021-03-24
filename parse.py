@@ -1,5 +1,5 @@
-import datetime as dt
 from openpyxl import load_workbook
+import datetime as dt
 
 
 def parse_duration_str(xlduration_str):
