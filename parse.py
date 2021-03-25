@@ -19,8 +19,8 @@ def parse_duration_str(xlduration_str):
         return dt.timedelta(days=int(dur_pieces[-2]))
 
 
-# TODO : Develop the function for outputting a list of dictionaries that contains
-# ONLY TEST ITEMS
+# TODO : Develop the function for outputting a list of dictionaries that
+# contains ONLY TEST ITEMS
 def parse_SAT_doc(worksheet):
     for index, row in enumerate(worksheet.iter_rows(values_only=True)):
         if 'Class' in row:
@@ -43,9 +43,4 @@ end_time_dt = start_time_dt + parse_duration_str(xlduration_str)
 
 
 if __name__ == "__main__":
-    print(start_time_dt)
-    print(end_time_dt)
-    for index, row in enumerate(test_sheet.iter_rows(values_only=True)):
-        print("Class" in row)
-        print(row)
-        print(index)
+    print(parse_SAT_doc(test_sheet))
