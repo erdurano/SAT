@@ -19,7 +19,7 @@ def parse_duration_str(xlduration_str):
         return dt.timedelta(days=int(dur_pieces[-2]))
 
 
-# TODO : Develop the function for outputting a list of dictionary that contains
+# TODO : Develop the function for outputting a list of dictionaries that contains
 # ONLY TEST ITEMS
 def parse_SAT_doc(worksheet):
     for index, row in enumerate(worksheet.iter_rows(values_only=True)):
