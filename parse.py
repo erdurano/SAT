@@ -1,4 +1,3 @@
-from tkinter import N
 from openpyxl import load_workbook
 import datetime as dt
 
@@ -44,10 +43,12 @@ def parse_times(date=None, start_hour=None, duration=None):
 
 # TODO : Develop the function for outputting a list of dictionaries that
 # contains ONLY TEST ITEMS
-def parse_SAT_doc(worksheet):
+def parse_SAT_doc(file_path):
+    worksheet = load_workbook(file_path).active
+
     test_agenda = []
     cls_title_row = None
-    
+
     for index, row in enumerate(worksheet.iter_rows(values_only=True)):
         if ('Class' in row) and (cls_title_row is None):
             cls_title_row = index
@@ -76,10 +77,7 @@ def parse_SAT_doc(worksheet):
     return test_agenda
 
 
-test_sheet = load_workbook(
-    filename='./example/5_NB67_SAT_Schedule_Rev_3.xlsx'
-    ).active
-
-
 if __name__ == "__main__":
-    print(parse_SAT_doc(test_sheet))
+    filename = './example/5_NB67_SAT_Schedule_Rev_3.xlsx'
+
+    print(parse_SAT_doc(filename))
