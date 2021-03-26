@@ -1,8 +1,7 @@
-from fileinput import filename
 from parse import parse_SAT_doc
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
+# from PyQt5.QtGui import QIcon
 
 
 class App(QWidget):
@@ -26,10 +25,15 @@ class App(QWidget):
 
     def openFileNameDialog(self):
         options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "Excel Files (*.xlsx)", options=options)
+#        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(
+            self,
+            "QFileDialog.getOpenFileName()", "",
+            "Excel Files (*.xlsx)", options=options
+            )
         if fileName:
             print(parse_SAT_doc(fileName))
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
