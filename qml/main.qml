@@ -1,8 +1,10 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
+import QtQuick 2.2
+import QtQuick.Window 2.2
 import QtQuick.Dialogs.qml 1.0
+import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.2
+
 
 Window {
     id: window
@@ -51,10 +53,15 @@ Window {
 
                 MouseArea {
                     id: load_button
+                    hoverEnabled: true
                     anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton
-                    onClicked: {parent.clicked}
-
+                    onClicked: {fileDialog.open()}
+                    onEntered: {
+                        load_icon.color = "#858484"
+                    }
+                    onExited: {
+                        load_icon.color = "#8b8989"
+                    }
                     Text {
                         text: qsTr("Load file")
                         anchors.fill : parent
@@ -176,7 +183,19 @@ Window {
             }
         }
     }
+    FileDialog {
+        id: fileDialog
+        folder:shortcuts.home
+        nameFilters: ["Excel SAT form (*.xlsx)"]
+        onAccepted: {
+        
+        }
+    }
+
+
 }
+
+
 
 /*##^##
 Designer {

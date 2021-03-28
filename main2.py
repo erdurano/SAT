@@ -8,6 +8,7 @@ if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     engine.load(os.path.join(os.path.dirname(__file__), "qml/main.qml"))
+    print(engine.rootObjects())
 
     if not engine.rootObjects():
         sys.exit(-1)
