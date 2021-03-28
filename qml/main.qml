@@ -4,12 +4,13 @@ import QtQuick.Dialogs.qml 1.0
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.2
+import "./"
 
 
 Window {
     id: window
-    width: 1920
-    height: 1080
+    width: 640
+    height: 680
     visible: true
     color: "#00000000"
     title: qsTr("SAT Main Window")
@@ -18,14 +19,8 @@ Window {
         id: background
         color: "#ffffff"
         border.width: 0
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: 10
-        anchors.leftMargin: 10
-        anchors.topMargin: 10
-        anchors.bottomMargin: 10
+        anchors.fill: parent
+
 
         Rectangle {
             id: topbar
@@ -188,17 +183,11 @@ Window {
         folder:shortcuts.home
         nameFilters: ["Excel SAT form (*.xlsx)"]
         onAccepted: {
-        
+            helper.read_file(fileDialog.fileUrls[0])
+            
         }
     }
 
 
 }
 
-
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.5}D{i:4}D{i:10}D{i:13}
-}
-##^##*/
