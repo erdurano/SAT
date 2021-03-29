@@ -12,6 +12,7 @@ class Helper(QObject):
         filename = url.toLocalFile()
         print(parse_SAT_doc(filename))
 
+
 def run():
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
@@ -27,6 +28,5 @@ def run():
 
 
 if __name__ == "__main__":
-    
+
     sys.exit(run())
-    
