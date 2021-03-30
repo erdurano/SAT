@@ -12,6 +12,9 @@ class Helper(QObject):
         filename = url.toLocalFile()
         print(parse_SAT_doc(filename))
 
+    # TODO: write a elper method for setting texts and positioning
+    # them
+
 
 def run():
     app = QGuiApplication(sys.argv)
@@ -28,5 +31,4 @@ def run():
 
 
 if __name__ == "__main__":
-
     sys.exit(run())
