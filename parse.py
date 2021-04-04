@@ -1,4 +1,4 @@
-from openpyxl import load_workbook
+import openpyxl
 import datetime as dt
 
 
@@ -41,43 +41,57 @@ def parse_times(date=None, start_hour=None, duration=None):
     }
 
 
-# TODO : Develop the function for outputting a list of dictionaries that
-# contains ONLY TEST ITEMS
 def parse_SAT_doc(file_path):
-    worksheet = load_workbook(file_path).active
 
+    def get_merged_cell_val(row, column):
+        cell = row[column]
+        if cell.coordinate not in merged_cells:
+            return cell
+
+        else:
+            while cell.value is None:
+                cell = worksheet.cell(row=cell.row-1, column=cell.column)
+            return cell
+
+    worksheet = openpyxl.load_workbook(file_path).active
+    merged_cells = worksheet.merged_cells
+    header_row = None
     test_agenda = []
-    cls_title_row = None
+    print(merged_cells)
+    print(type(merged_cells))
+    for row in worksheet.iter_rows():
+        if header_row is None:
+            for cell in row:
+                if 'Class' == cell.value:
+                    header_row = cell.row
+                    class_column = cell.column
 
-    for index, row in enumerate(worksheet.iter_rows(values_only=True)):
-        if ('Class' in row) and (cls_title_row is None):
-            cls_title_row = index
-            cls_title_column = row.index('Class')
-
-        if cls_title_row is not None:
-
+        elif header_row is not None:
             test_row = {
-                "sfi": row[cls_title_column - 2],
-                "item_name": row[cls_title_column - 1],
-                "class_att": row[cls_title_column],
-                "flag_att": row[cls_title_column + 1],
-                "owner_att": row[cls_title_column + 2],
-                "rec_stat": row[cls_title_column + 3],
-                "resp_rept": row[cls_title_column + 4],
+                "sfi": row[class_column - 3].value,
+                "item_name": row[class_column - 2].value,
+                "class_att": row[class_column - 1].value,
+                "flag_att": row[class_column].value,
+                "owner_att": row[class_column + 1].value,
+                "rec_stat": row[class_column + 2].value,
+                "resp_rept": row[class_column + 3].value,
             }
 
             time_frame = parse_times(
-                row[cls_title_column + 5],
-                row[cls_title_column + 6],
-                row[cls_title_column + 7],
+                get_merged_cell_val(row, class_column + 4).value,
+                get_merged_cell_val(row, class_column + 5).value,
+                get_merged_cell_val(row, class_column + 6).value,
             )
             test_row.update(time_frame)
+            if (test_row["item_name"] is not None) and \
+               (test_row["start_datetime"] is not None):
+                test_agenda.append(test_row)
 
-            test_agenda.append(test_row)
     return test_agenda
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     filename = './example/5_NB67_SAT_Schedule_Rev_3.xlsx'
-
-    print(parse_SAT_doc(filename))
+    result = parse_SAT_doc(filename)
+    print(result)
+    print(len(result))
