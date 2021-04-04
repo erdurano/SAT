@@ -4,14 +4,15 @@ from PyQt5.QtCore import QObject, QUrl, pyqtSlot
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 from parse import parse_SAT_doc
+from schedule import Schedule
 
 
 class Helper(QObject):
     @pyqtSlot(QUrl)
     def read_file(self, url):
         filename = url.toLocalFile()
-        print(parse_SAT_doc(filename))
-
+        active_schedule = Schedule(parse_SAT_doc(filename))
+        print(active_schedule.activeItems)
     # TODO: write a elper method for setting texts and positioning
     # them
 

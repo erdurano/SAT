@@ -49,17 +49,17 @@ class Schedule():
                 elif item.start_dt <= now:
                     self.completedItems.append(item)
 
-        print('Upcoming\n===================')
-        for items in self.upcomingItems:
-            print(items.item_name)
+        # print('Upcoming\n===================')
+        # for items in self.upcomingItems:
+        #     print(items.item_name)
 
-        print('Active\n===================')
-        for items in self.activeItems:
-            print(items.item_name)
+        # print('Active\n===================')
+        # for items in self.activeItems:
+        #     print(items.item_name)
 
-        print('Completed\n===================')
-        for items in self.completedItems:
-            print(items.item_name)
+        # print('Completed\n===================')
+        # for items in self.completedItems:
+        #     print(items.item_name)
 
 
 if __name__ == '__main__':
