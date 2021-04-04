@@ -1,4 +1,5 @@
 from parse import parse_SAT_doc
+import datetime as dt
 
 
 class TestItem():
@@ -17,12 +18,48 @@ class TestItem():
 
 class Schedule():
     # A class for creating and managing test item graphics
+    scheduleItems = []
+    activeItems = []
+    upcomingItems = []
+    completedItems = []
+
     def __init__(self, xldata):
         for item_dict in xldata:
             test_item = TestItem(item_dict)
-            print(test_item.item_name,
-                  test_item.start_dt,
-                  test_item.finnish_dt)
+            self.scheduleItems.append(test_item)
+#            print(test_item.item_name,
+#                  test_item.start_dt,
+#                  test_item.finnish_dt)
+        self.sortItemsByStatus()
+
+    def sortItemsByStatus(self):
+        now = dt.datetime.now()
+        # print(self.scheduleItems)
+        for item in self.scheduleItems:
+            if item.finnish_dt is None:
+                if item.start_dt >= now:
+                    self.upcomingItems.append(item)
+                if item.start_dt <= now:
+                    self.completedItems.append(item)
+            else:
+                if item.start_dt <= now <= item.finnish_dt:
+                    self.activeItems.append(item)
+                elif item.start_dt >= now:
+                    self.upcomingItems.append(item)
+                elif item.start_dt <= now:
+                    self.completedItems.append(item)
+
+        print('Upcoming\n===================')
+        for items in self.upcomingItems:
+            print(items.item_name)
+
+        print('Active\n===================')
+        for items in self.activeItems:
+            print(items.item_name)
+
+        print('Completed\n===================')
+        for items in self.completedItems:
+            print(items.item_name)
 
 
 if __name__ == '__main__':

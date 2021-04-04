@@ -57,8 +57,6 @@ def parse_SAT_doc(file_path):
     merged_cells = worksheet.merged_cells
     header_row = None
     test_agenda = []
-    print(merged_cells)
-    print(type(merged_cells))
     for row in worksheet.iter_rows():
         if header_row is None:
             for cell in row:
@@ -74,7 +72,7 @@ def parse_SAT_doc(file_path):
                 "flag_att": row[class_column].value,
                 "owner_att": row[class_column + 1].value,
                 "rec_stat": row[class_column + 2].value,
-                "resp_rept": row[class_column + 3].value,
+                "resp_dept": row[class_column + 3].value,
             }
 
             time_frame = parse_times(
