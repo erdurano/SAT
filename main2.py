@@ -12,7 +12,9 @@ class Helper(QObject):
     def read_file(self, url):
         filename = url.toLocalFile()
         active_schedule = Schedule(parse_SAT_doc(filename))
-        print(active_schedule.activeItems)
+        for items in active_schedule.completedItems:
+            print(items.item_name)
+        print(len(active_schedule.completedItems))
     # TODO: write a elper method for setting texts and positioning
     # them
 
@@ -20,7 +22,7 @@ class Helper(QObject):
 def run():
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
-    engine.load(os.path.join(os.path.dirname(__file__), "qml/main.qml"))
+    engine.load(os.path.join(os.path.dirname(__file__), "qml/dash.qml"))
     engine.quit.connect(app.quit)
     helper = Helper()
     engine.rootContext().setContextProperty("helper", helper)

@@ -18,18 +18,16 @@ class TestItem():
 
 class Schedule():
     # A class for creating and managing test item graphics
-    scheduleItems = []
-    activeItems = []
-    upcomingItems = []
-    completedItems = []
 
     def __init__(self, xldata):
+        self.scheduleItems = []
+        self.activeItems = []
+        self.upcomingItems = []
+        self.completedItems = []
         for item_dict in xldata:
             test_item = TestItem(item_dict)
             self.scheduleItems.append(test_item)
-#            print(test_item.item_name,
-#                  test_item.start_dt,
-#                  test_item.finnish_dt)
+
         self.sortItemsByStatus()
 
     def sortItemsByStatus(self):
@@ -48,18 +46,6 @@ class Schedule():
                     self.upcomingItems.append(item)
                 elif item.start_dt <= now:
                     self.completedItems.append(item)
-
-        # print('Upcoming\n===================')
-        # for items in self.upcomingItems:
-        #     print(items.item_name)
-
-        # print('Active\n===================')
-        # for items in self.activeItems:
-        #     print(items.item_name)
-
-        # print('Completed\n===================')
-        # for items in self.completedItems:
-        #     print(items.item_name)
 
 
 if __name__ == '__main__':

@@ -2,13 +2,13 @@ import QtQuick 2.0
 
 Item {
     id: test_item_ui
-    width: 600
+    width: list_window.width
     height: 100
     property alias status: status
     property alias department_label: department_label
     property alias date_str_label: date_str_label
     property alias test_label: test_label
-    property alias sfi_label: sfi_label
+    property alias sfi_label: sfi_label.text
     property alias cls_presence: cls_presence
     property alias ownr_presence: ownr_presence
     property alias flg_presence: flg_presence
