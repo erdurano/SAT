@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import QtQuick.Window 2.2
+import QtQuick.Controls 2.15
 
 Window{
     id: main_window
@@ -9,23 +10,35 @@ Window{
 
     Rectangle{
         anchors.fill: parent
-        anchors.margins: 10
+        anchors.margins: 15
+        anchors.rightMargin: 15 + scroll.width
         anchors.bottomMargin: 50
         border.color: "black"
         border.width: 1
+
         ListView{
             id: list_window
             anchors.fill: parent
             spacing: 3
+            focus: true
             clip: true
 
-            Repeater{
-                model: [0, 1, 2, 3, ,4 ,5 ,6 ,7 ,8, 9, 10, 11, 12]
-                clip: true
-                Halo{
-                    id: modelitem
-                }
+
+            model : 10
+            delegate: Halo{
+                sfi_label: index
             }
+
+            ScrollBar.vertical: ScrollBar {
+                id: scroll
+                parent: list_window.parent
+                anchors.top: parent.top
+                anchors.left: parent.right
+                anchors.bottom: parent.bottom
+                policy: ScrollBar.AlwaysOn
+                visible:true
+            }
+  
         }
     }
 }   

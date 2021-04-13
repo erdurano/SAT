@@ -22,7 +22,7 @@ class Helper(QObject):
 def run():
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
-    engine.load(os.path.join(os.path.dirname(__file__), "qml/dash.qml"))
+    engine.load(os.path.join(os.path.dirname(__file__), "qml/Dash.qml"))
     engine.quit.connect(app.quit)
     helper = Helper()
     engine.rootContext().setContextProperty("helper", helper)
