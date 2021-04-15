@@ -25,8 +25,7 @@ Window{
 
 
             model : 10
-            delegate: Halo{
-                sfi_label: index
+            delegate: ListItem
             }
 
             ScrollBar.vertical: ScrollBar {
