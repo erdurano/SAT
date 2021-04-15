@@ -15,54 +15,72 @@ Item {
 
         Row{
             spacing:3
-            height: parent.height
-            width: parent.width
+            anchors.fill: parent
+            anchors.right: done_button.left
             
 
             Label{
-                text: "test test tesT"
+                height: parent.height
+                text: "test test tesTfjdkslajf"
                 font.family: "Ubuntu Mono"
-                font.pointSize: 12
+                font.pixelSize: 12
                 color: "black"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
             
             Label{
+                height: parent.height
                 text: "test test tesT"
                 font.family: "Ubuntu Mono"
-                font.pointSize: 12
+                font.pixelSize: 12
                 color: "black"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
 
             Label{
+                height: parent.height
                 text: "test test tesT"
                 font.family: "Ubuntu Mono"
-                font.pointSize: 12
+                font.pixelSize: 12
                 color: "black"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
 
             Label{
+                height: parent.height
                 text: "test test tesT"
                 font.family: "Ubuntu Mono"
-                font.pointSize: 12
+                font.pixelSize: 12
                 color: "black"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
 
             Label{
+                height: parent.height
                 text: "test test tesT"
                 font.family: "Ubuntu Mono"
-                font.pointSize: 12
+                font.pixelSize: 12
                 color: "black"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
+        }
 
-            RoundButton {
-                id: done_button
-                height: item_root.height-4
-                width: 100
-                radius: height/2
+        
 
-                text: "Done"
-                onClicked: console.log("Yippeeeee!")
-            }
+        RoundButton {
+            id: done_button
+            height: item_root.height-4
+            radius: height/2
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            text: "Done"
+            width: text.width + height
+            onClicked: console.log("Yippeeeee!")
         }
     }
 }

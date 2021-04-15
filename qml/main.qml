@@ -42,5 +42,39 @@ Window{
                 visible:true
             }  
         }
+
+        Row {
+            id: button_row
+            anchors {
+                top: list_window.bottom
+                bottom: parent.bottom
+                left: list_window.left
+                right: list_window.right
+                topMargin: 5
+                bottomMargin: 10
+            }
+
+            Button {
+                id: dash_btn
+                anchors.left: parent.left
+                anchors.leftMargin: 3
+                text: "Dash It!"
+            }
+
+            Button {
+                id: imprt_btn
+                anchors.right: exprt_btn.left
+                anchors.rightMargin: 3
+                text: "Import SAT"
+            }
+
+            Button {
+                id: exprt_btn
+                anchors.right: parent.right
+                anchors.rightMargin: 3
+                text: "Export Dash"
+
+            }
+        }
     }
 }   
