@@ -19,14 +19,18 @@ Window{
         ListView{
             id: list_window
             anchors.fill: parent
+            anchors.topMargin: 3
+            anchors.bottomMargin: 3
             spacing: 3
             focus: true
             clip: true
 
 
-            model : 10
-            delegate: ListItem
+            model : 30
+            delegate: ListItem {
+                id: index
             }
+
 
             ScrollBar.vertical: ScrollBar {
                 id: scroll
@@ -36,8 +40,7 @@ Window{
                 anchors.bottom: parent.bottom
                 policy: ScrollBar.AlwaysOn
                 visible:true
-            }
-  
+            }  
         }
     }
 }   
