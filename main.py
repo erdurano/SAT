@@ -1,44 +1,38 @@
-from parse import parse_SAT_doc
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
-# from PyQt5.QtGui import QIcon
+import os
+from PyQt5.QtCore import QObject, QUrl, pyqtSlot
+from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtQml import QQmlApplicationEngine
+from parse import parse_SAT_doc
+from schedule import Schedule
 
 
-class App(QWidget):
-
-    def __init__(self):
-        super().__init__()
-        self.title = 'PyQt5 file dialogs - pythonspot.com'
-        self.left = 10
-        self.top = 10
-        self.width = 640
-        self.height = 480
-        self.initUI()
-
-    def initUI(self):
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
-
-        self.openFileNameDialog()
-
-        self.show()
-
-    def openFileNameDialog(self):
-        options = QFileDialog.Options()
-#        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(
-            self,
-            "QFileDialog.getOpenFileName()", "",
-            "Excel Files (*.xlsx)", options=options
-            )
-        if fileName:
-            print(parse_SAT_doc(fileName))
+class Helper(QObject):
+    @pyqtSlot(QUrl)
+    def read_file(self, url):
+        filename = url.toLocalFile()
+        active_schedule = Schedule(parse_SAT_doc(filename))
+        for items in active_schedule.completedItems:
+            print(items.item_name)
+        print(len(active_schedule.completedItems))
+    # TODO: write a elper method for setting texts and positioning
+    # them
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = App()
-    sys.exit(app.exec_())
+def run():
+    app = QGuiApplication(sys.argv)
+    engine = QQmlApplicationEngine()
+    engine.load(os.path.join(os.path.dirname(__file__), "qml/main.qml"))
+    engine.quit.connect(app.quit)
+    helper = Helper()
+    engine.rootContext().setContextProperty("helper", helper)
+
+    if not engine.rootObjects():
+        sys.exit(-1)
+
+    return app.exec_()
 
 
-# TODO : UI gaphics and related functions
+if __name__ == "__main__":
+
+    sys.exit(run())

@@ -1,12 +1,14 @@
 import QtQuick 2.2
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.15
+import QtQuick.Dialogs 1.3
 
 Window{
     id: main_window
     color: "#ffffff"
     height: 480
     width: 640
+    visible:true
 
     Rectangle{
         anchors.fill: parent
@@ -43,38 +45,43 @@ Window{
             }  
         }
 
-        Row {
-            id: button_row
-            anchors {
-                top: list_window.bottom
-                bottom: parent.bottom
-                left: list_window.left
-                right: list_window.right
-                topMargin: 5
-                bottomMargin: 10
-            }
 
-            Button {
-                id: dash_btn
-                anchors.left: parent.left
-                anchors.leftMargin: 3
-                text: "Dash It!"
-            }
 
-            Button {
-                id: imprt_btn
-                anchors.right: exprt_btn.left
-                anchors.rightMargin: 3
-                text: "Import SAT"
-            }
+        Button {
+            id: dash_btn
+            anchors.left: list_window.left
+            anchors.top: list_window.bottom
+            anchors.topMargin: 6
+            anchors.leftMargin: 3
+            text: "Dash It!"
+        }
 
-            Button {
-                id: exprt_btn
-                anchors.right: parent.right
-                anchors.rightMargin: 3
-                text: "Export Dash"
+        Button {
+            id: imprt_btn
+            anchors.verticalCenter: dash_btn.verticalCenter
+            anchors.rightMargin: 3
+            anchors.right: exprt_btn.left
+            text: "Import SAT"
+            onClicked: {fileDialog.open()}
+        }
 
-            }
+        Button {
+            id: exprt_btn
+            anchors.right: list_window.right
+            anchors.verticalCenter: dash_btn.verticalCenter
+            anchors.rightMargin: 3
+            text: "Export Sat"
+        }
+    
+    }
+
+    FileDialog {
+    id: fileDialog
+    folder:shortcuts.documents
+    nameFilters: ["Excel SAT form (*.xlsx)"]
+    onAccepted: {
+        helper.read_file(fileDialog.fileUrls[0])
+        
         }
     }
 }   
