@@ -1,14 +1,14 @@
 import sys
 import os
-from PyQt5.QtCore import QObject, QUrl, pyqtSlot
-from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtQml import QQmlApplicationEngine
+from PySide2.QtCore import QObject, QUrl, Slot
+from PySide2.QtGui import QGuiApplication
+from PySide2.QtQml import QQmlApplicationEngine
 from parse import parse_SAT_doc
 from schedule import Schedule
 
 
 class Helper(QObject):
-    @pyqtSlot(QUrl)
+    @Slot(QUrl)
     def read_file(self, url):
         filename = url.toLocalFile()
         active_schedule = Schedule(parse_SAT_doc(filename))
