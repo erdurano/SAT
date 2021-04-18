@@ -17,7 +17,7 @@ class TestItem():
 
 
 class Schedule():
-    # A class for creating and managing test item graphics
+    # A class for creating and managing test items
 
     def __init__(self, xldata):
         self.scheduleItems = []
