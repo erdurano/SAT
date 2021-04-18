@@ -19,16 +19,18 @@ class TestItem():
 class Schedule():
     # A class for creating and managing test items
 
-    def __init__(self, xldata):
+    def __init__(self):
         self.scheduleItems = []
         self.activeItems = []
         self.upcomingItems = []
         self.completedItems = []
+
+    def imprt_data(self, xldata):
         for item_dict in xldata:
             test_item = TestItem(item_dict)
             self.scheduleItems.append(test_item)
 
-        self.sortItemsByStatus()
+        # self.sortItemsByStatus()
 
     def sortItemsByStatus(self):
         now = dt.datetime.now()
