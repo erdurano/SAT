@@ -1,4 +1,9 @@
-from PySide2.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget
+from PySide2.QtWidgets import (QApplication,
+                               QGridLayout,
+                               QLabel,
+                               QMainWindow,
+                               QPushButton,
+                               QWidget)
 from parse import parse_SAT_doc
 import datetime as dt
 
@@ -6,7 +11,6 @@ import datetime as dt
 class TestItem(QWidget):
     # Constructor class for managing test items.
     def __init__(self, item_dict):
-        super().__init__()
         self.sfi = item_dict["sfi"]
         self.item_name = item_dict["item_name"]
         self.class_attendance = item_dict["class_att"]
@@ -19,9 +23,32 @@ class TestItem(QWidget):
         self.active_stat = False
         self.done_stat = False
 
-    def get_widget(self):
+    def get_item_widget(self):
+        sfi_label = QLabel(self.sfi)
+        sfi_label.setMaximumWidth(70)
+        name_label = QLabel(self.item_name)
+        class_label = QLabel('C:{}'.format(self.class_attendance))
+        owner_label = QLabel('O:{}'.format(self.class_attendance))
+        resp_label = QLabel(self.responsible)
+        start_label = QLabel(self.start_dt.strftime('%d/%m%Y, %H:%M')
+                             if self.start_dt is not None else '')
+        finish_label = QLabel(self.finnish_dt.strftime('%d/%m/%Y, %H:%M')
+                              if self.finnish_dt is not None else '')
+        done_button = QPushButton('Done')
+        done_button.setMaximumWidth(40)
 
-        layout = QHBoxLayout()
+        super().__init__()
+        layout = QGridLayout()
+        layout.addWidget(sfi_label, 0, 0, 2, 1)
+        layout.addWidget(name_label, 0, 1, 1, 4)
+        layout.addWidget(resp_label, 1, 1)
+        layout.addWidget(class_label, 1, 2)
+        layout.addWidget(owner_label, 1, 3)
+        layout.addWidget(start_label, 0, 4, 1, 5)
+        layout.addWidget(finish_label, 1, 4, 2, 5)
+        layout.addWidget(done_button, 0, 5, 2, 6)
+        layout.setColumnMinimumWidth(4, 150)
+
         self.widgets = [
                         QLabel(self.sfi),
                         QLabel(self.item_name),
@@ -30,15 +57,12 @@ class TestItem(QWidget):
                         QLabel(self.owner_attendance),
                         QLabel(self.to_be_followed),
                         QLabel(self.responsible),
-                        QLabel(self.start_dt.strftime('%m/%d/%Y, %H:%M')
+                        QLabel(self.start_dt.strftime('%d/%m%Y, %H:%M')
                                if self.start_dt is not None else ''),
-                        QLabel(self.finnish_dt.strftime('%m/%d/%Y, %H:%M')
+                        QLabel(self.finnish_dt.strftime('%d/%m/%Y, %H:%M')
                                if self.finnish_dt is not None else ''),
                         QPushButton('Done')
                         ]
-        for prop in self.widgets:
-            layout.addWidget(prop)
-
         self.setLayout(layout)
 
 
@@ -55,7 +79,7 @@ class Schedule():
         self.scheduleItems = []
         for item_dict in xldata:
             test_item = TestItem(item_dict)
-            test_item.get_widget()
+            test_item.get_item_widget()
             self.scheduleItems.append(test_item)
 
         # self.sortItemsByStatus()
@@ -79,8 +103,23 @@ class Schedule():
 
 
 if __name__ == '__main__':
+    app = QApplication()
     filename = './example/5_NB67_SAT_Schedule_Rev_3.xlsx'
 
     xldata = parse_SAT_doc(filename)
+    container = QWidget()
+    schedule = Schedule()
+    schedule.imprt_data(xldata)
+    grid = QGridLayout()
 
-    schedule = Schedule(xldata)
+    for row, test_item in enumerate(schedule.scheduleItems):
+        for column, item in enumerate(test_item.widgets):
+            grid.addWidget(item, row, column)
+    grid.setSpacing(5)
+    container.setLayout(grid)
+
+    window = QMainWindow()
+    window.setCentralWidget(container)
+    window.show()
+
+    app.exec_()
