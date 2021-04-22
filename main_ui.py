@@ -4,7 +4,6 @@ from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
     QApplication,
     QFileDialog,
-    QGridLayout,
     QHBoxLayout,
     QListView,
     QMainWindow,
@@ -47,7 +46,7 @@ class MainWindow(QMainWindow):
         self.main_layout.addLayout(button_layout)
         main_widget.setLayout(self.main_layout)
 
-        self.setMinimumSize(640, 480)
+        # self.setMinimumSize(480, 480)
         self.setWindowTitle("SATDash")
         self.setCentralWidget(main_widget)
 
@@ -56,10 +55,10 @@ class MainWindow(QMainWindow):
         self.container = QWidget()
         self.scr_area = QScrollArea()
         self.widget = QWidget()
-        self.grid = QGridLayout()
-
+        self.grid = QVBoxLayout()
         for row, test_item in enumerate(self.schedule.scheduleItems):
-            self.grid.addWidget(test_item, row, 0)
+            self.grid.addWidget(test_item)
+
         self.widget.setLayout(self.grid)
 
         # Scroll Area Properties

@@ -1,4 +1,5 @@
-from PySide2.QtWidgets import (QApplication,
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import (QApplication, QFrame,
                                QGridLayout,
                                QLabel,
                                QMainWindow,
@@ -8,7 +9,7 @@ from parse import parse_SAT_doc
 import datetime as dt
 
 
-class TestItem(QWidget):
+class TestItem(QFrame):
     # Constructor class for managing test items.
     def __init__(self, item_dict):
         self.sfi = item_dict["sfi"]
@@ -24,30 +25,40 @@ class TestItem(QWidget):
         self.done_stat = False
 
     def get_item_widget(self):
+
         sfi_label = QLabel(self.sfi)
-        sfi_label.setMaximumWidth(70)
+        sfi_label.setAlignment(Qt.AlignLeft)
+        sfi_label.setAlignment(Qt.AlignVCenter)
+
         name_label = QLabel(self.item_name)
-        class_label = QLabel('C:{}'.format(self.class_attendance))
-        owner_label = QLabel('O:{}'.format(self.class_attendance))
+        name_label.setWordWrap(True)
+        name_label.setAlignment(Qt.AlignLeft)
+
+        class_label = QLabel('Class:{}'.format(self.class_attendance))
+
+        owner_label = QLabel('Owner:{}'.format(self.owner_attendance))
+
         resp_label = QLabel(self.responsible)
+
         start_label = QLabel(self.start_dt.strftime('%d/%m%Y, %H:%M')
                              if self.start_dt is not None else '')
+
         finish_label = QLabel(self.finnish_dt.strftime('%d/%m/%Y, %H:%M')
                               if self.finnish_dt is not None else '')
+
         done_button = QPushButton('Done')
         done_button.setMaximumWidth(40)
 
         super().__init__()
         layout = QGridLayout()
         layout.addWidget(sfi_label, 0, 0, 2, 1)
-        layout.addWidget(name_label, 0, 1, 1, 4)
+        layout.addWidget(name_label, 0, 1, 1, 3)
         layout.addWidget(resp_label, 1, 1)
         layout.addWidget(class_label, 1, 2)
         layout.addWidget(owner_label, 1, 3)
-        layout.addWidget(start_label, 0, 4, 1, 5)
-        layout.addWidget(finish_label, 1, 4, 2, 5)
-        layout.addWidget(done_button, 0, 5, 2, 6)
-        layout.setColumnMinimumWidth(4, 150)
+        layout.addWidget(start_label, 0, 4)
+        layout.addWidget(finish_label, 1, 4)
+        layout.addWidget(done_button, 0, 5, 2, 1)
 
         self.widgets = [
                         QLabel(self.sfi),
@@ -63,6 +74,12 @@ class TestItem(QWidget):
                                if self.finnish_dt is not None else ''),
                         QPushButton('Done')
                         ]
+
+        self.setFrameShape(QFrame.Box)
+        self.setLineWidth(1)
+
+        layout.setRowStretch(0, 2)
+        layout.setColumnStretch(0, 0)
         self.setLayout(layout)
 
 
