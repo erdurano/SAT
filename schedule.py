@@ -48,6 +48,7 @@ class TestItem(QFrame):
 
         done_button = QPushButton('Done')
         done_button.setMaximumWidth(40)
+        done_button.clicked.connect(self.doneHandler)
 
         super().__init__()
         layout = QGridLayout()
@@ -74,13 +75,30 @@ class TestItem(QFrame):
                                if self.finnish_dt is not None else ''),
                         QPushButton('Done')
                         ]
-
+        self.getActiveStat()
         self.setFrameShape(QFrame.Box)
         self.setLineWidth(1)
 
         layout.setRowStretch(0, 2)
         layout.setColumnStretch(0, 0)
         self.setLayout(layout)
+
+    def getActiveStat(self):
+        now = dt.datetime.now()
+        if now > self.start_dt:
+            self.active_stat = True
+            self.setStyleSheet('QFrame {background-color: #4d97f2}')
+
+    def doneHandler(self):
+        if self.active_stat is True and self.done_stat is True:
+            self.done_stat = False
+            self.getActiveStat()
+        elif self.active_stat is False and self.done_stat is True:
+            self.done_stat = False
+            self.setStyleSheet('')
+        elif self.done_stat is False:
+            self.done_stat = True
+            self.setStyleSheet('QFrame {background-color: #61f34b}')
 
 
 class Schedule():

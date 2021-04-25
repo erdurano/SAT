@@ -1,6 +1,9 @@
+import os
+
 from parse import parse_SAT_doc
 from schedule import Schedule
-from PySide2.QtCore import Qt
+from PySide2.QtCore import QUrl, Qt
+from PySide2.QtQuick import QQuickView
 from PySide2.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -35,7 +38,7 @@ class MainWindow(QMainWindow):
 
         dash_button = QPushButton("Dash It!")
         dash_button.setFixedWidth(70)
-        dash_button.clicked.connect(self.hey)
+        dash_button.clicked.connect(self.get_dash_window)
 
         button_layout.addWidget(dash_button)
         verticalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding,
@@ -46,7 +49,7 @@ class MainWindow(QMainWindow):
         self.main_layout.addLayout(button_layout)
         main_widget.setLayout(self.main_layout)
 
-        # self.setMinimumSize(480, 480)
+        self.setMinimumSize(600, 480)
         self.setWindowTitle("SATDash")
         self.setCentralWidget(main_widget)
 
@@ -69,9 +72,6 @@ class MainWindow(QMainWindow):
 
         return self.scr_area
 
-    def hey(self):
-        print('yeeeeey')
-
     def get_excel_file(self):
         filename, _ = QFileDialog.\
             getOpenFileName(self, self.tr('Load SAT file'),
@@ -81,6 +81,14 @@ class MainWindow(QMainWindow):
         xldata = parse_SAT_doc(filename)
         self.schedule.imprt_data(xldata)
         self.main_layout.replaceWidget(self.scr_area, self.get_scrollview())
+
+    def get_dash_window(self):
+        dash_widget = QWidget()
+        self.qmlView = QQuickView()
+        url = QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),
+                                              "qml/Dash.qml"))
+        self.qmlView.setSource(url)
+        self.qmlView.show()
 
 
 app = QApplication(sys.argv)
