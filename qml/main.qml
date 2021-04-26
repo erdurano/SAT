@@ -8,7 +8,6 @@ Window{
     color: "#ffffff"
     height: 480
     width: 640
-    visible:true
 
     Rectangle{
         anchors.fill: parent
@@ -73,15 +72,5 @@ Window{
             text: "Export Sat"
         }
     
-    }
-
-    FileDialog {
-    id: fileDialog
-    folder:shortcuts.documents
-    nameFilters: ["Excel SAT form (*.xlsx)"]
-    onAccepted: {
-        helper.read_file(fileDialog.fileUrls[0])
-        
-        }
     }
 }   

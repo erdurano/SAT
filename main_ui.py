@@ -1,9 +1,8 @@
-import os
-
+from dash_window import DashWindow
+from PySide2.QtCore import Qt
 from parse import parse_SAT_doc
 from schedule import Schedule
-from PySide2.QtCore import QUrl, Qt
-from PySide2.QtQuick import QQuickView
+
 from PySide2.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -52,6 +51,7 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(600, 480)
         self.setWindowTitle("SATDash")
         self.setCentralWidget(main_widget)
+        self.dash_window = DashWindow()
 
     def get_scrollview(self):
 
@@ -83,12 +83,8 @@ class MainWindow(QMainWindow):
         self.main_layout.replaceWidget(self.scr_area, self.get_scrollview())
 
     def get_dash_window(self):
-        dash_widget = QWidget()
-        self.qmlView = QQuickView()
-        url = QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),
-                                              "qml/Dash.qml"))
-        self.qmlView.setSource(url)
-        self.qmlView.show()
+        self.dash_window.setVisible(True)
+        self.dash_window.show()
 
 
 app = QApplication(sys.argv)
