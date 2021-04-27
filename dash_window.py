@@ -10,3 +10,6 @@ class DashWindow(QQuickWidget):
         self.setSource(QUrl.fromLocalFile(
             os.path.join(os.path.dirname(__file__), 'qml/Dash.qml')
             ))
+        self.setResizeMode(QQuickWidget.SizeRootObjectToView)
+
+        self.setWindowTitle('Dash')

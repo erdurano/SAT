@@ -6,13 +6,11 @@ import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.2
 
 
-ApplicationWindow {
+Item {
     id: window
     width: 640
-    height: window.width*1080/1920
+    height: 480
     visible: true
-    color: "#00000000"
-    title: qsTr("SAT Main Window")
 
     Rectangle {
         id: background
@@ -33,36 +31,6 @@ ApplicationWindow {
             anchors.rightMargin: 0
             anchors.leftMargin: 0
             anchors.topMargin: 0
-
-            Rectangle {
-                id: load_icon
-                x: 1382
-                y: 0
-                width: topbar.height
-                height: topbar.height
-                color: "#8b8989"
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-
-                MouseArea {
-                    id: load_button
-                    hoverEnabled: true
-                    anchors.fill: parent
-                    onClicked: {fileDialog.open()}
-                    onEntered: {
-                        load_icon.color = "#858484"
-                    }
-                    onExited: {
-                        load_icon.color = "#8b8989"
-                    }
-                    Text {
-                        text: qsTr("Load file")
-                        anchors.fill : parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                }
-            }
         }
 
         Rectangle {
@@ -78,47 +46,16 @@ ApplicationWindow {
             anchors.rightMargin: 0
             anchors.leftMargin: 0
 
+
             Rectangle {
-                id: active_test_border
-                height: parent.height/3
+                id: completed_test_border
                 color: "#ffffff"
                 radius: 15
                 border.color: "#3c3ed4"
+                width: (content_window.width-120)/3
                 border.width: 3
                 anchors.left: parent.left
-                anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.rightMargin: 30
-                anchors.leftMargin: 30
-                anchors.topMargin: 30
-
-                Text {
-                    id: active_border_label
-                    width: 156
-                    height: 70
-                    text: qsTr("Active")
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    font.pixelSize: 36
-                    lineHeight: 1.1
-                    clip: false
-                    anchors.leftMargin: 50
-                    anchors.topMargin: -30
-                    fontSizeMode: Text.FixedSize
-                    minimumPixelSize: 50
-                    minimumPointSize: 50
-                }
-            }
-
-            Rectangle {
-                id: compelted_test_border
-                width: (content_window.width-90)/2
-                color: "#ffffff"
-                radius: 15
-                border.color: "#3c3ed4"
-                border.width: 3
-                anchors.left: parent.left
-                anchors.top: active_test_border.bottom
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 30
                 anchors.topMargin: 30
@@ -143,19 +80,54 @@ ApplicationWindow {
             }
 
             Rectangle {
+                id: active_test_border
+                color: "#ffffff"
+                width: completed_test_border.width
+                radius: 15
+                border.color: "#3c3ed4"
+                border.width: 3
+                anchors.left: completed_test_border.right
+                anchors.right: upcoming_border_label.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 30
+                anchors.leftMargin: 30
+                anchors.topMargin: 30
+
+                Text {
+                    id: active_border_label
+                    width: 156
+                    height: 70
+                    text: qsTr("Active")
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    font.pixelSize: 36
+                    lineHeight: 1.1
+                    clip: false
+                    anchors.leftMargin: 50
+                    anchors.topMargin: -30
+                    fontSizeMode: Text.FixedSize
+                    minimumPixelSize: 50
+                    minimumPointSize: 50
+                }
+            }
+
+            Rectangle {
                 id: upcoming_test_border
                 x: 1381
-                width: compelted_test_border.width
+                width: completed_test_border.width
                 color: "#ffffff"
                 radius: 15
                 border.color: "#3c3ed4"
                 border.width: 3
                 anchors.right: parent.right
-                anchors.top: active_test_border.bottom
+                anchors.top: parent.top
+                anchors.left: active_test_border.right
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 30
                 anchors.rightMargin: 30
                 anchors.topMargin: 30
+                anchors.leftMargin:30
 
                 Text {
                     id: upcoming_border_label
@@ -176,16 +148,6 @@ ApplicationWindow {
             }
         }
     }
-    FileDialog {
-        id: fileDialog
-        folder:shortcuts.documents
-        nameFilters: ["Excel SAT form (*.xlsx)"]
-        onAccepted: {
-            helper.read_file(fileDialog.fileUrls[0])
-            
-        }
-    }
-
-
+    
 }
 
