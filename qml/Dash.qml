@@ -8,8 +8,8 @@ import QtQuick.Controls 2.2
 
 Item {
     id: window
-    width: 640
-    height: 480
+    width: 1080
+    height: 720
     visible: true
 
     Rectangle {
@@ -61,17 +61,29 @@ Item {
                 anchors.topMargin: 30
                 anchors.leftMargin: 30
 
-                Text {
-                    id: completed_border_label
-                    width: 190
-                    height: 64
-                    text: qsTr("Completed")
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    font.pixelSize: 36
-                    anchors.leftMargin: 50
-                    anchors.topMargin: -30
-                }
+
+                    Text {
+                        id: completed_border_label
+                        text: qsTr("Completed")
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        font.family: "Effra"
+                        font.weight: Font.DemiBold
+                        font.pixelSize: 36
+                        anchors.leftMargin: height/2
+                        anchors.topMargin: -height*5/7
+                        z: 1
+
+                        Rectangle {
+                            anchors.fill: parent
+                            anchors.rightMargin: -3
+                            anchors.leftMargin: -3
+                            anchors.topMargin: 5
+                            color: "#ffffff"
+                            z: -1
+                        }
+                    }
+    
 
                 Column {
                     id: column1
@@ -87,7 +99,6 @@ Item {
                 border.color: "#3c3ed4"
                 border.width: 3
                 anchors.left: completed_test_border.right
-                anchors.right: upcoming_border_label.left
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 30
@@ -96,19 +107,24 @@ Item {
 
                 Text {
                     id: active_border_label
-                    width: 156
-                    height: 70
                     text: qsTr("Active")
                     anchors.left: parent.left
                     anchors.top: parent.top
+                    font.family: "Effra"
+                    font.weight: Font.DemiBold
                     font.pixelSize: 36
-                    lineHeight: 1.1
-                    clip: false
-                    anchors.leftMargin: 50
-                    anchors.topMargin: -30
-                    fontSizeMode: Text.FixedSize
-                    minimumPixelSize: 50
-                    minimumPointSize: 50
+                    anchors.leftMargin: height/2
+                    anchors.topMargin: -height*5/7
+                    z: 1
+
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.rightMargin: -3
+                        anchors.leftMargin: -3
+                        anchors.topMargin: 5
+                        color: "#ffffff"
+                        z: -1
+                    }
                 }
             }
 
@@ -131,14 +147,24 @@ Item {
 
                 Text {
                     id: upcoming_border_label
-                    width: 241
-                    height: 82
                     text: qsTr("Upcoming")
                     anchors.left: parent.left
                     anchors.top: parent.top
+                    font.family: "Effra"
+                    font.weight: Font.DemiBold
                     font.pixelSize: 36
-                    anchors.leftMargin: 50
-                    anchors.topMargin: -30
+                    anchors.leftMargin: height/2
+                    anchors.topMargin: -height*5/7
+                    z: 1
+
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.rightMargin: -3
+                        anchors.leftMargin: -3
+                        anchors.topMargin: 5
+                        color: "#ffffff"
+                        z: -1
+                    }
                 }
 
                 Column {
