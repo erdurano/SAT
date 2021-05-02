@@ -84,10 +84,11 @@ Item {
                         }
                     }
     
-
                 Column {
                     id: column1
-                    anchors.fill: parent
+                    anchors.fill: completed_test_border
+
+
                 }
             }
 
@@ -124,6 +125,23 @@ Item {
                         anchors.topMargin: 5
                         color: "#ffffff"
                         z: -1
+                    }
+                }
+
+                Column {
+                    id: active_column
+                    anchors.fill: parent
+                    
+                    anchors.margins: 5
+                    
+
+                    Repeater {
+                        model: itemModel
+
+                        Halo {
+                            width: parent.width
+                            sfi_label: display["sfi"]
+                        }
                     }
                 }
             }

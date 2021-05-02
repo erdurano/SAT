@@ -12,6 +12,7 @@ import datetime as dt
 class TestItem(QFrame):
     # Constructor class for managing test items.
     def __init__(self, item_dict):
+        self.dict = item_dict
         self.sfi = item_dict["sfi"]
         self.item_name = item_dict["item_name"]
         self.class_attendance = item_dict["class_att"]

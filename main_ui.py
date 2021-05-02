@@ -51,7 +51,6 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(600, 480)
         self.setWindowTitle("SATDash")
         self.setCentralWidget(main_widget)
-        self.dash_window = DashWindow()
 
     def get_scrollview(self):
 
@@ -83,14 +82,15 @@ class MainWindow(QMainWindow):
         self.main_layout.replaceWidget(self.scr_area, self.get_scrollview())
 
     def get_dash_window(self):
-        self.dash_window.setVisible(True)
-        self.dash_window.show()
+        dash.show()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
+    dash = DashWindow()
     window = MainWindow()
+
     window.show()
 
     app.exec_()

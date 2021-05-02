@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 Item {
     id: test_item_ui
-    width: list_window.width
+    width:30
     height: 100
     property alias status: status
     property alias department_label: department_label
@@ -57,7 +57,7 @@ Item {
             id: sfi_label
             x: 30
             y: 42
-            text: qsTr("SFI")
+            text: ""
             font.pixelSize: 12
         }
 
