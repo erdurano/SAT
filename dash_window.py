@@ -1,5 +1,5 @@
 import os
-from PySide2.QtCore import QAbstractListModel, QModelIndex, QUrl, Qt
+from PySide2.QtCore import QAbstractListModel, QModelIndex, QUrl, Qt, Slot
 from PySide2.QtQuickWidgets import QQuickWidget
 
 
@@ -34,3 +34,10 @@ class ItemModel(QAbstractListModel):
 
         if role == Qt.DisplayRole:
             return self.dat[index.row()]
+
+    @Slot()
+    def insertRows(self, dix):
+        self.beginInsertRows(QModelIndex(), 0, 0)
+        for item in dix:
+            self.dat.insert(0, item.dict)
+        self.endInsertRows()
