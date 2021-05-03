@@ -37,7 +37,7 @@ class ItemModel(QAbstractListModel):
 
     @Slot()
     def insertRows(self, dix):
-        self.beginInsertRows(QModelIndex(), 0, 0)
-        for item in dix:
-            self.dat.insert(0, item.dict)
+        self.beginInsertRows(QModelIndex(), 0, len(dix))
+        for index, item in enumerate(dix):
+            self.dat.insert(index, item.dict)
         self.endInsertRows()

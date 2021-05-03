@@ -79,9 +79,9 @@ class MainWindow(QMainWindow):
 
         xldata = parse_SAT_doc(filename)
         self.schedule.imprt_data(xldata)
-        for item in self.schedule.scheduleItems:
-            print(item.dict)
-        # dash.model.insertRows(self.schedule.scheduleItems)
+        # for item in self.schedule.scheduleItems:
+        #     print(item.dict)
+        dash.model.insertRows(self.schedule.scheduleItems)
         self.main_layout.replaceWidget(self.scr_area, self.get_scrollview())
 
     def get_dash_window(self):

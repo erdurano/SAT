@@ -131,16 +131,22 @@ Item {
                 Column {
                     id: active_column
                     anchors.fill: parent
-                    
                     anchors.margins: 5
-                    
+                    clip: true
+                    spacing: 5
 
                     Repeater {
                         model: itemModel
-
                         Halo {
+                            id: index
                             width: parent.width
                             sfi_label: display["sfi"]
+
+                            // visible : (display["active_stat"] == true) ? true : false
+
+
+                        
+
                         }
                     }
                 }

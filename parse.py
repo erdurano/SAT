@@ -66,7 +66,8 @@ def parse_SAT_doc(file_path):
 
         elif header_row is not None:
             test_row = {
-                "sfi": row[class_column - 3].value,
+                "sfi": row[class_column - 3].value
+                if row[class_column - 3].value is not None else "",
                 "item_name": row[class_column - 2].value,
                 "class_att": row[class_column - 1].value,
                 "flag_att": row[class_column].value,

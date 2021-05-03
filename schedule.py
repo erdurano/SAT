@@ -24,6 +24,8 @@ class TestItem(QFrame):
         self.finnish_dt = item_dict["estimated_finish"]
         self.active_stat = False
         self.done_stat = False
+        self.dict.update({'active_stat': self.active_stat,
+                          "done_stat": self.done_stat})
 
     def get_item_widget(self):
 
@@ -49,7 +51,7 @@ class TestItem(QFrame):
 
         done_button = QPushButton('Done')
         done_button.setMaximumWidth(40)
-        done_button.clicked.connect(self.doneHandler)
+        done_button.clicked.connect(self.doneButtonHandler)
 
         super().__init__()
         layout = QGridLayout()
@@ -62,20 +64,6 @@ class TestItem(QFrame):
         layout.addWidget(finish_label, 1, 4)
         layout.addWidget(done_button, 0, 5, 2, 1)
 
-        self.widgets = [
-                        QLabel(self.sfi),
-                        QLabel(self.item_name),
-                        QLabel(self.class_attendance),
-                        QLabel(self.flag_attendance),
-                        QLabel(self.owner_attendance),
-                        QLabel(self.to_be_followed),
-                        QLabel(self.responsible),
-                        QLabel(self.start_dt.strftime('%d/%m%Y, %H:%M')
-                               if self.start_dt is not None else ''),
-                        QLabel(self.finnish_dt.strftime('%d/%m/%Y, %H:%M')
-                               if self.finnish_dt is not None else ''),
-                        QPushButton('Done')
-                        ]
         self.getActiveStat()
         self.setFrameShape(QFrame.Box)
         self.setLineWidth(1)
@@ -90,7 +78,7 @@ class TestItem(QFrame):
             self.active_stat = True
             self.setStyleSheet('QFrame {background-color: #4d97f2}')
 
-    def doneHandler(self):
+    def doneButtonHandler(self):
         if self.active_stat is True and self.done_stat is True:
             self.done_stat = False
             self.getActiveStat()
@@ -117,25 +105,6 @@ class Schedule():
             test_item = TestItem(item_dict)
             test_item.get_item_widget()
             self.scheduleItems.append(test_item)
-
-        # self.sortItemsByStatus()
-
-    def sortItemsByStatus(self):
-        now = dt.datetime.now()
-        # print(self.scheduleItems)
-        for item in self.scheduleItems:
-            if item.finnish_dt is None:
-                if item.start_dt >= now:
-                    self.upcomingItems.append(item)
-                if item.start_dt <= now:
-                    self.completedItems.append(item)
-            else:
-                if item.start_dt <= now <= item.finnish_dt:
-                    self.activeItems.append(item)
-                elif item.start_dt >= now:
-                    self.upcomingItems.append(item)
-                elif item.start_dt <= now:
-                    self.completedItems.append(item)
 
 
 if __name__ == '__main__':
