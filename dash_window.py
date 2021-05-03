@@ -41,3 +41,14 @@ class ItemModel(QAbstractListModel):
         for index, item in enumerate(dix):
             self.dat.insert(index, item.dict)
         self.endInsertRows()
+
+    # TODO: find a method for using this slot. Kill yourself if you have to
+    # Because you're an idiot who deserves no better.
+    @Slot()
+    def setData(self, data, role=Qt.EditRole):
+        index = data[0]
+        value = data[1]
+        if value is not None and role == Qt.EditRole:
+            self.dat[index.row()] = value
+            return True
+        return False
