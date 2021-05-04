@@ -20,9 +20,8 @@ class DashWindow(QQuickWidget):
 class ItemModel(QAbstractListModel):
 
     def __init__(self, parent=None):
-        self.schedule_data = [{"sfi": "123"}]
         super().__init__(parent)
-        self.dat = self.schedule_data
+        self.dat = []
 
     def rowCount(self, index=QModelIndex()):
         return len(self.dat)
@@ -44,11 +43,19 @@ class ItemModel(QAbstractListModel):
 
     # TODO: find a method for using this slot. Kill yourself if you have to
     # Because you're an idiot who deserves no better.
-    @Slot()
-    def setData(self, data, role=Qt.EditRole):
-        index = data[0]
-        value = data[1]
-        if value is not None and role == Qt.EditRole:
-            self.dat[index.row()] = value
-            return True
-        return False
+    @Slot(dict)
+    def setData(self, item_dict, role=Qt.EditRole):
+
+        for i, dix in enumerate(self.dat):
+            # print(dix)
+            # print(item_dict)
+            if dix["item_name"] == item_dict["item_name"]:
+                self.dat[i] == item_dict
+        self.dataChanged.emit(self.index(0, 0), self.index(self.rowCount(), 0))
+# if value is not None and role == Qt.EditRole:
+#     self.dat[index.row()] = value
+#     print(value)
+#     print(index.row())
+#     print(index.data())
+#     return True
+# return False

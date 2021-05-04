@@ -1,4 +1,4 @@
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, Signal
 from PySide2.QtWidgets import (QApplication, QFrame,
                                QGridLayout,
                                QLabel,
@@ -11,43 +11,40 @@ import datetime as dt
 
 class TestItem(QFrame):
     # Constructor class for managing test items.
+    item_data = Signal(dict)
+
     def __init__(self, item_dict):
         self.dict = item_dict
-        self.sfi = item_dict["sfi"]
-        self.item_name = item_dict["item_name"]
-        self.class_attendance = item_dict["class_att"]
-        self.flag_attendance = item_dict["flag_att"]
-        self.owner_attendance = item_dict["owner_att"]
-        self.to_be_followed = item_dict["rec_stat"]
-        self.responsible = item_dict["resp_dept"]
-        self.start_dt = item_dict["start_datetime"]
-        self.finnish_dt = item_dict["estimated_finish"]
-        self.active_stat = False
-        self.done_stat = False
-        self.dict.update({'active_stat': self.active_stat,
-                          "done_stat": self.done_stat})
+        self.dict["active_stat"] = False
+        self.dict["done_stat"] = False
+        self.dict.update({'active_stat': self.dict["active_stat"],
+                          "done_stat": self.dict["done_stat"]})
 
     def get_item_widget(self):
 
-        sfi_label = QLabel(self.sfi)
+        sfi_label = QLabel(self.dict["sfi"])
         sfi_label.setAlignment(Qt.AlignLeft)
         sfi_label.setAlignment(Qt.AlignVCenter)
 
-        name_label = QLabel(self.item_name)
+        name_label = QLabel(self.dict["item_name"])
         name_label.setWordWrap(True)
         name_label.setAlignment(Qt.AlignLeft)
 
-        class_label = QLabel('Class:{}'.format(self.class_attendance))
+        class_label = QLabel('Class:{}'.format(self.dict["class_att"]))
 
-        owner_label = QLabel('Owner:{}'.format(self.owner_attendance))
+        owner_label = QLabel('Owner:{}'.format(self.dict["owner_att"]))
 
-        resp_label = QLabel(self.responsible)
+        resp_label = QLabel(self.dict["resp_dept"])
 
-        start_label = QLabel(self.start_dt.strftime('%d/%m%Y, %H:%M')
-                             if self.start_dt is not None else '')
+        start_label = QLabel(
+            self.dict["start_datetime"].strftime('%d/%m%Y, %H:%M')
+            if self.dict["start_datetime"] is not None else ''
+            )
 
-        finish_label = QLabel(self.finnish_dt.strftime('%d/%m/%Y, %H:%M')
-                              if self.finnish_dt is not None else '')
+        finish_label = QLabel(
+            self.dict["estimated_finish"].strftime('%d/%m/%Y, %H:%M')
+            if self.dict["estimated_finish"] is not None else ''
+            )
 
         done_button = QPushButton('Done')
         done_button.setMaximumWidth(40)
@@ -71,23 +68,33 @@ class TestItem(QFrame):
         layout.setRowStretch(0, 2)
         layout.setColumnStretch(0, 0)
         self.setLayout(layout)
+        # self.item_data.connect(self.parent_window.dash_window.model.setData)
 
     def getActiveStat(self):
         now = dt.datetime.now()
-        if now > self.start_dt:
-            self.active_stat = True
+        if now > self.dict["start_datetime"]:
+            self.dict["active_stat"] = True
             self.setStyleSheet('QFrame {background-color: #4d97f2}')
 
     def doneButtonHandler(self):
-        if self.active_stat is True and self.done_stat is True:
-            self.done_stat = False
+
+        if self.dict["active_stat"] is True and self.dict["done_stat"] is True:
+
+            self.dict["done_stat"] = False
             self.getActiveStat()
-        elif self.active_stat is False and self.done_stat is True:
-            self.done_stat = False
+
+        elif self.dict["active_stat"] is False\
+                and self.dict["done_stat"] is True:
+
+            self.dict["done_stat"] = False
             self.setStyleSheet('')
-        elif self.done_stat is False:
-            self.done_stat = True
+
+        elif self.dict["done_stat"] is False:
+
+            self.dict["done_stat"] = True
             self.setStyleSheet('QFrame {background-color: #61f34b}')
+
+        self.item_data.emit(self.dict)
 
 
 class Schedule():

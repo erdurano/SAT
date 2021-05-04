@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.dash_window = DashWindow()
 
     def init_ui(self):
         self.main_layout = QVBoxLayout()
@@ -60,6 +61,7 @@ class MainWindow(QMainWindow):
         self.grid = QVBoxLayout()
         for row, test_item in enumerate(self.schedule.scheduleItems):
             self.grid.addWidget(test_item)
+            test_item.item_data.connect(self.dash_window.model.setData)
 
         self.widget.setLayout(self.grid)
 
@@ -81,17 +83,16 @@ class MainWindow(QMainWindow):
         self.schedule.imprt_data(xldata)
         # for item in self.schedule.scheduleItems:
         #     print(item.dict)
-        dash.model.insertRows(self.schedule.scheduleItems)
+        self.dash_window.model.insertRows(self.schedule.scheduleItems)
         self.main_layout.replaceWidget(self.scr_area, self.get_scrollview())
 
     def get_dash_window(self):
-        dash.show()
+        self.dash_window.show()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    dash = DashWindow()
     window = MainWindow()
 
     window.show()
