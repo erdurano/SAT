@@ -33,11 +33,11 @@ class MainWindow(QMainWindow):
         self.schedule = Schedule()
 
         import_button = QPushButton("Import SAT")
-        import_button.setFixedWidth(70)
+        import_button.setFixedWidth(80)
         import_button.clicked.connect(self.get_excel_file)
 
         dash_button = QPushButton("Dash It!")
-        dash_button.setFixedWidth(70)
+        dash_button.setFixedWidth(80)
         dash_button.clicked.connect(self.get_dash_window)
 
         button_layout.addWidget(dash_button)
