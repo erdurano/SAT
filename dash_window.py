@@ -53,10 +53,4 @@ class ItemModel(QAbstractListModel):
                 self.dat[i] == item_dict
         self.dataChanged.emit(self.index(0, 0), self.index(self.rowCount(), 0),
                               Qt.DisplayRole)
-# if value is not None and role == Qt.EditRole:
-#     self.dat[index.row()] = value
-#     print(value)
-#     print(index.row())
-#     print(index.data())
-#     return True
-# return False
+

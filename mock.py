@@ -1,92 +1,90 @@
+import os
 import sys
+from functools import partial
 
-from PySide2 import QtCore, QtGui, QtQuick
+from PySide2 import QtCore as qtc
+from PySide2 import QtGui as qtg
+from PySide2 import QtQml as qml
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class Model(QtCore.QAbstractListModel):
-    def __init__(self, schema, parent=None):
-        super(Model, self).__init__(parent)
+class MyListModel(qtc.QAbstractListModel):
+    # Our custom roles
+    NameRole = qtc.Qt.UserRole + 1000
+    CheckedRole = qtc.Qt.UserRole + 1001
 
-        # Each item is a dictionary of key/value pairs
-        self.items = list()
+    def __init__(self, parent=None):
+        super(MyListModel, self).__init__(parent)
+        self._assets = []
 
-        # QML requires a model to define upfront
-        # exactly which roles it can supply. I refer
-        # to this as the models "schema".
-        self.schema = schema
+    def rowCount(self, parent=qtc.QModelIndex()):
+        if parent.isValid():
+            return 0
+        return len(self._assets)
 
-    def append(self, item):
-        """Append item to end of model"""
-        self.beginInsertRows(QtCore.QModelIndex(),
-                             self.rowCount(),
+    def data(self, index, role=qtc.Qt.DisplayRole):
+
+        if 0 <= index.row() < self.rowCount() and index.isValid():
+            item = self._assets[index.row()]
+
+            if role == MyListModel.NameRole:
+                return item['assetName']
+
+            elif role == MyListModel.CheckedRole:
+                return item['assetIsChecked']
+
+    def roleNames(self):
+        roles = dict()
+        roles[MyListModel.NameRole] = b'assetName'
+        roles[MyListModel.CheckedRole] = b'assetIsChecked'
+        return roles
+
+    # This can be called from the QML side
+    @qtc.Slot(str, bool)
+    def appendRow(self, name, ischecked):
+        self.beginInsertRows(qtc.QModelIndex(), self.rowCount(),
                              self.rowCount())
-
-        self.items.append(item)
+        self._assets.append({'assetName': name, 'assetIsChecked': ischecked})
         self.endInsertRows()
 
-    def data(self, index, role):
-        """Return value of item[`index`] of `role`"""
-        key = self.schema[role]
-        return self.items[index.row()].get(key)
 
-    def setData(self, index, value, role):
-        """Set item[`index`] of `role` to `value`"""
-        key = self.schema[role]
-        self.items[index.row()][key] = value
-        self.dataChanged.emit(index, index)
+class Backend(qtc.QObject):
 
-    def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self.items)
+    modelChanged = qtc.Signal()
 
-    def setRoleNames(self):
-        """Role names are used by QML to map key to role"""
-        return dict(enumerate(self.schema))
+    def __init__(self, parent=None):
+        super(Backend, self).__init__(parent)
+        self._model = MyListModel()
+
+    # Expose model as a property of our backend
+    @qtc.Property(qtc.QObject, constant=False, notify=modelChanged)
+    def model(self):
+        return self._model
 
 
-app = QtGui.QGuiApplication(sys.argv)
+def test_add_item(model):
+    model.appendRow('test_item', True)
 
-view = QtQuick.QQuickView()
 
-schema = [
-    "pyLabel",
-    "pyColor",
-]
+def main():
+    app = qtg.QGuiApplication(sys.argv)
 
-model = Model(schema)
+    engine = qml.QQmlApplicationEngine()
 
-items = [
-    {
-        "pyLabel": "First Item",
-        "pyColor": "white",
-    },
-    {
-        "pyLabel": "Second Item",
-        "pyColor": "white",
-    }
-]
+    # Bind the backend object in qml
+    backend = Backend()
+    engine.rootContext().setContextProperty('backend', backend)
 
-for item in items:
-    model.append(item)
+    engine.load(qtc.QUrl.fromLocalFile(os.path.join(CURRENT_DIR, 'qml/mock.qml')))
 
-engine = view.engine()
-context = engine.rootContext()
-context.setContextProperty("pyModel", model)
+    test_add_item(backend.model)
 
-view.setSource(QtCore.QUrl("qml/mock.qml"))
-view.setResizeMode(view.SizeRootObjectToView)
-view.show()
+    if not engine.rootObjects():
+        return -1
 
-# Appending to the model
-QtCore.QTimer.singleShot(2000, lambda: model.append({
-    "pyLabel": "Third Item",
-    "pyColor": "steelblue"
-}))
+    return app.exec_()
 
-# Modifying an item in the model
-QtCore.QTimer.singleShot(3000, lambda: model.setData(
-    model.createIndex(1, 0),  # 1th item, 0th column
-    "New pLabel!",
-    schema.index("pyLabel"),
-))
 
-app.exec_()
+if __name__ == '__main__':
+    sys.exit(main())
