@@ -23,6 +23,10 @@ class MyListModel(qtc.QAbstractListModel):
             return 0
         return len(self._assets)
 
+    @qtc.Slot(result=bool)
+    def isChecked(self):
+        return True
+
     def data(self, index, role=qtc.Qt.DisplayRole):
 
         if 0 <= index.row() < self.rowCount() and index.isValid():

@@ -76,7 +76,7 @@ ApplicationWindow {
             console.log('clicked')
             var itemNum = listView.model.rowCount();
             console.log('num of items: ' + itemNum);
-            var isChecked = Math.round(Math.random());
+            var isChecked = listView.model.isChecked();
 
             listView.model.appendRow(`item_${itemNum}`, isChecked)
         }

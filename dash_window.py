@@ -1,6 +1,7 @@
-import os
+import os, sys
 from PySide2.QtCore import QAbstractListModel, QModelIndex, QUrl, Qt, Slot
 from PySide2.QtQuickWidgets import QQuickWidget
+from PySide2.QtWidgets import QApplication, QMainWindow
 
 
 class DashWindow(QQuickWidget):
@@ -54,3 +55,12 @@ class ItemModel(QAbstractListModel):
         self.dataChanged.emit(self.index(0, 0), self.index(self.rowCount(), 0),
                               Qt.DisplayRole)
 
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = QMainWindow()
+    widget = DashWindow()
+    window.setCentralWidget(widget)
+
+    window.show()
+    app.exec_()
