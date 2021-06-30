@@ -128,28 +128,33 @@ Item {
                     }
                 }
 
-                Column {
-                    id: active_column
+           
+
+                ListView {
+                    model: itemModel
+                    clip: true
                     anchors.fill: parent
                     anchors.margins: 5
-                    clip: true
                     spacing: 5
+                    delegate: testComp
 
-                    Repeater {
-                        model: itemModel
-                        Halo {
-                            id: index
-                            width: parent.width
-                            sfi_label: display["sfi"]
+                        // visible : (display["active_stat"] == true) ? true : false
 
-                            // visible : (display["active_stat"] == true) ? true : false
+                    Component {
+                        id: testComp
 
+                        RowLayout {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.margins: 10
+                            spacing: 10
 
-                        
+                            Label{text: sfiStr}
 
                         }
                     }
                 }
+            
             }
 
             Rectangle {

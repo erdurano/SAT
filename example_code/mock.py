@@ -1,6 +1,5 @@
 import os
 import sys
-from functools import partial
 
 from PySide2 import QtCore as qtc
 from PySide2 import QtGui as qtg
@@ -80,7 +79,11 @@ def main():
     backend = Backend()
     engine.rootContext().setContextProperty('backend', backend)
 
-    engine.load(qtc.QUrl.fromLocalFile(os.path.join(CURRENT_DIR, 'qml/mock.qml')))
+    engine.load(
+        qtc.QUrl.fromLocalFile(
+            os.path.join(CURRENT_DIR, 'mock.qml')
+            )
+        )
 
     test_add_item(backend.model)
 

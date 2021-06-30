@@ -34,7 +34,8 @@ class TextBalloon(QQuickPaintedItem):
 
         itemSize = self.size()
 
-        painter.drawRoundedRect(0, 0, itemSize.width(), itemSize.height() - 10, 10, 10)
+        painter.drawRoundedRect(0, 0, itemSize.width(), itemSize.height() - 10,
+                                10, 10)
 
         if self.rightAligned:
             points = [
@@ -57,7 +58,7 @@ if __name__ == "__main__":
     view = QQuickView()
     view.setResizeMode(QQuickView.SizeRootObjectToView)
     qmlRegisterType(TextBalloon, "TextBalloonPlugin", 1, 0, "TextBalloon")
-    view.setSource(QUrl.fromLocalFile("qml/mock2.qml"))
+    view.setSource(QUrl.fromLocalFile("mock2.qml"))
 
     if view.status() == QQuickView.Error:
         sys.exit(-1)
