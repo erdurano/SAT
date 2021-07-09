@@ -1,13 +1,14 @@
-from PySide2.QtWidgets import (QAbstractItemDelegate, QApplication, QHBoxLayout, QListView,
-                               QMainWindow, QPushButton, QSizePolicy,
-                               QSpacerItem, QVBoxLayout, QWidget)
-
-
-class TestItemDelegate(QAbstractItemDelegate):
-    """A delegate to show test items in listview in qt side"""
-    def __init__(self) -> None:
-        super().__init__()
-
+from PySide2.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QListView,
+    QMainWindow,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class MainWindow(QMainWindow):
@@ -24,16 +25,18 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(QListView())
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.dash_button)
-        button_layout.addItem(QSpacerItem(40,20,QSizePolicy.Expanding, QSizePolicy.Minimum))
+        button_layout.addItem(
+            QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        )
         button_layout.addWidget(self.import_button)
+
         main_layout.addLayout(button_layout)
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
         self.setMinimumSize(762, 480)
 
-        
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication()
 
     win = MainWindow()
