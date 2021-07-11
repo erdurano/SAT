@@ -1,3 +1,4 @@
+from parser import XlsIO
 from PySide2.QtWidgets import QApplication, QFileDialog
 from main_win import MainWindow
 
@@ -11,21 +12,23 @@ class App(QApplication):
 
         # widgets and types that's gonna be used in application
         self.main_window = MainWindow()
+        self.file_handler=XlsIO()
         self.import_diag = QFileDialog(
                 parent=None,
                 caption="Import SAT Excel",
                 filter="Excel file (*.xlsx)")
 
         # Connections. Might elaborate with custom signal and slots
-        self.main_window.import_button.clicked.connect(filename)
+        self.main_window.import_button.clicked.connect(
+            self.filename)
 
         # Compulsory show method for main window
         self.main_window.show()
 
 
-def filename():
-    a, b = app.import_diag.getOpenFileName()
-    print(a, b)
+    def filename(self):
+        path, _ = app.import_diag.getOpenFileName()
+        self.file_handler.get_file_contents(path)
 
 
 if __name__ == "__main__":
