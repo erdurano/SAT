@@ -25,7 +25,7 @@ class App(QApplication):
 
         # Connections.
         self.main_window.import_button.clicked.connect(self.filename)
-        self.import_path.connect(self.file_handler.get_file_contents)
+        self.import_path.connect(self.file_handler.import_excel)
 
         # Compulsory show method for main window
         self.main_window.show()
