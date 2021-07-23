@@ -70,6 +70,6 @@ class Xlparser:
                     print(self.header_row)
                     break
 
-    def parse_xl(self, xldata: Worksheet):
+    def parse_xl(self, xldata: Worksheet) -> None:
         self.get_header_row(xldata)
         self.find_merged_cells(xldata)
