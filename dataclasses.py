@@ -12,7 +12,7 @@ class TestItem:
         self.__est: str = None
 
     @property
-    def sfi(self):
+    def sfi(self) -> str:
         return self.__sfi
 
     @sfi.setter
@@ -20,7 +20,7 @@ class TestItem:
         self.__sfi = text
 
     @property
-    def item_name(self):
+    def item_name(self) -> str:
         return self.__item_name
 
     @item_name.setter
@@ -28,7 +28,7 @@ class TestItem:
         self.__item_name = text
 
     @property
-    def class_attendance(self):
+    def class_attendance(self) -> str:
         return self.__class_attendance
 
     @class_attendance.setter
@@ -36,7 +36,7 @@ class TestItem:
         self.__class_attendance = text
 
     @property
-    def flag_attendance(self):
+    def flag_attendance(self) -> str:
         return self.__flag_attendance
 
     @flag_attendance.setter
@@ -44,7 +44,7 @@ class TestItem:
         self.__flag_attendance = text
 
     @property
-    def owner_attendance(self):
+    def owner_attendance(self) -> str:
         return self.__owner_attendance
 
     @owner_attendance.setter
@@ -52,7 +52,7 @@ class TestItem:
         self.__sfi = text
 
     @property
-    def record_status(self):
+    def record_status(self) -> str:
         return self.__record_status
 
     @record_status.setter
@@ -60,7 +60,7 @@ class TestItem:
         self.__record_status = text
 
     @property
-    def responsible_dept(self):
+    def responsible_dept(self) -> str:
         return self.__responsible_dept
 
     @responsible_dept.setter
@@ -68,7 +68,7 @@ class TestItem:
         self.__responsible_dept = text
 
     @property
-    def date(self):
+    def date(self) -> str:
         return self.__date
 
     @date.setter
@@ -76,7 +76,7 @@ class TestItem:
         self.__date = text
 
     @property
-    def start_hour(self):
+    def start_hour(self) -> str:
         return self.__start_hour
 
     @start_hour.setter
@@ -84,7 +84,7 @@ class TestItem:
         self.__start_hour = text
 
     @property
-    def est(self):
+    def est(self) -> str:
         return self.__est
 
     @est.setter
@@ -104,3 +104,6 @@ class Schedule:
     @agenda_items.setter
     def agenda_items(self, items: list(TestItem)) -> None:
         self.__agenda_items = items
+
+    def add_item(self, agenda_item: TestItem) -> None:
+        self.__agenda_items.append(agenda_item)
