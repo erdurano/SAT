@@ -42,6 +42,7 @@ class Xlparser:
     def __init__(self) -> None:
         self.__header_row: int
         self.__merged_cells: list
+        self.__indexes: dict
 
     @property
     def header_row(self) -> int:
@@ -59,17 +60,38 @@ class Xlparser:
     def merged_cells(self, cell_ranges: list) -> None:
         self.__merged_cells = cell_ranges
 
-    def find_merged_cells(self, xldata) -> list:
+    @property
+    def indexes(self) -> dict:
+        return self.__indexes
+
+    @indexes.setter
+    def indexes(self, index_dict: dict) -> None:
+        self.__indexes = index_dict
+
+    def find_merged_cells(self, xldata: Worksheet) -> None:
         self.merged_cells = xldata.merged_cells
 
-    def get_header_row(self, xldata: Worksheet) -> None:
+    def get_header_info(self, xldata: Worksheet) -> None:
         for row in xldata.rows:
             for cell in row:
                 if cell.value == "Class":
                     self.header_row = cell.row
-                    print(self.header_row)
+                    class_column = cell.column
+                    indexes = {
+                        "sfi": class_column-2,
+                        "item_name": class_column-1,
+                        "class": class_column,
+                        "flag": class_column+1,
+                        "owner": class_column+2,
+                        "record_stat": class_column+3,
+                        "responsible": class_column+4,
+                        "date": class_column+5,
+                        "start_time": class_column+6,
+                        "est": class_column+7,
+                    }
+                    self.indexes = indexes
                     break
 
     def parse_xl(self, xldata: Worksheet) -> None:
-        self.get_header_row(xldata)
+        self.get_header_info(xldata)
         self.find_merged_cells(xldata)

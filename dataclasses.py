@@ -1,15 +1,15 @@
 class TestItem:
     def __init__(self) -> None:
-        self.__sfi: str = None
-        self.__item_name: str = None
-        self.__class_attendance: str = None
-        self.__flag_attendance: str = None
-        self.__owner_attendance: str = None
-        self.__record_status: str = None
-        self.__responsible_dept: str = None
-        self.__date: str = None
-        self.__start_hour: str = None
-        self.__est: str = None
+        self.__sfi: str = ''
+        self.__item_name: str = ''
+        self.__class_attendance: str = ''
+        self.__flag_attendance: str = ''
+        self.__owner_attendance: str = ''
+        self.__record_status: str = ''
+        self.__responsible_dept: str = ''
+        self.__date: str = ''
+        self.__start_hour: str = ''
+        self.__est: str = ''
 
     @property
     def sfi(self) -> str:
@@ -48,8 +48,8 @@ class TestItem:
         return self.__owner_attendance
 
     @owner_attendance.setter
-    def sfi(self, text: str) -> None:
-        self.__sfi = text
+    def owner_attendance(self, text: str) -> None:
+        self.__owner_attendance = text
 
     @property
     def record_status(self) -> str:
@@ -98,11 +98,11 @@ class Schedule:
         self.__agenda_items: list
 
     @property
-    def agenda_items(self) -> None:
+    def agenda_items(self) -> list:
         return self.__agenda_items
 
     @agenda_items.setter
-    def agenda_items(self, items: list(TestItem)) -> None:
+    def agenda_items(self, items: list[TestItem]) -> None:
         self.__agenda_items = items
 
     def add_item(self, agenda_item: TestItem) -> None:
