@@ -1,6 +1,7 @@
 from typing import Any
 from PySide2.QtCore import Slot
 import openpyxl
+from dataclasses import Schedule, TestItem
 from openpyxl.worksheet.worksheet import Worksheet
 
 
@@ -43,6 +44,11 @@ class Xlparser:
         self.__header_row: int
         self.__merged_cells: list
         self.__indexes: dict
+        self.__schedule = Schedule()
+
+    @property
+    def schedule(self):
+        return self.__schedule
 
     @property
     def header_row(self) -> int:
@@ -92,6 +98,59 @@ class Xlparser:
                     self.indexes = indexes
                     break
 
+    def add_rows2schedule(self, row: tuple) -> None:
+        item = TestItem()
+        for cell in row:
+            if cell.column == self.indexes['sfi']:
+                item.sfi =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['item_name']:
+                item.item_name =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['class']:
+                item.class_attendance =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['flag']:
+                item.flag_attendance =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['owner']:
+                item.owner_attendance =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['record_stat']:
+                item.record_status =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['responsible']:
+                item.ressponsible_dept =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['date']:
+                item.date =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['start_time']:
+                item.start_hour =\
+                    cell.value if cell.value is not None else ''
+
+            elif cell.column == self.indexes['est']:
+                item.est =\
+                    cell.value if cell.value is not None else ''
+
+        self.schedule.add_item(item)
+
+    def get_item_rows(self, xldata: Worksheet) -> None:
+        min_row = self.header_row+1
+        for row in xldata.iter_rows(min_row):
+            self.add_rows2schedule(row)
+        for item in self.schedule.agenda_items:
+            print(item.item_name)
+
     def parse_xl(self, xldata: Worksheet) -> None:
         self.get_header_info(xldata)
         self.find_merged_cells(xldata)
+        self.get_item_rows(xldata)

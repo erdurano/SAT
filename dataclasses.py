@@ -1,4 +1,4 @@
-class TestItem:
+class TestItem():
     def __init__(self) -> None:
         self.__sfi: str = ''
         self.__item_name: str = ''
@@ -92,10 +92,10 @@ class TestItem:
         self.__est = text
 
 
-class Schedule:
+class Schedule():
 
     def __init__(self) -> None:
-        self.__agenda_items: list
+        self.__agenda_items: list = []
 
     @property
     def agenda_items(self) -> list:
