@@ -98,9 +98,20 @@ class Xlparser:
                     self.indexes = indexes
                     break
 
-    def add_rows2schedule(self, row: tuple) -> None:
+    def get_cell_range(self, cell):
+        for r in self.merged_cells:
+            if cell.coordinate in r:
+                return r
+
+    def add_rows2schedule(self, row: tuple, xldata) -> None:
         item = TestItem()
+
         for cell in row:
+            if cell.coordinate in self.merged_cells:
+                r = self.get_cell_range(cell)
+                i_row, i_col = r.top[0]
+                cell = xldata.cell(i_row, i_col)
+
             if cell.column == self.indexes['sfi']:
                 item.sfi =\
                     cell.value if cell.value is not None else ''
@@ -141,14 +152,20 @@ class Xlparser:
                 item.est =\
                     cell.value if cell.value is not None else ''
 
-        self.schedule.add_item(item)
+        if item.date == '' or\
+                item.start_hour == '':
+            print('dot')
+            return
+        else:
+            self.schedule.add_item(item)
 
     def get_item_rows(self, xldata: Worksheet) -> None:
         min_row = self.header_row+1
         for row in xldata.iter_rows(min_row):
-            self.add_rows2schedule(row)
-        for item in self.schedule.agenda_items:
-            print(item.item_name)
+            self.add_rows2schedule(row, xldata)
+        print(len(self.schedule.agenda_items))
+        for i in self.schedule.agenda_items:
+            print(i.item_name)
 
     def parse_xl(self, xldata: Worksheet) -> None:
         self.get_header_info(xldata)
