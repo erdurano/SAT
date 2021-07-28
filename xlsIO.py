@@ -1,8 +1,9 @@
-from typing import Any
-from PySide2.QtCore import Slot
-import openpyxl
 from dataclasses import Schedule, TestItem
+from typing import Any
+
+import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
+from PySide2.QtCore import Slot
 
 
 class XlsIO:
@@ -11,7 +12,8 @@ class XlsIO:
     def __init__(self) -> None:
         self.__file_path = ""
         self.__worksheet = None
-        self.__parser = Xlparser()
+        self.parser = Xlparser()
+        self.schedule_data = None
 
     @property
     def filepath(self) -> Any:
@@ -36,7 +38,7 @@ class XlsIO:
     def import_excel(self, import_path: str) -> None:
         self.filepath = import_path
         self.xlsheet_from_path(self.filepath)
-        self.__parser.parse_xl(self.xl_worksheet)
+        self.parser.parse_xl(self.xl_worksheet)
 
 
 class Xlparser:
@@ -154,7 +156,6 @@ class Xlparser:
 
         if item.date == '' or\
                 item.start_hour == '':
-            print('dot')
             return
         else:
             self.schedule.add_item(item)
@@ -168,6 +169,7 @@ class Xlparser:
             print(i.item_name)
 
     def parse_xl(self, xldata: Worksheet) -> None:
+        self.schedule.reset_items()
         self.get_header_info(xldata)
         self.find_merged_cells(xldata)
         self.get_item_rows(xldata)

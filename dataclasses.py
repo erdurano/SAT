@@ -107,3 +107,6 @@ class Schedule():
 
     def add_item(self, agenda_item: TestItem) -> None:
         self.__agenda_items.append(agenda_item)
+
+    def reset_items(self):
+        self.__agenda_items = []
