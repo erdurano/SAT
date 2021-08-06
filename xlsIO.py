@@ -1,4 +1,4 @@
-from dataclasses import Schedule, TestItem
+from scheduleclasses import Schedule, TestItem
 from typing import Any
 
 import openpyxl
