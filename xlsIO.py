@@ -39,6 +39,7 @@ class XlsIO:
         self.filepath = import_path
         self.xlsheet_from_path(self.filepath)
         self.parser.parse_xl(self.xl_worksheet)
+        self.schedule_data = self.parser.schedule.agenda_items
 
 
 class Xlparser:

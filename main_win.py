@@ -22,7 +22,8 @@ class MainWindow(QMainWindow):
 
         main_widget = QWidget()
         main_layout = QVBoxLayout()
-        main_layout.addWidget(QListView())
+        self.schedule_view = QListView()
+        main_layout.addWidget(self.schedule_view)
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.dash_button)
         button_layout.addItem(

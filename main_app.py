@@ -1,6 +1,7 @@
+from model import ScheduleModel
 from PySide2.QtCore import Signal
 from xlsIO import XlsIO
-from PySide2.QtWidgets import QApplication, QFileDialog
+from PySide2.QtWidgets import QApplication, QFileDialog, QStyledItemDelegate
 from main_win import MainWindow
 
 
@@ -23,6 +24,10 @@ class App(QApplication):
             filter="Excel file (*.xlsx)"
         )
 
+        self.my_model = ScheduleModel()
+        self.main_window.schedule_view.setModel(self.my_model)
+        self.my_delegate = QStyledItemDelegate()
+        self.main_window.schedule_view.setItemDelegate(self.my_delegate)
         # Connections.
         self.main_window.import_button.clicked.connect(self.filename)
         self.import_path.connect(self.file_handler.import_excel)

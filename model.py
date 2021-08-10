@@ -1,5 +1,4 @@
-from scheduleclasses import Schedule
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
 
 class ScheduleModel(QAbstractListModel):
@@ -18,22 +17,13 @@ class ScheduleModel(QAbstractListModel):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._data = Schedule()
+        self._data = []
 
     def rowCount(self, parent=QModelIndex()):
-        return len(self._data.agenda_items)
+        return len(self._data)
 
-    # TODO: Upwards is boiler plate but as you might've guessed, below still
-    # needs implementation
-
-    def insertRows(self, row: int, count: int, parent: QModelIndex) -> bool:
-        pass
-
-    @Slot(list)
     def updateSchedule(self, schedule_items: list):
-        self.beginResetModel()
         self._data = schedule_items
-        self.endResetModel()
 
     def data(self, index=QModelIndex(), role: int = Qt.DisplayRole):
         if 0 <= index.row() < self.rowCount() and index.isValid():
