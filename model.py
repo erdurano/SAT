@@ -1,38 +1,27 @@
-from scheduleclasses import TestItem
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
+from scheduleclasses import Schedule
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
 
 
 class ScheduleModel(QAbstractListModel):
 
-    SfiRole = Qt.UserRole + 1001
-    NameRole = Qt.UserRole + 1002
-    DateStrRole = Qt.UserRole + 1003
-    ClsRole = Qt.UserRole + 1004
-    FlagRole = Qt.UserRole + 1005
-    OwnrRole = Qt.UserRole + 1006
-    DeptRole = Qt.UserRole + 1007
-    StatusRole = Qt.UserRole + 1008
+    SfiRole = Qt.UserRole + 1
+    NameRole = Qt.UserRole + 2
+    ClsRole = Qt.UserRole + 3
+    FlagRole = Qt.UserRole + 4
+    OwnrRole = Qt.UserRole + 5
+    RecordRole = Qt.UserRole + 6
+    DeptRole = Qt.UserRole + 7
+    DateStrRole = Qt.UserRole + 8
+    HourRole = Qt.UserRole + 9
+    EstTimeRole = Qt.UserRole + 10
+    StatusRole = Qt.UserRole + 11
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._data = []
+        self._data = Schedule()
 
-    def rowCount(self, index=QModelIndex()):
-        return len(self._data)
-
-    def roleNames(self):
-        roles = dict()
-
-        roles[ScheduleModel.SfiRole] = b'sfiStr'
-        roles[ScheduleModel.NameRole] = b'testStr'
-        roles[ScheduleModel.DateStrRole] = b'dateStr'
-        roles[ScheduleModel.ClsRole] = b'clsStr'
-        roles[ScheduleModel.FlagRole] = b'flgStr'
-        roles[ScheduleModel.OwnrRole] = b'OwnrStr'
-        roles[ScheduleModel.DeptRole] = b'DeptStr'
-        roles[ScheduleModel.StatusRole] = b'statStr'
-
-        return roles
+    def rowCount(self, parent=QModelIndex()):
+        return len(self._data.agenda_items)
 
     # TODO: Upwards is boiler plate but as you might've guessed, below still
     # needs implementation
@@ -40,5 +29,55 @@ class ScheduleModel(QAbstractListModel):
     def insertRows(self, row: int, count: int, parent: QModelIndex) -> bool:
         pass
 
-    def setData(self, index: QModelIndex, value: TestItem, role: int) -> bool:
-        return super().setData(index, value, role=role)
+    @Slot(list)
+    def updateSchedule(self, schedule_items: list):
+        self.beginResetModel()
+        self._data = schedule_items
+        self.endResetModel()
+
+    def data(self, index=QModelIndex(), role: int = Qt.DisplayRole):
+        if 0 <= index.row() < self.rowCount() and index.isValid():
+            item = self._data[index.row()]
+
+            if role == self.SfiRole:
+                return item.sfi
+            elif role == self.NameRole:
+                return item.name
+            elif role == self.ClsRole:
+                return item.class_attendance
+            elif role == self.FlagRole:
+                return item.flag_attendance
+            elif role == self.OwnrRole:
+                return item.owner_attendance
+            elif role == self.RecordRole:
+                return item.record_status
+            elif role == self.DeptRole:
+                return item.responsible_dept
+            elif role == self.DateStrRole:
+                return item.date
+            elif role == self.HourRole:
+                return item.start_hour
+            elif role == self.EstTimeRole:
+                return item.est
+            elif role == self.StatusRole:
+                return "Passive"
+
+        else:
+            return None
+
+    def roleNames(self):
+        roles = dict()
+
+        roles[self.SfiRole] = b'sfiRole'
+        roles[self.NameRole] = b'nameRole'
+        roles[self.ClsRole] = b'clsRole'
+        roles[self.FlagRole] = b'flagRole'
+        roles[self.OwnrRole] = b'ownrRole'
+        roles[self.RecordRole] = b'recordRole'
+        roles[self.DeptRole] = b'deptRole'
+        roles[self.DateStrRole] = b'dateStrRole'
+        roles[self.HourRole] = b'hourRole'
+        roles[self.EstTimeRole] = b'estTimeRole'
+        roles[self.StatusRole] = b'statusRole'
+
+        return roles
