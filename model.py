@@ -1,4 +1,4 @@
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
 
 
 class ScheduleModel(QAbstractListModel):
@@ -22,8 +22,11 @@ class ScheduleModel(QAbstractListModel):
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
 
+    @Slot()
     def updateSchedule(self, schedule_items: list):
+        self.beginResetModel()
         self._data = schedule_items
+        self.endResetModel()
 
     def data(self, index=QModelIndex(), role: int = Qt.DisplayRole):
         if 0 <= index.row() < self.rowCount() and index.isValid():

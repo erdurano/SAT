@@ -3,13 +3,16 @@ from typing import Any
 
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
-from PySide2.QtCore import Slot
+from PySide2.QtCore import QObject, Signal, Slot
 
 
-class XlsIO:
+class XlsIO(QObject):
     """A class for handling file IO and parsing and handling xls files"""
 
+    schedule_to_update = Signal(list)
+
     def __init__(self) -> None:
+        super().__init__()
         self.__file_path = ""
         self.__worksheet = None
         self.parser = Xlparser()
@@ -40,6 +43,8 @@ class XlsIO:
         self.xlsheet_from_path(self.filepath)
         self.parser.parse_xl(self.xl_worksheet)
         self.schedule_data = self.parser.schedule.agenda_items
+        print(self.schedule_data)
+        self.schedule_to_update.emit(self.schedule_data)
 
 
 class Xlparser:
