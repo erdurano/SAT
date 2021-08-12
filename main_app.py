@@ -1,7 +1,8 @@
+from delegate import TestItemDelegate
 from model import ScheduleModel
 from PySide2.QtCore import Signal
 from xlsIO import XlsIO
-from PySide2.QtWidgets import QApplication, QFileDialog, QStyledItemDelegate
+from PySide2.QtWidgets import QApplication, QFileDialog
 from main_win import MainWindow
 
 
@@ -26,15 +27,18 @@ class App(QApplication):
 
         self.my_model = ScheduleModel()
         self.main_window.schedule_view.setModel(self.my_model)
-        self.my_delegate = QStyledItemDelegate()
+        self.my_delegate = TestItemDelegate(
+            parent=self.main_window.schedule_view
+            )
         self.main_window.schedule_view.setItemDelegate(self.my_delegate)
 
         # Connections.
         self.main_window.import_button.clicked.connect(self.filename)
         self.import_path.connect(self.file_handler.import_excel)
-        self.main_window.dash_button.clicked.connect(self.show_model)
+
         self.file_handler.schedule_to_update.connect(
             self.my_model.updateSchedule)
+        self.main_window.dash_button.clicked.connect(self.show_model)
 
         # Compulsory show method for main window
         self.main_window.show()
@@ -46,9 +50,10 @@ class App(QApplication):
     def show_model(self):
         row_count = self.my_model.rowCount()
         for i in range(row_count):
-            print(i)
-            ind = self.my_model.hasIndex(i)
-            print(ind)
+            print(
+                self.my_model.data(index=self.my_model.index(i),
+                                   role=ScheduleModel.NameRole)
+                )
 
 
 if __name__ == "__main__":

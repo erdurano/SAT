@@ -1,8 +1,8 @@
-from PySide2.QtWidgets import QAbstractItemDelegate
+from PySide2.QtWidgets import QStyledItemDelegate
 
 
-class TestItemDelegate(QAbstractItemDelegate):
+class TestItemDelegate(QStyledItemDelegate):
     """A delegate to show test items in listview in qt side"""
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)

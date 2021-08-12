@@ -35,7 +35,7 @@ class ScheduleModel(QAbstractListModel):
             if role == self.SfiRole:
                 return item.sfi
             elif role == self.NameRole:
-                return item.name
+                return item.item_name
             elif role == self.ClsRole:
                 return item.class_attendance
             elif role == self.FlagRole:
