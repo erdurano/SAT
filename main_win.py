@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         main_widget = QWidget()
         main_layout = QVBoxLayout()
         self.schedule_view = QListView()
+        self.schedule_view.setSpacing(4)
         main_layout.addWidget(self.schedule_view)
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.dash_button)
