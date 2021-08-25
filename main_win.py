@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(button_layout)
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
-        self.setMinimumSize(762, 480)
+        self.setBaseSize(762, 480)
 
 
 if __name__ == "__main__":
