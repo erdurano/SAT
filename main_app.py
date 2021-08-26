@@ -20,7 +20,7 @@ class App(QApplication):
         self.main_window = MainWindow()
         self.file_handler = XlsIO()
         self.import_diag = QFileDialog(
-            parent=None,
+            parent=self.main_window,
             caption="Import SAT Excel",
             filter="Excel file (*.xlsx)"
         )

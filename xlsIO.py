@@ -43,7 +43,6 @@ class XlsIO(QObject):
         self.xlsheet_from_path(self.filepath)
         self.parser.parse_xl(self.xl_worksheet)
         self.schedule_data = self.parser.schedule.agenda_items
-        print(self.schedule_data)
         self.schedule_to_update.emit(self.schedule_data)
 
 
@@ -145,7 +144,7 @@ class Xlparser:
                     cell.value if cell.value is not None else ''
 
             elif cell.column == self.indexes['responsible']:
-                item.ressponsible_dept =\
+                item.responsible_dept =\
                     cell.value if cell.value is not None else ''
 
             elif cell.column == self.indexes['date']:
@@ -170,9 +169,6 @@ class Xlparser:
         min_row = self.header_row+1
         for row in xldata.iter_rows(min_row):
             self.add_rows2schedule(row, xldata)
-        print(len(self.schedule.agenda_items))
-        for i in self.schedule.agenda_items:
-            print(i.item_name)
 
     def parse_xl(self, xldata: Worksheet) -> None:
         self.schedule.reset_items()

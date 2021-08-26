@@ -74,3 +74,9 @@ class ScheduleModel(QAbstractListModel):
         roles[self.StatusRole] = b'statusRole'
 
         return roles
+
+    def flags(self, index):
+        if index.isValid():
+            return (Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable)
+
+        return super().flags(index)
