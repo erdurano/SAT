@@ -1,6 +1,7 @@
 from PySide2.QtCore import QModelIndex, QRect, QSize, Qt
 from PySide2.QtGui import QPainter, QPen
-from PySide2.QtWidgets import (QStyledItemDelegate, QStyleOptionViewItem, QWidget)
+from PySide2.QtWidgets import (QStyledItemDelegate, QStyleOptionViewItem,
+                               QWidget)
 
 
 class TestItemDelegate(QStyledItemDelegate):
@@ -94,6 +95,4 @@ class TestItemDelegate(QStyledItemDelegate):
 
 
 class ItemEditor(QWidget):
-
-    def __init__(self, parent: typing.Optional[PySide2.QtWidgets.QWidget], f: PySide2.QtCore.Qt.WindowFlags) -> None:
-        super().__init__(parent=parent, f=f)
+    pass
