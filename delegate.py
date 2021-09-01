@@ -1,7 +1,8 @@
-from PySide2.QtCore import QModelIndex, QRect, QSize, Qt
+from PySide2.QtCore import QModelIndex, QRect, QSize, Qt, Signal
 from PySide2.QtGui import QPainter, QPen
-from PySide2.QtWidgets import (QStyledItemDelegate, QStyleOptionViewItem,
-                               QWidget)
+from PySide2.QtWidgets import (QComboBox, QFrame, QGridLayout,
+                               QLineEdit, QStyledItemDelegate,
+                               QStyleOptionViewItem, QWidget)
 
 
 class TestItemDelegate(QStyledItemDelegate):
@@ -87,12 +88,76 @@ class TestItemDelegate(QStyledItemDelegate):
         )
 
     def createEditor(self, parent, option, index):
-        print(type(parent))
+        editor = ItemEditor(parent, option, index)
+        return editor
 
     def sizeHint(self, option, index):
-        size = QSize(300, 50)
+        size = QSize(300, 75)
         return size
 
 
-class ItemEditor(QWidget):
-    pass
+class ItemEditor(QFrame):
+    editing_finished = Signal()
+    attendance_dict = {
+        '-': ' ',
+        'A': 'Approval',
+        'NA': 'Not Applicable',
+        'R': 'Review',
+        'W': 'Witness',
+    }
+
+    departments = [
+        ' ',
+        'Commissioning',
+        'Electricity',
+        'Quality',
+        'Hull',
+        'Piping',
+    ]
+
+    def __init__(self,
+                 parent: QWidget,
+                 option: QStyleOptionViewItem,
+                 index: QModelIndex) -> None:
+
+        super().__init__(parent=parent)
+        self.setFrameShape(QFrame.Box)
+        self.setAutoFillBackground(True)
+        self.setLineWidth(2)
+        self.resize(self.width(), self.height()*3//2)
+
+        self.edit_layout = QGridLayout()
+        self.setLayout(self.edit_layout)
+        self.edit_layout.setSpacing(3)
+        self.edit_layout.setMargin(3)
+
+        self.sfi_edit = QLineEdit(parent=self)
+        self.sfi_edit.setMaximumWidth(40)
+        self.edit_layout.addWidget(self.sfi_edit, 1, 0, 3, 1)
+        self.edit_layout.setAlignment(self.sfi_edit, Qt.AlignBottom)
+
+        self.name_edit = QLineEdit(parent=self)
+        self.edit_layout.addWidget(self.name_edit, 0, 1, 3, 1)
+        self.edit_layout.setAlignment(self.name_edit, Qt.AlignBottom)
+        self.name_edit.setMinimumWidth(100)
+
+        self.dept_edit = QComboBox(parent=self)
+        self.dept_edit.addItems([i + ' Dept.' if i != ' ' else ' '
+                                for i in self.departments])
+        self.edit_layout.addWidget(self.dept_edit, 3, 1, 3, 1)
+        self.edit_layout.setAlignment(self.dept_edit, Qt.AlignBottom)
+
+        self.cls_edit = QComboBox(parent=self)
+        self.cls_edit.addItems(self.attendance_dict.keys())
+        self.edit_layout.addWidget(self.cls_edit, 0, 2, 2, 1)
+        self.cls_edit.setMaximumWidth(100)
+
+        self.flag_edit = QComboBox(parent=self)
+        self.flag_edit.addItems(self.attendance_dict.keys())
+        self.edit_layout.addWidget(self.flag_edit, 2, 2, 2, 1)
+        self.flag_edit.setMaximumWidth(100)
+
+        self.owner_edit = QComboBox(parent=self)
+        self.owner_edit.addItems(self.attendance_dict.keys())
+        self.edit_layout.addWidget(self.owner_edit, 4, 2, 2, 1)
+        self.owner_edit.setMaximumWidth(100)
