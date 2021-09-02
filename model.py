@@ -15,6 +15,13 @@ class ScheduleModel(QAbstractListModel):
     EstTimeRole = Qt.UserRole + 10
     StatusRole = Qt.UserRole + 11
 
+    state_list = [
+        'Passive',
+        'Active',
+        'Passed',
+        'Failed',
+        ]
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self._data = []
