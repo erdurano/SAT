@@ -194,6 +194,7 @@ class TestItemDelegate(QStyledItemDelegate):
         if index.isValid():
             x, y, w, h = option.rect.getRect()
             editor.setGeometry(x+3, y+3, w-6, h-6)
+            print(type(option))
 
         else:
             return super().updateEditorGeometry(editor, option, index)
@@ -206,6 +207,24 @@ class TestItemDelegate(QStyledItemDelegate):
             dept_index = editor.dept_edit.findText(
                 index.data(ScheduleModel.DeptRole))
             editor.dept_edit.setCurrentIndex(dept_index)
+
+            bodies_prefix = ['C: ', 'F: ', 'O: ']
+            roles = [
+                ScheduleModel.ClsRole,
+                ScheduleModel.FlagRole,
+                ScheduleModel.OwnrRole,
+                ]
+
+            for i, p in enumerate(bodies_prefix):
+                if i == 0:
+                    widget = editor.cls_edit
+                elif i == 1:
+                    widget = editor.flag_edit
+                else:
+                    widget = editor.owner_edit
+
+                sel_index = widget.findText(p + index.data(roles[i]))
+                widget.setCurrentIndex(sel_index)
 
         else:
             return super().setEditorData(editor, index)
