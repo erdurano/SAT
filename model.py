@@ -1,3 +1,4 @@
+import typing
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
 
 
@@ -64,6 +65,45 @@ class ScheduleModel(QAbstractListModel):
 
         else:
             return None
+
+    def setData(
+            self,
+            index: QModelIndex,
+            value: typing.Any, role: int) -> bool:
+
+        if index.isValid():
+            if role == self.SfiRole:
+                self._data[index.row()].sfi = value
+            elif role == self.NameRole:
+                self._data[index.row()].item_name = value
+            elif role == self.DeptRole:
+                self._data[index.row()].responsible_dept = value
+            elif role == self.ClsRole:
+                self._data[index.row()].class_attendance = value
+            elif role == self.FlagRole:
+                self._data[index.row()].flag_attendance = value
+            elif role == self.OwnrRole:
+                self._data[index.row()].owner_attendance = value
+            elif role == self.DateStrRole:
+                self._data[index.row()].date = value
+            elif role == self.NameRole:
+                pass
+            elif role == self.NameRole:
+                pass
+            elif role == self.NameRole:
+                pass
+            elif role == self.NameRole:
+                pass
+            elif role == self.NameRole:
+                pass
+            elif role == self.NameRole:
+                pass
+            elif role == self.NameRole:
+                pass
+            elif role == self.NameRole:
+                pass
+        else:
+            return super().setData(index, value, role=role)
 
     def roleNames(self):
         roles = dict()

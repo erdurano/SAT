@@ -1,9 +1,12 @@
-from model import ScheduleModel
-from PySide2.QtCore import QModelIndex, QRect, QSize, Qt, Signal
+from datetime import datetime
+from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
+                            Signal)
 from PySide2.QtGui import QPainter, QPen
-from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout,
-                               QLineEdit, QPushButton, QStyledItemDelegate,
+from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
+                               QPushButton, QStyledItemDelegate,
                                QStyleOptionViewItem, QTimeEdit, QWidget)
+
+from model import ScheduleModel
 
 
 class ItemEditor(QWidget):
@@ -194,7 +197,6 @@ class TestItemDelegate(QStyledItemDelegate):
         if index.isValid():
             x, y, w, h = option.rect.getRect()
             editor.setGeometry(x+3, y+3, w-6, h-6)
-            print(type(option))
 
         else:
             return super().updateEditorGeometry(editor, option, index)
@@ -226,5 +228,69 @@ class TestItemDelegate(QStyledItemDelegate):
                 sel_index = widget.findText(p + index.data(roles[i]))
                 widget.setCurrentIndex(sel_index)
 
+            date = index.data(ScheduleModel.DateStrRole)
+            editor.date_edit.setDate(QDate(date.year, date.month, date.day))
+
+            hour = index.data(ScheduleModel.HourRole)
+            editor.hour_edit.setTime(QTime(hour.hour, hour.minute))
+
+            editor.duration_edit.setText(
+                index.data(ScheduleModel.EstTimeRole))
+
+            state = index.data(ScheduleModel.StatusRole)
+            state_ind = editor.state_edit.findText(state)
+            editor.state_edit.setCurrentIndex(state_ind)
+
         else:
             return super().setEditorData(editor, index)
+
+    def setModelData(
+            self,
+            editor: ItemEditor,
+            model: ScheduleModel,
+            index: QModelIndex) -> None:
+
+        if index.isValid():
+            model = index.model()
+            model.setData(
+                index,
+                editor.sfi_edit.text(),
+                ScheduleModel.SfiRole
+            )
+            model.setData(
+                index,
+                editor.name_edit.text(),
+                ScheduleModel.NameRole
+            )
+
+            model.setData(
+                index,
+                editor.dept_edit.currentText(),
+                ScheduleModel.DeptRole)
+
+            model.setData(
+                index,
+                editor.cls_edit.currentText().split(' ')[-1],
+                ScheduleModel.ClsRole
+            )
+
+            model.setData(
+                index,
+                editor.flag_edit.currentText().split(' ')[-1],
+                ScheduleModel.FlagRole
+            )
+
+            model.setData(
+                index,
+                editor.owner_edit.currentText().split(' ')[-1],
+                ScheduleModel.OwnrRole
+            )
+
+            model.setData(
+                index,
+                datetime.combine(
+                    editor.date_edit.date().toPython(),
+                    datetime.min.time()
+                ),
+                ScheduleModel.DateStrRole
+            )
