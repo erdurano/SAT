@@ -1,7 +1,7 @@
 from datetime import datetime
 from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
                             Signal)
-from PySide2.QtGui import QPainter, QPen
+from PySide2.QtGui import QBrush, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
                                QPushButton, QStyledItemDelegate,
                                QStyleOptionViewItem, QTimeEdit, QWidget)
@@ -105,6 +105,13 @@ class ItemEditor(QWidget):
 class TestItemDelegate(QStyledItemDelegate):
     """A delegate to show test items in listview in qt side"""
 
+    COLORS = {
+        'Passive': Qt.lightGray,
+        'Active': Qt.blue,
+        'Passed': Qt.green,
+        'Failed': Qt.red
+    }
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.model = self.parent().model()
@@ -123,21 +130,32 @@ class TestItemDelegate(QStyledItemDelegate):
         cls_att = index.data(model_ind.ClsRole)
         flg_att = index.data(model_ind.FlagRole)
         ownr_att = index.data(model_ind.OwnrRole)
-        # rec_stat = index.data(model_ind.RecordRole)
         resp_dept = index.data(model_ind.DeptRole)
         date_str = index.data(model_ind.DateStrRole)
         hour_str = index.data(model_ind.HourRole)
         est_duration = index.data(model_ind.EstTimeRole)
-        # status = model_ind.data(index, model_ind.StatusRole)
+        status = model_ind.data(index, model_ind.StatusRole)
 
         # Frame and Background(s)
+
+        # background color for delegate rectangle
+        back_brush = QBrush()
+        back_brush.setStyle(Qt.SolidPattern)
+
+        back_brush.setColor(self.COLORS[status])
+
+        rect_path = QPainterPath()
+        rect_path.addRoundedRect(option.rect, 10, 10)
         pen = QPen()
         pen.setColor("Black")
-        pen.setWidth(2)
+        pen.setWidth(1)
         painter.setPen(pen)
-        painter.drawRoundedRect(option.rect, 10, 10)
+        painter.fillPath(rect_path, back_brush)
+        painter.drawPath(rect_path)
 
-        painter.setPen(Qt.blue)
+        # painter.fillRect(option.rect, back_brush)
+
+        painter.setPen(Qt.black)
         # Coordinates for delegate background
         x, y, w, h = canvas
 
@@ -241,6 +259,10 @@ class TestItemDelegate(QStyledItemDelegate):
             state_ind = editor.state_edit.findText(state)
             editor.state_edit.setCurrentIndex(state_ind)
 
+            # TODO: Find a method for painting the background of the editor
+            # according to the item state
+            # editor.palette().setColor(QPalette.Window, self.COLORS[state])
+
         else:
             return super().setEditorData(editor, index)
 
@@ -293,4 +315,22 @@ class TestItemDelegate(QStyledItemDelegate):
                     datetime.min.time()
                 ),
                 ScheduleModel.DateStrRole
+            )
+
+            model.setData(
+                index,
+                editor.hour_edit.time().toPython(),
+                ScheduleModel.HourRole
+            )
+
+            model.setData(
+                index,
+                editor.duration_edit.text(),
+                ScheduleModel.EstTimeRole
+            )
+
+            model.setData(
+                index,
+                editor.state_edit.currentText(),
+                ScheduleModel.StatusRole
             )

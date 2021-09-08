@@ -1,3 +1,4 @@
+from scheduleclasses import TestItem
 import typing
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
 
@@ -25,7 +26,7 @@ class ScheduleModel(QAbstractListModel):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._data = []
+        self._data: list[TestItem] = []
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -61,7 +62,7 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.EstTimeRole:
                 return item.est
             elif role == self.StatusRole:
-                return "Passive"
+                return item.status
 
         else:
             return None
@@ -69,7 +70,8 @@ class ScheduleModel(QAbstractListModel):
     def setData(
             self,
             index: QModelIndex,
-            value: typing.Any, role: int) -> bool:
+            value: typing.Any,
+            role: int) -> bool:
 
         if index.isValid():
             if role == self.SfiRole:
@@ -86,22 +88,13 @@ class ScheduleModel(QAbstractListModel):
                 self._data[index.row()].owner_attendance = value
             elif role == self.DateStrRole:
                 self._data[index.row()].date = value
-            elif role == self.NameRole:
-                pass
-            elif role == self.NameRole:
-                pass
-            elif role == self.NameRole:
-                pass
-            elif role == self.NameRole:
-                pass
-            elif role == self.NameRole:
-                pass
-            elif role == self.NameRole:
-                pass
-            elif role == self.NameRole:
-                pass
-            elif role == self.NameRole:
-                pass
+            elif role == self.HourRole:
+                self._data[index.row()].start_hour = value
+            elif role == self.EstTimeRole:
+                self._data[index.row()].est = value
+            elif role == self.StatusRole:
+                self._data[index.row()].status = value
+
         else:
             return super().setData(index, value, role=role)
 

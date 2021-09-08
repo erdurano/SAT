@@ -10,6 +10,7 @@ class TestItem():
         self.__date: str = ''
         self.__start_hour: str = ''
         self.__est: str = ''
+        self.__status: str = 'Passive'
 
     @property
     def sfi(self) -> str:
@@ -90,6 +91,14 @@ class TestItem():
     @est.setter
     def est(self, text: str) -> None:
         self.__est = text
+
+    @property
+    def status(self) -> str:
+        return self.__status
+
+    @status.setter
+    def status(self, text: str) -> None:
+        self.__status = text
 
 
 class Schedule():
