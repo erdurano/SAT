@@ -1,11 +1,13 @@
 from datetime import datetime
-from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
-                            Signal)
-from PySide2.QtGui import QBrush, QPainter, QPainterPath, QPen
-from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
-                               QPushButton, QStyledItemDelegate,
-                               QStyleOptionViewItem, QTimeEdit, QWidget)
 
+from PySide2.QtCore import QDate, QModelIndex, QRect, QSize, Qt, QTime, Signal
+from PySide2.QtGui import QBrush, QPainter, QPainterPath, QPalette, QPen
+from PySide2.QtWidgets import (QComboBox, QDateEdit,
+                               QGridLayout, QLineEdit, QListView, QPushButton,
+                               QStyledItemDelegate, QStyleOptionViewItem,
+                               QTimeEdit, QWidget)
+
+from main_win import ScheduleView
 from model import ScheduleModel
 
 
@@ -34,9 +36,7 @@ class ItemEditor(QWidget):
                  index: QModelIndex) -> None:
 
         super().__init__(parent=parent)
-        # self.setFrameShape(QFrame.Box)
         self.setAutoFillBackground(True)
-        # self.setLineWidth(2)
 
         self.edit_layout = QGridLayout()
         self.setLayout(self.edit_layout)
@@ -101,6 +101,13 @@ class ItemEditor(QWidget):
         self.duration_edit.setFixedWidth(50)
         self.edit_layout.addWidget(self.duration_edit, 3, 5, 3, 1)
 
+        self.save_button.clicked.connect(self.saveButton)
+
+    def saveButton(self):
+        view: QListView = self.parent().parent()
+        view.commitData(self)
+        view.closeEditor(self, QStyledItemDelegate.NoHint)
+
 
 class TestItemDelegate(QStyledItemDelegate):
     """A delegate to show test items in listview in qt side"""
@@ -112,7 +119,7 @@ class TestItemDelegate(QStyledItemDelegate):
         'Failed': Qt.red
     }
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent: ScheduleView) -> None:
         super().__init__(parent)
         self.model = self.parent().model()
 
@@ -261,7 +268,7 @@ class TestItemDelegate(QStyledItemDelegate):
 
             # TODO: Find a method for painting the background of the editor
             # according to the item state
-            # editor.palette().setColor(QPalette.Window, self.COLORS[state])
+            editor.palette().setColor(QPalette.Window, self.COLORS[state])
 
         else:
             return super().setEditorData(editor, index)
@@ -273,6 +280,7 @@ class TestItemDelegate(QStyledItemDelegate):
             index: QModelIndex) -> None:
 
         if index.isValid():
+
             model = index.model()
             model.setData(
                 index,
