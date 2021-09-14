@@ -131,7 +131,7 @@ Item {
            
 
                 ListView {
-                    model: itemModel
+                    model: ScheduleModel
                     clip: true
                     anchors.fill: parent
                     anchors.margins: 5
@@ -149,7 +149,7 @@ Item {
                             anchors.margins: 10
                             spacing: 10
 
-                            Label{text: sfiStr}
+                            Label{text: model.sfiRole}
 
                         }
                     }

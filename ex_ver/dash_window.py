@@ -88,8 +88,6 @@ class ItemModel(QAbstractListModel):
             self._data.append(item.dict)
         self.endInsertRows()
 
-    # TODO: find a method for using this slot. Kill yourself if you have to
-    # Because you're an idiot who deserves no better.
     @Slot(dict)
     def setData(self, item_dict, role=Qt.EditRole):
 

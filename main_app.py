@@ -1,6 +1,8 @@
+import os
+from dash_window import DashWindow
 from delegate import TestItemDelegate
 from model import ScheduleModel
-from PySide2.QtCore import Signal
+from PySide2.QtCore import QUrl, Signal
 from xlsIO import XlsIO
 from PySide2.QtWidgets import QApplication, QFileDialog
 from main_win import MainWindow
@@ -32,6 +34,16 @@ class App(QApplication):
             )
         self.main_window.schedule_view.setItemDelegate(self.my_delegate)
 
+        self.dash_window = DashWindow(None)
+        self.dash_window.hide()
+        self.dash_window.model = self.main_window.schedule_view.model()
+        self.dash_window.rootContext().setContextProperty(
+            "ScheduleModel",
+            self.dash_window.model)
+        self.dash_window.setSource(QUrl.fromLocalFile(
+            os.path.join(os.path.dirname(__file__), 'qml/Dash.qml')
+            ))
+
         # Connections.
         self.main_window.import_button.clicked.connect(self.filename)
         self.import_path.connect(self.file_handler.import_excel)
@@ -48,12 +60,7 @@ class App(QApplication):
         self.import_path.emit(path)
 
     def show_model(self):
-        row_count = self.my_model.rowCount()
-        for i in range(row_count):
-            print(
-                self.my_model.data(index=self.my_model.index(i),
-                                   role=ScheduleModel.NameRole)
-                )
+        self.dash_window.show()
 
 
 if __name__ == "__main__":

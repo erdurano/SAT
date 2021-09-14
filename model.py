@@ -95,8 +95,10 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.StatusRole:
                 self._data[index.row()].status = value
 
+            return True
+
         else:
-            return super().setData(index, value, role=role)
+            return False
 
     def roleNames(self):
         roles = dict()

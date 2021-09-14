@@ -1,11 +1,10 @@
 from datetime import datetime
 
 from PySide2.QtCore import QDate, QModelIndex, QRect, QSize, Qt, QTime, Signal
-from PySide2.QtGui import QBrush, QPainter, QPainterPath, QPalette, QPen
-from PySide2.QtWidgets import (QComboBox, QDateEdit,
-                               QGridLayout, QLineEdit, QListView, QPushButton,
-                               QStyledItemDelegate, QStyleOptionViewItem,
-                               QTimeEdit, QWidget)
+from PySide2.QtGui import (QBrush, QColor, QPainter, QPainterPath, QPen)
+from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
+                               QListView, QPushButton, QStyledItemDelegate,
+                               QStyleOptionViewItem, QTimeEdit, QWidget)
 
 from main_win import ScheduleView
 from model import ScheduleModel
@@ -106,17 +105,18 @@ class ItemEditor(QWidget):
     def saveButton(self):
         view: QListView = self.parent().parent()
         view.commitData(self)
-        view.closeEditor(self, QStyledItemDelegate.NoHint)
+        view.closeEditor(self, QStyledItemDelegate.SubmitModelCache)
 
 
 class TestItemDelegate(QStyledItemDelegate):
     """A delegate to show test items in listview in qt side"""
 
     COLORS = {
+        'Set State': Qt.white,
         'Passive': Qt.lightGray,
-        'Active': Qt.blue,
-        'Passed': Qt.green,
-        'Failed': Qt.red
+        'Active': QColor(0, 114, 206),
+        'Passed': QColor(68, 214, 44),
+        'Failed': QColor(227, 120, 120)
     }
 
     def __init__(self, parent: ScheduleView) -> None:
@@ -266,9 +266,11 @@ class TestItemDelegate(QStyledItemDelegate):
             state_ind = editor.state_edit.findText(state)
             editor.state_edit.setCurrentIndex(state_ind)
 
-            # TODO: Find a method for painting the background of the editor
-            # according to the item state
-            editor.palette().setColor(QPalette.Window, self.COLORS[state])
+            # Changing editor's background color according to the state
+            new_pallete = editor.palette()
+            new_pallete.setColor(
+                editor.backgroundRole(), self.COLORS[state])
+            editor.setPalette(new_pallete)
 
         else:
             return super().setEditorData(editor, index)
@@ -342,3 +344,6 @@ class TestItemDelegate(QStyledItemDelegate):
                 editor.state_edit.currentText(),
                 ScheduleModel.StatusRole
             )
+
+            # Signal for updating dash and qt side at the same time
+            model.dataChanged.emit(index, index)
