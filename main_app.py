@@ -39,7 +39,7 @@ class App(QApplication):
         self.dash_window.model = self.main_window.schedule_view.model()
         self.dash_window.rootContext().setContextProperty(
             "ScheduleModel",
-            self.dash_window.model)
+            self.my_model)
         self.dash_window.setSource(QUrl.fromLocalFile(
             os.path.join(os.path.dirname(__file__), 'qml/Dash.qml')
             ))

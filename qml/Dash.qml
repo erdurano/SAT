@@ -136,22 +136,11 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 5
                     spacing: 5
-                    delegate: testComp
+                    delegate: Halo{
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        sfitext: model.sfiRole
 
-                        // visible : (display["active_stat"] == true) ? true : false
-
-                    Component {
-                        id: testComp
-
-                        RowLayout {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.margins: 10
-                            spacing: 10
-
-                            Label{text: model.sfiRole}
-
-                        }
                     }
                 }
             
