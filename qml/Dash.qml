@@ -140,7 +140,14 @@ Item {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         sfitext: model.sfiRole
-
+                        nameText: model.nameRole
+                        clsText: model.clsRole
+                        flagText: model.flagRole
+                        ownrText: model.ownrRole
+                        deptText: model.deptRole
+                        dateText: '25.01.2021'
+                        hourText: '12:00'
+                        statText: model.statusRole
                     }
                 }
             
