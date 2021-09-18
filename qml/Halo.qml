@@ -48,9 +48,6 @@ Rectangle {
         height: parent.height
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        // anchors {
-        //     verticalCenter: parent.verticalCenter
-        // }
 
         text: sfitext // And use them here
 
@@ -59,9 +56,13 @@ Rectangle {
     
     Text {
         id: name
-        y: parent.height/4
+        width: parent.width - 2*parent.height
+        height: parent.height/2
+        verticalAlignment: Text.AlignVCenter
+
         anchors {
-            left: sfi.right
+        top: parent.top
+        horizontalCenter: parent.horizontalCenter
         }
         text: nameText // And use them here
     }
@@ -95,9 +96,11 @@ Rectangle {
     
     
     Text{
+        width: (parent.width - parent.height)/2
+        height: parent.height/2
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            top: parent.verticalCenter
+            left: sfi.right
         }
         text: deptText // And use them here
     }

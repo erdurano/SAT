@@ -48,10 +48,9 @@ class ScheduleView(QListView):
     def commitData(self, editor: QWidget) -> None:
         # Holds the view from updating the model when exiting the item
         # else passes the commitData slot
-        if type(self.sender()) == QItemSelectionModel:
-            pass
-        else:
+        if type(self.sender()) != QItemSelectionModel:
             return super().commitData(editor)
+        return None
 
 
 if __name__ == "__main__":
