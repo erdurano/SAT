@@ -56,9 +56,10 @@ Rectangle {
     
     Text {
         id: name
-        width: parent.width - 2*parent.height
+        width: parent.width - parent.height
         height: parent.height/2
         verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
 
         anchors {
         top: parent.top
@@ -69,72 +70,97 @@ Rectangle {
     
     
     Text{
+        id: cls
+        width: (parent.width - parent.height)/6
+        y: parent.height*3/4
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            left: sfi.right
         }
-        text: clsText // And use them here
+        text: "C: " + clsText // And use them here
     }
     
     
     Text{
+        id: flag
+        width: (parent.width - parent.height)/6
+        y: parent.height*3/4
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
-        }
-        text: flagText // And use them here
+            left: cls.right
+            }
+        text: "F: " + flagText // And use them here
     }
     
     
     Text {
+        width: (parent.width - parent.height)/6
+        y: parent.height*3/4
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            left: flag.right
         }
-        text: ownrText // And use them here
+        text: "O: " + ownrText // And use them here
     }
     
     
     Text{
+        id: dept
         width: (parent.width - parent.height)/2
-        height: parent.height/2
+        height: parent.height/4
         anchors {
             top: parent.verticalCenter
             left: sfi.right
         }
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
         text: deptText // And use them here
     }
     
     
     Text{
+        id: date
+        x: parent.width/2
+        y: parent.height/2
+        width: (parent.width-parent.height)/2
+        height: parent.height/4
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            verticalCenter : dept.verticalCenter
         }
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+
         text: dateText // And use them here
     }
     
     
     Text{
+        id: startHour
+        height: parent.height/4
+        width: date.width/2
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            left: date.left
+            verticalCenter: flag.verticalCenter
         }
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
         text: hourText // And use them here
     }
     
     Text{
+        height: parent.height/4
+        width: date.width/2
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            verticalCenter: startHour.verticalCenter
+            left: startHour.right
         }
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        
         text: estText // And use them here
     }
     
     Text{
+        x : parent.width - parent.height/2
         anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            verticalCenter: sfi.verticalCenter
         }
         text: statText // And use them here
     }

@@ -16,6 +16,8 @@ class ScheduleModel(QAbstractListModel):
     HourRole = Qt.UserRole + 9
     EstTimeRole = Qt.UserRole + 10
     StatusRole = Qt.UserRole + 11
+    QmlDateRole = Qt.UserRole + 12
+    QmlHourRole = Qt.UserRole + 13
 
     state_list = [
         'Passive',
@@ -63,6 +65,11 @@ class ScheduleModel(QAbstractListModel):
                 return item.est
             elif role == self.StatusRole:
                 return item.status
+            elif role == self.QmlDateRole:
+                return item.date.strftime('%d/%m/%Y') \
+                    if item.date is not None else ' '
+            elif role == self.QmlHourRole:
+                return item.start_hour.strftime('%H:%M')
 
         else:
             return None
@@ -114,6 +121,8 @@ class ScheduleModel(QAbstractListModel):
         roles[self.HourRole] = b'hourRole'
         roles[self.EstTimeRole] = b'estTimeRole'
         roles[self.StatusRole] = b'statusRole'
+        roles[self.QmlDateRole] = b'qmlDateRole'
+        roles[self.QmlHourRole] = b'qmlHourRole'
 
         return roles
 

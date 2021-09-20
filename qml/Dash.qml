@@ -84,11 +84,28 @@ Item {
                         }
                     }
     
-                Column {
-                    id: column1
-                    anchors.fill: completed_test_border
-
-
+                ListView {
+                    model: ScheduleModel
+                    clip: true
+                    anchors.fill: parent
+                    anchors.margins: 5
+                    spacing: 5
+                    delegate: Halo{
+                        visible: model.statusRole == "Passed" || model.statusRole == "Failed" ? true : false
+                        height: visible ? 100 : 0
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        sfitext: model.sfiRole
+                        nameText: model.nameRole
+                        clsText: model.clsRole
+                        flagText: model.flagRole
+                        ownrText: model.ownrRole
+                        deptText: model.deptRole
+                        dateText: model.qmlDateRole
+                        hourText: model.qmlHourRole
+                        estText: model.estTimeRole
+                        statText: model.statusRole
+                    }
                 }
             }
 
@@ -137,6 +154,8 @@ Item {
                     anchors.margins: 5
                     spacing: 5
                     delegate: Halo{
+                        visible: model.statusRole == "Active" ? true : false
+                        height: visible ? 100 : 0
                         anchors.left: parent.left
                         anchors.right: parent.right
                         sfitext: model.sfiRole
@@ -145,8 +164,9 @@ Item {
                         flagText: model.flagRole
                         ownrText: model.ownrRole
                         deptText: model.deptRole
-                        dateText: '25.01.2021'
-                        hourText: '12:00'
+                        dateText: model.qmlDateRole
+                        hourText: model.qmlHourRole
+                        estText: model.estTimeRole
                         statText: model.statusRole
                     }
                 }
@@ -192,9 +212,27 @@ Item {
                     }
                 }
 
-                Column {
-                    id: column
+                ListView {
+                    model: ScheduleModel
+                    clip: true
                     anchors.fill: parent
+                    anchors.margins: 5
+                    spacing: 5
+                    delegate: Halo{
+                        visible: model.statusRole == "Passive" ? true : false
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        sfitext: model.sfiRole
+                        nameText: model.nameRole
+                        clsText: model.clsRole
+                        flagText: model.flagRole
+                        ownrText: model.ownrRole
+                        deptText: model.deptRole
+                        dateText: model.qmlDateRole
+                        hourText: model.qmlHourRole
+                        estText: model.estTimeRole
+                        statText: model.statusRole
+                    }
                 }
             }
         }
