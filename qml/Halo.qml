@@ -17,6 +17,7 @@ Item {
         height: 100
 
     Rectangle {
+        id: background
         // color: "#bdc2e8"
         radius: height/2
         border.width: 2
@@ -25,22 +26,6 @@ Item {
         anchors.bottomMargin: 2.5
         anchors.leftMargin: 5
         anchors.topMargin: 2.5
-        gradient: Gradient {
-            GradientStop {
-                position: 0
-                color: "#bdc2e8"
-            }
-
-            GradientStop {
-                position: 0.01
-                color: "#bdc2e8"
-            }
-
-            GradientStop {
-                position: 1
-                color: "#e6dee9"
-            }
-        }
 
         
         Text{
@@ -168,6 +153,107 @@ Item {
             text: statText // And use them here
         }
         
+    }
+
+    onStatTextChanged: {
+        if (statText == 'Passive') {
+            var gradient = passive_gradient.createObject(background)
+            background.gradient = gradient;
+        } else if (statText == 'Active') {
+            var gradient = active_gradient.createObject(background)
+            background.gradient = gradient;
+        } else if (statText == 'Passed') {
+            var gradient = passed_gradient.createObject(background)
+            background.gradient = gradient;
+        } else if (statText == 'Failed') {
+            var gradient = failed_gradient.createObject(background)
+            background.gradient = gradient;
+        }
+    }
+
+
+    Component{
+        id: passive_gradient
+        Gradient {
+            GradientStop {
+                position: 0
+                color: "#bdc2e8"
+            }
+
+            GradientStop {
+                position: 0.01
+                color: "#bdc2e8"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#e6dee9"
+            }
+        }
+
+    }
+
+    Component{
+        id: active_gradient
+        Gradient {
+            GradientStop {
+                position: 0
+                color: "#0072CE"
+            }
+
+            GradientStop {
+                position: 0.01
+                color: "#71a8d6"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#e0e9f0"
+            }
+        }
+
+    }
+
+    Component{
+        id: failed_gradient
+        Gradient {
+            GradientStop {
+                position: 0
+                color: "#c87979"
+            }
+
+            GradientStop {
+                position: 0.01
+                color: "#c87979"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#e6dee9"
+            }
+        }
+
+    }
+
+    Component{
+        id: passed_gradient
+        Gradient {
+            GradientStop {
+                position: 0
+                color: "#e6dee9"
+            }
+
+            GradientStop {
+                position: 0.99
+                color: "#88cd7e"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#88cd7e"
+            }
+        }
+
     }
 
 }
