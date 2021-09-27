@@ -62,37 +62,46 @@ Item {
                 anchors.leftMargin: 30
 
 
-                    Text {
-                        id: completed_border_label
-                        text: qsTr("Completed")
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        font.family: "Effra"
-                        font.weight: Font.DemiBold
-                        font.pixelSize: 36
-                        anchors.leftMargin: height/2
-                        anchors.topMargin: -height*5/7
-                        z: 1
+                Text {
+                    id: completed_border_label
+                    text: qsTr("Completed")
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    font.family: "Effra"
+                    font.weight: Font.DemiBold
+                    font.pixelSize: 36
+                    anchors.leftMargin: height/2
+                    anchors.topMargin: -height*5/7
+                    z: 1
 
-                        Rectangle {
-                            anchors.fill: parent
-                            anchors.rightMargin: -3
-                            anchors.leftMargin: -3
-                            anchors.topMargin: 5
-                            color: "#ffffff"
-                            z: -1
-                        }
+
+                }
+
+                Rectangle {
+                    height: 5
+                    anchors {
+                        top: parent.top
+                        left: completed_border_label.left
+                        right: completed_border_label.right
+                        rightMargin: -3
+                        leftMargin: -3
+                        topMargin: -1
                     }
+
+                    color: "#ffffff"
+                    z: 0
+
+                }
     
                 ListView {
+                    id: completed_view
                     model: ScheduleModel
                     clip: true
                     anchors.fill: parent
-                    anchors.margins: 5
-                    spacing: 5
+                    anchors.topMargin: 5
                     delegate: Halo{
                         visible: model.statusRole == "Passed" || model.statusRole == "Failed" ? true : false
-                        height: visible ? 100 : 0
+                        height: visible ? completed_view.height/10 : 0
                         anchors.left: parent.left
                         anchors.right: parent.right
                         sfitext: model.sfiRole
@@ -135,27 +144,32 @@ Item {
                     anchors.topMargin: -height*5/7
                     z: 1
 
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.rightMargin: -3
-                        anchors.leftMargin: -3
-                        anchors.topMargin: 5
-                        color: "#ffffff"
-                        z: -1
-                    }
                 }
 
+                Rectangle {
+                    height: 5
+                    anchors {
+                        top: parent.top
+                        left: active_border_label.left
+                        right: active_border_label.right
+                        topMargin: -1
+                        rightMargin: -3
+                        leftMargin: -3
+                    }
+                    color: "#ffffff"
+                    z: 0
+                }
            
 
                 ListView {
+                    id: active_view
                     model: ScheduleModel
                     clip: true
                     anchors.fill: parent
-                    anchors.margins: 5
-                    spacing: 5
+                    anchors.topMargin: 5
                     delegate: Halo{
                         visible: model.statusRole == "Active" ? true : false
-                        height: visible ? 100 : 0
+                        height: visible ? active_view.height/10 : 0
                         anchors.left: parent.left
                         anchors.right: parent.right
                         sfitext: model.sfiRole
@@ -190,6 +204,8 @@ Item {
                 anchors.topMargin: 30
                 anchors.leftMargin:30
 
+
+
                 Text {
                     id: upcoming_border_label
                     text: qsTr("Upcoming")
@@ -202,24 +218,32 @@ Item {
                     anchors.topMargin: -height*5/7
                     z: 1
 
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.rightMargin: -3
-                        anchors.leftMargin: -3
-                        anchors.topMargin: 5
-                        color: "#ffffff"
-                        z: -1
+                }
+
+                Rectangle {
+                    height: 5
+                    anchors {
+                        top: parent.top
+                        left: upcoming_border_label.left
+                        right: upcoming_border_label.right
+                        topMargin: -1
+                        rightMargin: -3
+                        leftMargin: -3
                     }
+                    color: "#ffffff"
+                    z: 0
                 }
 
                 ListView {
+                    id: passive_view
                     model: ScheduleModel
                     clip: true
                     anchors.fill: parent
-                    anchors.margins: 5
-                    spacing: 5
+                    anchors.topMargin: 5
+                    anchors.bottomMargin: 5
                     delegate: Halo{
                         visible: model.statusRole == "Passive" ? true : false
+                        height: visible ? passive_view.height/10 : 0
                         anchors.left: parent.left
                         anchors.right: parent.right
                         sfitext: model.sfiRole
