@@ -240,17 +240,17 @@ Item {
         Gradient {
             GradientStop {
                 position: 0
-                color: "#e6dee9"
+                color: "#88cd7e"
             }
 
             GradientStop {
-                position: 0.99
+                position: 0.01
                 color: "#88cd7e"
             }
 
             GradientStop {
                 position: 1
-                color: "#88cd7e"
+                color: "#e6dee9"
             }
         }
 
