@@ -1,5 +1,6 @@
 from scheduleclasses import Schedule, TestItem
-from typing import Any
+from typing import Any, Optional
+from dataclasses import dataclass
 
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
@@ -46,40 +47,13 @@ class XlsIO(QObject):
         self.schedule_to_update.emit(self.schedule_data)
 
 
+@dataclass
 class Xlparser:
     def __init__(self) -> None:
-        self.__header_row: int
-        self.__merged_cells: list
-        self.__indexes: dict
-        self.__schedule = Schedule()
-
-    @property
-    def schedule(self):
-        return self.__schedule
-
-    @property
-    def header_row(self) -> int:
-        return self.__header_row
-
-    @header_row.setter
-    def header_row(self, row_number: int) -> None:
-        self.__header_row = row_number
-
-    @property
-    def merged_cells(self) -> list:
-        return self.__merged_cells
-
-    @merged_cells.setter
-    def merged_cells(self, cell_ranges: list) -> None:
-        self.__merged_cells = cell_ranges
-
-    @property
-    def indexes(self) -> dict:
-        return self.__indexes
-
-    @indexes.setter
-    def indexes(self, index_dict: dict) -> None:
-        self.__indexes = index_dict
+        self.header_row: Optional(int) = None
+        self.merged_cells: list = []
+        self.indexes: dict = {}
+        self.schedule: Schedule = Schedule()
 
     def find_merged_cells(self, xldata: Worksheet) -> None:
         self.merged_cells = xldata.merged_cells
@@ -88,7 +62,7 @@ class Xlparser:
         for row in xldata.rows:
             for cell in row:
                 if cell.value == "Class":
-                    self.header_row = cell.row
+                    self.header_row_bottom = cell.row
                     class_column = cell.column
                     indexes = {
                         "sfi": class_column-2,
@@ -166,7 +140,7 @@ class Xlparser:
             self.schedule.add_item(item)
 
     def get_item_rows(self, xldata: Worksheet) -> None:
-        min_row = self.header_row+1
+        min_row = self.header_row_bottom+1
         for row in xldata.iter_rows(min_row):
             self.add_rows2schedule(row, xldata)
 

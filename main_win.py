@@ -1,5 +1,6 @@
 import typing
-from PySide2.QtCore import QItemSelectionModel
+from PySide2.QtCore import QItemSelectionModel, Signal
+from PySide2.QtGui import QCloseEvent
 from PySide2.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -15,6 +16,8 @@ from PySide2.QtWidgets import (
 
 class MainWindow(QMainWindow):
     """MainWindow class to import, see and adjust test items"""
+
+    window_closed = Signal()
 
     def __init__(self):
         super().__init__()
@@ -37,6 +40,10 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
         self.setFixedSize(600, 480)
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.window_closed.emit()
+        return super().closeEvent(event)
 
 
 class ScheduleView(QListView):

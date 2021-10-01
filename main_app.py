@@ -52,6 +52,8 @@ class App(QApplication):
             self.my_model.updateSchedule)
         self.main_window.dash_button.clicked.connect(self.show_model)
 
+        self.main_window.window_closed.connect(self.dash_window.close)
+
         # Compulsory show method for main window
         self.main_window.show()
 
