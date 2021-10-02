@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
@@ -22,29 +22,20 @@ class TestItem():
     date: Optional[str] = None
     start_hour: Optional[str] = None
     est: Optional[str] = None
-    status: str = 'Passive'
-    # self.__status: Status = Status.NOT_STARTED
+    # status: str = 'Passive'
+    status: Status = Status.NOT_STARTED
 
 
+@dataclass
 class Schedule():
-
-    def __init__(self) -> None:
-        self.__agenda_items: list = []
-
-    @property
-    def agenda_items(self) -> list:
-        return self.__agenda_items
-
-    @agenda_items.setter
-    def agenda_items(self, items: list[TestItem]) -> None:
-        self.__agenda_items = items
+    agenda_items: list[TestItem] = field(default_factory=list)
 
     def add_item(self, agenda_item: TestItem) -> None:
-        self.__agenda_items.append(agenda_item)
+        self.agenda_items.append(agenda_item)
 
-    def reset_items(self):
-        self.__agenda_items = []
+    def reset_items(self) -> None:
+        self.agenda_items = []
 
 
 if __name__ == '__main__':
-    print(Status.NOT_STARTED.value)
+    print(Status('Active'))

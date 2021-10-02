@@ -1,4 +1,4 @@
-from scheduleclasses import TestItem
+from scheduleclasses import Status, TestItem
 import typing
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
 
@@ -64,7 +64,7 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.EstTimeRole:
                 return item.est
             elif role == self.StatusRole:
-                return item.status
+                return item.status.value
             elif role == self.QmlDateRole:
                 return item.date.strftime('%d/%m/%Y') \
                     if item.date is not None else ' '
@@ -100,7 +100,7 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.EstTimeRole:
                 self._data[index.row()].est = value
             elif role == self.StatusRole:
-                self._data[index.row()].status = value
+                self._data[index.row()].status = Status(value)
 
             return True
 

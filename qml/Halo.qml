@@ -156,7 +156,7 @@ Item {
     }
 
     onStatTextChanged: {
-        if (statText == 'Passive') {
+        if (statText == 'Not Started') {
             var gradient = passive_gradient.createObject(background)
             background.gradient = gradient;
         } else if (statText == 'Active') {

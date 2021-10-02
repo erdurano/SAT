@@ -50,7 +50,7 @@ class XlsIO(QObject):
 @dataclass
 class Xlparser:
     def __init__(self) -> None:
-        self.header_row: Optional(int) = None
+        self.header_row: Optional[int] = None
         self.merged_cells: list = []
         self.indexes: dict = {}
         self.schedule: Schedule = Schedule()

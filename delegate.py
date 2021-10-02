@@ -8,6 +8,7 @@ from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
 
 from main_win import ScheduleView
 from model import ScheduleModel
+from scheduleclasses import Status, TestItem
 
 
 class ItemEditor(QWidget):
@@ -59,7 +60,13 @@ class ItemEditor(QWidget):
 
         self.state_edit = QComboBox(self)
         states = index.model().state_list
-        combo_items = ['Set State', ] + states
+        combo_items = [
+            Status.NOT_STARTED.value,
+            Status.ACTIVE.value,
+            Status.PASSED.value,
+            Status.FAILED.value,
+        ]
+
         self.state_edit.addItems(combo_items)
         self.edit_layout.addWidget(self.state_edit, 0, 2, 3, 1)
 
@@ -113,7 +120,7 @@ class TestItemDelegate(QStyledItemDelegate):
 
     COLORS = {
         'Set State': Qt.white,
-        'Passive': Qt.lightGray,
+        'Not Started': Qt.lightGray,
         'Active': QColor(0, 114, 206),
         'Passed': QColor(68, 214, 44),
         'Failed': QColor(227, 120, 120)
