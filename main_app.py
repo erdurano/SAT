@@ -1,11 +1,13 @@
 import os
+
+from PySide2.QtCore import QTimer, QUrl, Signal
+from PySide2.QtWidgets import QApplication, QFileDialog
+
 from dash_window import DashWindow
 from delegate import TestItemDelegate
-from model import ScheduleModel
-from PySide2.QtCore import QTimer, QUrl, Signal
-from xlsIO import XlsIO
-from PySide2.QtWidgets import QApplication, QFileDialog
 from main_win import MainWindow
+from model import ScheduleModel
+from xlsIO import XlsIO
 
 
 class App(QApplication):

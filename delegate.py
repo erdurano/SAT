@@ -8,7 +8,7 @@ from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
 
 from main_win import ScheduleView
 from model import ScheduleModel
-from scheduleclasses import Status, TestItem
+from scheduleclasses import Status
 
 
 class ItemEditor(QWidget):
@@ -59,7 +59,6 @@ class ItemEditor(QWidget):
         self.edit_layout.addWidget(self.dept_edit, 3, 1, 3, 1)
 
         self.state_edit = QComboBox(self)
-        states = index.model().state_list
         combo_items = [
             Status.NOT_STARTED.value,
             Status.ACTIVE.value,
