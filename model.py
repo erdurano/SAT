@@ -1,6 +1,7 @@
 from scheduleclasses import Status, TestItem
 import typing
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
+from datetime import datetime
 
 
 class ScheduleModel(QAbstractListModel):
@@ -38,6 +39,7 @@ class ScheduleModel(QAbstractListModel):
         self.beginResetModel()
         self._data = schedule_items
         self.endResetModel()
+        self.check_activated()
 
     def data(self, index=QModelIndex(), role: int = Qt.DisplayRole):
         if 0 <= index.row() < self.rowCount() and index.isValid():
@@ -131,3 +133,32 @@ class ScheduleModel(QAbstractListModel):
             return (Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable)
 
         return super().flags(index)
+
+    def check_activated(self):
+        now = datetime.now()
+        for rown in range(self.rowCount()):
+            index = self.index(rown)
+            year, month, day = (
+                self.data(index, self.DateStrRole).year,
+                self.data(index, self.DateStrRole).month,
+                self.data(index, self.DateStrRole).day,
+            )
+            hour, minute = (
+                self.data(index, self.HourRole).hour,
+                self.data(index, self.HourRole).minute,
+            )
+            dt = datetime(year, month, day, hour, minute)
+
+            if now > dt and\
+                    self.data(index, self.StatusRole) ==\
+                    Status.NOT_STARTED.value:
+                self.setData(
+                    index,
+                    Status.ACTIVE.value,
+                    self.StatusRole
+                )
+
+            self.dataChanged.emit(
+                index,
+                index
+            )

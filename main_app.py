@@ -2,7 +2,7 @@ import os
 from dash_window import DashWindow
 from delegate import TestItemDelegate
 from model import ScheduleModel
-from PySide2.QtCore import QUrl, Signal
+from PySide2.QtCore import QTimer, QUrl, Signal
 from xlsIO import XlsIO
 from PySide2.QtWidgets import QApplication, QFileDialog
 from main_win import MainWindow
@@ -18,51 +18,66 @@ class App(QApplication):
     def __init__(self):
         super().__init__()
 
+        self.schedule_model = ScheduleModel()
+        self.create_main_window()
+        self.create_dash_window()
+
+        # Creating timer for the auto status update function
+        # of ScheduleModel class
+        self.updateTimer = QTimer(self)
+
+        self.make_connections()
+        # Compulsory show method for main window
+        self.main_window.show()
+
+    def create_main_window(self):
         # widgets and types that's gonna be used in application
         self.main_window = MainWindow()
         self.file_handler = XlsIO()
         self.import_diag = QFileDialog(
             parent=self.main_window,
             caption="Import SAT Excel",
-            filter="Excel file (*.xlsx)"
+            filter="Excel file (*.xlsx)",
         )
+        self.main_window.schedule_view.setModel(self.schedule_model)
+        self.main_window.schedule_view.setItemDelegate(self.get_delegate())
 
-        self.my_model = ScheduleModel()
-        self.main_window.schedule_view.setModel(self.my_model)
-        self.my_delegate = TestItemDelegate(
-            parent=self.main_window.schedule_view
-            )
-        self.main_window.schedule_view.setItemDelegate(self.my_delegate)
-
+    def create_dash_window(self):
         self.dash_window = DashWindow(None)
         self.dash_window.hide()
         self.dash_window.model = self.main_window.schedule_view.model()
         self.dash_window.rootContext().setContextProperty(
-            "ScheduleModel",
-            self.my_model)
-        self.dash_window.setSource(QUrl.fromLocalFile(
-            os.path.join(os.path.dirname(__file__), 'qml/Dash.qml')
-            ))
+            "ScheduleModel", self.schedule_model
+        )
+        self.dash_window.setSource(
+            QUrl.fromLocalFile(
+                os.path.join(os.path.dirname(__file__), "qml/Dash.qml")
+            )
+        )
 
-        # Connections.
-        self.main_window.import_button.clicked.connect(self.filename)
-        self.import_path.connect(self.file_handler.import_excel)
-
-        self.file_handler.schedule_to_update.connect(
-            self.my_model.updateSchedule)
-        self.main_window.dash_button.clicked.connect(self.show_model)
-
-        self.main_window.window_closed.connect(self.dash_window.close)
-
-        # Compulsory show method for main window
-        self.main_window.show()
+    def get_delegate(self):
+        return TestItemDelegate(
+            parent=self.main_window.schedule_view
+        )
 
     def filename(self):
         path, _ = app.import_diag.getOpenFileName()
         self.import_path.emit(path)
 
-    def show_model(self):
-        self.dash_window.show()
+    def make_connections(self):
+        # Connections.
+        self.main_window.import_button.clicked.connect(self.filename)
+        self.import_path.connect(self.file_handler.import_excel)
+
+        self.file_handler.schedule_to_update.connect(
+            self.schedule_model.updateSchedule
+        )
+        self.main_window.dash_button.clicked.connect(self.dash_window.show)
+
+        self.main_window.window_closed.connect(self.dash_window.close)
+
+        self.updateTimer.timeout.connect(self.schedule_model.check_activated)
+        self.updateTimer.start(60000)
 
 
 if __name__ == "__main__":
