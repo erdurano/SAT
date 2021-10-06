@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 
 from PySide2.QtCore import QDate, QModelIndex, QRect, QSize, Qt, QTime, Signal
 from PySide2.QtGui import (QBrush, QColor, QPainter, QPainterPath, QPen)
@@ -9,6 +9,7 @@ from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
 from main_win import ScheduleView
 from model import ScheduleModel
 from scheduleclasses import Status
+from xlsIO import tick
 
 
 class ItemEditor(QWidget):
@@ -19,6 +20,7 @@ class ItemEditor(QWidget):
         'NA': 'Not Applicable',
         'R': 'Review',
         'W': 'Witness',
+        tick: 'tick'
     }
 
     departments = [
@@ -102,8 +104,8 @@ class ItemEditor(QWidget):
         self.hour_edit.setDisplayFormat('HH:mm')
         self.edit_layout.addWidget(self.hour_edit, 3, 4, 3, 1)
 
-        self.duration_edit = QLineEdit(parent=self)
-        self.duration_edit.setFixedWidth(50)
+        self.duration_edit = QTimeEdit(parent=self)
+        self.duration_edit.setDisplayFormat('HH:mm')
         self.edit_layout.addWidget(self.duration_edit, 3, 5, 3, 1)
 
         self.save_button.clicked.connect(self.saveButton)
@@ -132,22 +134,21 @@ class TestItemDelegate(QStyledItemDelegate):
     def paint(self, painter: QPainter,
               option: QStyleOptionViewItem, index: QModelIndex):
 
-        model_ind = index.model()
         canvas = option.rect.getRect()
 
         painter.setRenderHint(QPainter.Antialiasing, on=True)
 
         # Supplying data from model
-        sfi = index.data(model_ind.SfiRole)
-        name = index.data(model_ind.NameRole)
-        cls_att = index.data(model_ind.ClsRole)
-        flg_att = index.data(model_ind.FlagRole)
-        ownr_att = index.data(model_ind.OwnrRole)
-        resp_dept = index.data(model_ind.DeptRole)
-        date_str = index.data(model_ind.DateStrRole)
-        hour_str = index.data(model_ind.HourRole)
-        est_duration = index.data(model_ind.EstTimeRole)
-        status = model_ind.data(index, model_ind.StatusRole)
+        sfi = index.data(ScheduleModel.SfiRole)
+        name = index.data(ScheduleModel.NameRole)
+        cls_att = index.data(ScheduleModel.ClsRole)
+        flg_att = index.data(ScheduleModel.FlagRole)
+        ownr_att = index.data(ScheduleModel.OwnrRole)
+        resp_dept = index.data(ScheduleModel.DeptRole)
+        date_str = index.data(ScheduleModel.DateStrRole)
+        hour_str = index.data(ScheduleModel.HourRole)
+        est_duration = index.data(ScheduleModel.EstTimeRole)
+        status = index.data(ScheduleModel.StatusRole)
 
         # Frame and Background(s)
 
@@ -210,9 +211,15 @@ class TestItemDelegate(QStyledItemDelegate):
             Qt.AlignCenter, hour_str.strftime('%H:%M')
         )
 
+        if type(est_duration) is time:
+            est_str = est_duration.strftime('%H:%M')
+        else:
+            est_str = est_duration
+
         painter.drawText(
             QRect(x+w-50, y+h//2, 50, h//2),
-            Qt.AlignCenter, est_duration
+            Qt.AlignCenter,
+            est_str
         )
 
     def createEditor(self, parent, option, index):
@@ -265,8 +272,13 @@ class TestItemDelegate(QStyledItemDelegate):
             hour = index.data(ScheduleModel.HourRole)
             editor.hour_edit.setTime(QTime(hour.hour, hour.minute))
 
-            editor.duration_edit.setText(
-                index.data(ScheduleModel.EstTimeRole))
+            est_dur = index.data(ScheduleModel.EstTimeRole)
+            if type(est_dur) is time or type(est_dur) is datetime:
+                editor.duration_edit.setTime(
+                    QTime(est_dur.hour, est_dur.minute)
+                )
+            else:
+                editor.duration_edit.hide()
 
             state = index.data(ScheduleModel.StatusRole)
             state_ind = editor.state_edit.findText(state)
@@ -289,7 +301,6 @@ class TestItemDelegate(QStyledItemDelegate):
 
         if index.isValid():
 
-            model = index.model()
             model.setData(
                 index,
                 editor.sfi_edit.text(),
@@ -341,7 +352,7 @@ class TestItemDelegate(QStyledItemDelegate):
 
             model.setData(
                 index,
-                editor.duration_edit.text(),
+                editor.duration_edit.time().toPython(),
                 ScheduleModel.EstTimeRole
             )
 

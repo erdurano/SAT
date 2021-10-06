@@ -79,7 +79,12 @@ class App(QApplication):
         self.main_window.window_closed.connect(self.dash_window.close)
 
         self.updateTimer.timeout.connect(self.schedule_model.check_activated)
-        self.updateTimer.start(60000)
+        self.updateTimer.start(10000)
+
+        # Not sure what this does
+        self.main_window.schedule_view.itemDelegate().closeEditor.connect(
+            self.schedule_model.check_activated
+        )
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 from scheduleclasses import Status, TestItem
 import typing
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
-from datetime import datetime
+from datetime import datetime, time
 
 
 class ScheduleModel(QAbstractListModel):
@@ -19,6 +19,7 @@ class ScheduleModel(QAbstractListModel):
     StatusRole = Qt.UserRole + 11
     QmlDateRole = Qt.UserRole + 12
     QmlHourRole = Qt.UserRole + 13
+    QmlEstRole = Qt.UserRole + 14
 
     state_list = [
         'Passive',
@@ -72,6 +73,9 @@ class ScheduleModel(QAbstractListModel):
                     if item.date is not None else ' '
             elif role == self.QmlHourRole:
                 return item.start_hour.strftime('%H:%M')
+            elif role == self.QmlEstRole:
+                return item.est.strftime('%H:%M')\
+                    if isinstance(item.est, time) else item.est
 
         else:
             return None
@@ -100,7 +104,9 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.HourRole:
                 self._data[index.row()].start_hour = value
             elif role == self.EstTimeRole:
-                self._data[index.row()].est = value
+                self._data[index.row()].est = ScheduleModel.correct_est_value(
+                    self._data[index.row()].est, value
+                )
             elif role == self.StatusRole:
                 self._data[index.row()].status = Status(value)
 
@@ -125,8 +131,16 @@ class ScheduleModel(QAbstractListModel):
         roles[self.StatusRole] = b'statusRole'
         roles[self.QmlDateRole] = b'qmlDateRole'
         roles[self.QmlHourRole] = b'qmlHourRole'
+        roles[self.QmlEstRole] = b'qmlEstRole'
 
         return roles
+
+    @staticmethod
+    def correct_est_value(record, new_value):
+        if isinstance(record, time):
+            return new_value
+        if isinstance(record, str):
+            return record
 
     def flags(self, index):
         if index.isValid():
@@ -157,8 +171,13 @@ class ScheduleModel(QAbstractListModel):
                     Status.ACTIVE.value,
                     self.StatusRole
                 )
+            elif now < dt and\
+                    self.data(index, self.StatusRole) ==\
+                    Status.ACTIVE.value:
+                self.setData(
+                    index,
+                    Status.NOT_STARTED.value,
+                    self.StatusRole
+                )
 
-            self.dataChanged.emit(
-                index,
-                index
-            )
+            self.dataChanged.emit(index, index)

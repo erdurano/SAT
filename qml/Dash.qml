@@ -112,7 +112,7 @@ Item {
                         deptText: model.deptRole
                         dateText: model.qmlDateRole
                         hourText: model.qmlHourRole
-                        estText: model.estTimeRole
+                        estText: model.qmlEstRole
                         statText: model.statusRole
                     }
                 }
@@ -180,7 +180,7 @@ Item {
                         deptText: model.deptRole
                         dateText: model.qmlDateRole
                         hourText: model.qmlHourRole
-                        estText: model.estTimeRole
+                        estText: model.qmlEstRole
                         statText: model.statusRole
                     }
                 }
@@ -254,7 +254,7 @@ Item {
                         deptText: model.deptRole
                         dateText: model.qmlDateRole
                         hourText: model.qmlHourRole
-                        estText: model.estTimeRole
+                        estText: model.qmlEstRole
                         statText: model.statusRole
                     }
                 }

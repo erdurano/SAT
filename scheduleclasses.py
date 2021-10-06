@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime, time
 from enum import Enum
 from typing import Optional
 
@@ -19,9 +20,9 @@ class TestItem():
     owner_attendance: Optional[str] = None
     record_status: Optional[str] = None
     responsible_dept: Optional[str] = None
-    date: Optional[str] = None
-    start_hour: Optional[str] = None
-    est: Optional[str] = None
+    date: Optional[datetime] = None
+    start_hour: Optional[time] = None
+    est: Optional[time] = None
     # status: str = 'Passive'
     status: Status = Status.NOT_STARTED
 
