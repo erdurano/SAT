@@ -51,7 +51,7 @@ class ItemEditor(QWidget):
         self.edit_layout.setAlignment(self.sfi_edit, Qt.AlignBottom)
 
         self.name_edit = QLineEdit(parent=self)
-        self.edit_layout.addWidget(self.name_edit, 0, 1, 3, 1)
+        self.edit_layout.addWidget(self.name_edit, 0, 1, 3, 2)
         self.edit_layout.setAlignment(self.name_edit, Qt.AlignBottom)
         # self.name_edit.setMinimumWidth(100)
 
@@ -60,6 +60,9 @@ class ItemEditor(QWidget):
                                 for i in self.departments])
         self.edit_layout.addWidget(self.dept_edit, 3, 1, 3, 1)
 
+        self.resp_name_edit = QLineEdit(parent=self)
+        self.edit_layout.addWidget(self.resp_name_edit, 3, 2, 3, 1)
+
         self.state_edit = QComboBox(self)
         combo_items = [
             Status.NOT_STARTED.value,
@@ -67,46 +70,45 @@ class ItemEditor(QWidget):
             Status.PASSED.value,
             Status.FAILED.value,
         ]
-
         self.state_edit.addItems(combo_items)
-        self.edit_layout.addWidget(self.state_edit, 0, 2, 3, 1)
+        self.edit_layout.addWidget(self.state_edit, 0, 3, 3, 1)
 
         self.save_button = QPushButton('Save Changes', parent=self)
-        self.edit_layout.addWidget(self.save_button, 3, 2, 3, 1)
+        self.edit_layout.addWidget(self.save_button, 3, 3, 3, 1)
 
         self.cls_edit = QComboBox(parent=self)
         self.cls_edit.addItems(
             ['C: ' + i for i in self.attendance_dict.keys()]
             )
-        self.edit_layout.addWidget(self.cls_edit, 0, 3, 2, 1)
+        self.edit_layout.addWidget(self.cls_edit, 0, 4, 2, 1)
         self.cls_edit.setFixedWidth(50)
 
         self.flag_edit = QComboBox(parent=self)
         self.flag_edit.addItems(
             ['F: ' + i for i in self.attendance_dict.keys()]
             )
-        self.edit_layout.addWidget(self.flag_edit, 2, 3, 2, 1)
+        self.edit_layout.addWidget(self.flag_edit, 2, 4, 2, 1)
         self.flag_edit.setFixedWidth(50)
 
         self.owner_edit = QComboBox(parent=self)
         self.owner_edit.addItems(
             ['O: ' + i for i in self.attendance_dict.keys()]
             )
-        self.edit_layout.addWidget(self.owner_edit, 4, 3, 2, 1)
+        self.edit_layout.addWidget(self.owner_edit, 4, 4, 2, 1)
         self.owner_edit.setFixedWidth(50)
 
         self.date_edit = QDateEdit(parent=self, calendarPopup=True)
         self.date_edit.setDisplayFormat('dd-MM-yyyy')
         self.date_edit.setFixedWidth(100)
-        self.edit_layout.addWidget(self.date_edit, 0, 4, 3, -1)
+        self.edit_layout.addWidget(self.date_edit, 0, 5, 3, -1)
 
         self.hour_edit = QTimeEdit(parent=self)
         self.hour_edit.setDisplayFormat('HH:mm')
-        self.edit_layout.addWidget(self.hour_edit, 3, 4, 3, 1)
+        self.edit_layout.addWidget(self.hour_edit, 3, 5, 3, 1)
 
         self.duration_edit = QTimeEdit(parent=self)
         self.duration_edit.setDisplayFormat('HH:mm')
-        self.edit_layout.addWidget(self.duration_edit, 3, 5, 3, 1)
+        self.edit_layout.addWidget(self.duration_edit, 3, 6, 3, 1)
 
         self.save_button.clicked.connect(self.saveButton)
 
@@ -149,6 +151,7 @@ class TestItemDelegate(QStyledItemDelegate):
         hour_str = index.data(ScheduleModel.HourRole)
         est_duration = index.data(ScheduleModel.EstTimeRole)
         status = index.data(ScheduleModel.StatusRole)
+        resp_name = index.data(ScheduleModel.RespNameRole)
 
         # Frame and Background(s)
 
@@ -202,6 +205,11 @@ class TestItemDelegate(QStyledItemDelegate):
             Qt.AlignVCenter, resp_dept)
 
         painter.drawText(
+            QRect(x+50+w//3, y+h//2, w//3, h//2),
+            Qt.AlignVCenter, resp_name
+        )
+
+        painter.drawText(
             QRect(x+w-100, y, 100, h//2),
             Qt.AlignCenter, date_str.strftime('%d-%m-%Y')
         )
@@ -247,6 +255,10 @@ class TestItemDelegate(QStyledItemDelegate):
             dept_index = editor.dept_edit.findText(
                 index.data(ScheduleModel.DeptRole))
             editor.dept_edit.setCurrentIndex(dept_index)
+
+            editor.resp_name_edit.setText(
+                index.data(ScheduleModel.RespNameRole)
+            )
 
             bodies_prefix = ['C: ', 'F: ', 'O: ']
             roles = [
@@ -360,6 +372,12 @@ class TestItemDelegate(QStyledItemDelegate):
                 index,
                 editor.state_edit.currentText(),
                 ScheduleModel.StatusRole
+            )
+
+            model.setData(
+                index,
+                editor.resp_name_edit.text(),
+                ScheduleModel.RespNameRole
             )
 
             # Signal for updating dash and qt side at the same time

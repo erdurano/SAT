@@ -23,8 +23,8 @@ class TestItem():
     date: Optional[datetime] = None
     start_hour: Optional[time] = None
     est: Optional[time] = None
-    # status: str = 'Passive'
     status: Status = Status.NOT_STARTED
+    responsible_name: Optional[str] = ""
 
 
 @dataclass

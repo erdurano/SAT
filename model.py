@@ -20,6 +20,7 @@ class ScheduleModel(QAbstractListModel):
     QmlDateRole = Qt.UserRole + 12
     QmlHourRole = Qt.UserRole + 13
     QmlEstRole = Qt.UserRole + 14
+    RespNameRole = Qt.UserRole + 15
 
     state_list = [
         'Passive',
@@ -76,6 +77,8 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.QmlEstRole:
                 return item.est.strftime('%H:%M')\
                     if isinstance(item.est, time) else item.est
+            elif role == self.RespNameRole:
+                return item.responsible_name
 
         else:
             return None
@@ -109,6 +112,8 @@ class ScheduleModel(QAbstractListModel):
                 )
             elif role == self.StatusRole:
                 self._data[index.row()].status = Status(value)
+            elif role == self.RespNameRole:
+                self._data[index.row()].responsible_name = value
 
             return True
 
@@ -132,6 +137,7 @@ class ScheduleModel(QAbstractListModel):
         roles[self.QmlDateRole] = b'qmlDateRole'
         roles[self.QmlHourRole] = b'qmlHourRole'
         roles[self.QmlEstRole] = b'qmlEstRole'
+        roles[self.RespNameRole] = b'respNameRole'
 
         return roles
 
@@ -171,6 +177,8 @@ class ScheduleModel(QAbstractListModel):
                     Status.ACTIVE.value,
                     self.StatusRole
                 )
+                self.dataChanged.emit(index, index, [self.StatusRole])
+
             elif now < dt and\
                     self.data(index, self.StatusRole) ==\
                     Status.ACTIVE.value:
@@ -180,4 +188,4 @@ class ScheduleModel(QAbstractListModel):
                     self.StatusRole
                 )
 
-            self.dataChanged.emit(index, index)
+                self.dataChanged.emit(index, index, [self.StatusRole])
