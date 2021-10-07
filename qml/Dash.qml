@@ -241,11 +241,13 @@ Item {
                     anchors.fill: parent
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
+                    anchors.leftMargin:5
+                    anchors.rightMargin:5
                     delegate: Halo{
                         visible: model.statusRole == "Not Started" ? true : false
-                        height: visible ? passive_view.height/10 : 0
-                        anchors.left: parent.left
-                        anchors.right: parent.right
+                        height: visible ? passive_view.height/8 : 0
+                        anchors.left: parent ? parent.left : undefined
+                        anchors.right: parent ? parent.right : undefined
                         sfitext: model.sfiRole
                         nameText: model.nameRole
                         clsText: model.clsRole

@@ -11,6 +11,7 @@ Item {
         property string hourText
         property string estText
         property string statText
+        property string respNameText
 
         id: base
         width:30
@@ -22,17 +23,19 @@ Item {
         radius: height/2
         border.width: 2
         anchors.fill: parent
-        anchors.rightMargin: 5
+        // anchors.rightMargin: 5
         anchors.bottomMargin: 2.5
-        anchors.leftMargin: 5
+        // anchors.leftMargin: 5
         anchors.topMargin: 2.5
 
         
         Text{
             id: sfi
-            y: 0
-            x: 0
-            width: parent.height/2
+            anchors {
+                top: parent.top
+                left: parent.left
+            }
+            width: parent.height*3/4
             height: parent.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -44,11 +47,16 @@ Item {
         
         Text {
             id: name
-            width: parent.width - parent.height
+            width: parent.width - sfi.width - stat.width
             height: parent.height/2
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-
+            wrapMode: Text.WordWrap
+            font{
+                pixelSize: base.height/5
+                weight: Text.DemiBold
+                family: 'Effra'
+            }
             anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
@@ -102,6 +110,137 @@ Item {
             text: deptText // And use them here
         }
         
+        Text{
+            //advance: size
+            //baseUrl: url
+            //bottomPadding: real
+            //clip: bool
+            //color: color
+            //contentHeight: real
+            //contentWidth: real
+            //effectiveHorizontalAlignment: enumeration
+            //elide: enumeration
+            //font.bold: bool
+            //font.capitalization: enumeration
+            //font.family: string
+            //font.hintingPreference: enumeration
+            //font.italic: bool
+            //font.kerning: bool
+            //font.letterSpacing: real
+            //font.pixelSize: int
+            //font.pointSize: real
+            //font.preferShaping: bool
+            //font.strikeout: bool
+            //font.styleName: string
+            //font.underline: bool
+            //font.weight: enumeration
+            //font.wordSpacing: real
+            //fontInfo.bold: bool
+            //fontInfo.family: string
+            //fontInfo.italic: bool
+            //fontInfo.pixelSize: string
+            //fontInfo.pointSize: real
+            //fontInfo.styleName: string
+            //fontInfo.weight: int
+            //fontSizeMode: enumeration
+            //horizontalAlignment: enumeration
+            //hoveredLink: string
+            //leftPadding: real
+            //lineCount: int
+            //lineHeight: real
+            //lineHeightMode: enumeration
+            //linkColor: color
+            //maximumLineCount: int
+            //minimumPixelSize: int
+            //minimumPointSize: int
+            //padding: real
+            //renderType: enumeration
+            //rightPadding: real
+            //style: enumeration
+            //styleColor: color
+            //text: string
+            //textFormat: enumeration
+            //topPadding: real
+            //truncated: bool
+            //verticalAlignment: enumeration
+            //wrapMode: enumeration
+            //doLayout()(obsolete)
+            //forceLayout()
+            //lineLaidOut(objectline)
+            //linkActivated(stringlink)
+            //linkAt(realx,realy)
+            //linkHovered(stringlink)
+            //
+            //
+            //activeFocus: bool
+            //activeFocusOnTab: bool
+            //anchors.alignWhenCentered: bool
+            //anchors.baseline: AnchorLine
+            //anchors.baselineOffset: real
+            //anchors.bottom: AnchorLine
+            //anchors.bottomMargin: real
+            //anchors.centerIn: Item
+            //anchors.fill: Item
+            //anchors.horizontalCenter: AnchorLine
+            //anchors.horizontalCenterOffset: real
+            //anchors.left: AnchorLine
+            //anchors.leftMargin: real
+            //anchors.margins: real
+            //anchors.right: AnchorLine
+            //anchors.rightMargin: real
+            //anchors.top: AnchorLine
+            //anchors.topMargin: real
+            //anchors.verticalCenter: AnchorLine
+            //anchors.verticalCenterOffset: real
+            //antialiasing: bool
+            //baselineOffset: int
+            //children: list<Item>
+            //childrenRect.height: real
+            //childrenRect.width: real
+            //childrenRect.x: real
+            //childrenRect.y: real
+            //clip: bool
+            //containmentMask: QObject*
+            //data: list<Object>
+            //enabled: bool
+            //focus: bool
+            //height: real
+            //implicitHeight: real
+            //implicitWidth: real
+            //layer.effect: Component
+            //layer.enabled: bool
+            //layer.format: enumeration
+            //layer.mipmap: bool
+            //layer.samplerName: string
+            //layer.samples: enumeration
+            //layer.smooth: bool
+            //layer.sourceRect: rect
+            //layer.textureMirroring: enumeration
+            //layer.textureSize: size
+            //layer.wrapMode: enumeration
+            //opacity: real
+            //parent: Item
+            //resources: list<Object>
+            //rotation: real
+            //scale: real
+            //smooth: bool
+            //state: string
+            //states: list<State>
+            //transform: list<Transform>
+            //transformOrigin: enumeration
+            //transitions: list<Transition>
+            //visible: bool
+            //visibleChildren: list<Item>
+            //width: real
+            //x: real
+            //y: real
+            //z: real
+            //childAt(realx,realy)
+            //forceActiveFocus()
+            //forceActiveFocus(Qt: : FocusReasonreason)
+            //nextItemInFocusChain(boolforward)
+            //objectName: string
+        }
         
         Text{
             id: date
@@ -146,10 +285,15 @@ Item {
         }
         
         Text{
-            x : parent.width - parent.height/2
+            id: stat
+            height: parent.height
+            width: parent.height*3/4
             anchors {
-                verticalCenter: sfi.verticalCenter
+                right: parent.right
+                top: parent.top    
             }
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
             text: statText // And use them here
         }
         
