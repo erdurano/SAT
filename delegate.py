@@ -81,21 +81,21 @@ class ItemEditor(QWidget):
             ['C: ' + i for i in self.attendance_dict.keys()]
             )
         self.edit_layout.addWidget(self.cls_edit, 0, 4, 2, 1)
-        self.cls_edit.setFixedWidth(50)
+        self.cls_edit.setFixedWidth(55)
 
         self.flag_edit = QComboBox(parent=self)
         self.flag_edit.addItems(
             ['F: ' + i for i in self.attendance_dict.keys()]
             )
         self.edit_layout.addWidget(self.flag_edit, 2, 4, 2, 1)
-        self.flag_edit.setFixedWidth(50)
+        self.flag_edit.setFixedWidth(55)
 
         self.owner_edit = QComboBox(parent=self)
         self.owner_edit.addItems(
             ['O: ' + i for i in self.attendance_dict.keys()]
             )
         self.edit_layout.addWidget(self.owner_edit, 4, 4, 2, 1)
-        self.owner_edit.setFixedWidth(50)
+        self.owner_edit.setFixedWidth(55)
 
         self.date_edit = QDateEdit(parent=self, calendarPopup=True)
         self.date_edit.setDisplayFormat('dd-MM-yyyy')

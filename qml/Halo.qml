@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.11
 
 Item {
         property string sfitext // Declare properties here
@@ -53,8 +54,8 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             font{
-                pixelSize: base.height/5
-                weight: Text.DemiBold
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
                 family: 'Effra'
             }
             anchors {
@@ -96,160 +97,39 @@ Item {
             text: "O: " + ownrText // And use them here
         }
         
-        
-        Text{
-            id: dept
-            width: (parent.width - parent.height)/2
-            height: parent.height/4
+        RowLayout{
+            id: resp_layout
             anchors {
                 top: parent.verticalCenter
                 left: sfi.right
+                right: parent.horizontalCenter
             }
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: deptText // And use them here
-        }
-        
-        Text{
-            //advance: size
-            //baseUrl: url
-            //bottomPadding: real
-            //clip: bool
-            //color: color
-            //contentHeight: real
-            //contentWidth: real
-            //effectiveHorizontalAlignment: enumeration
-            //elide: enumeration
-            //font.bold: bool
-            //font.capitalization: enumeration
-            //font.family: string
-            //font.hintingPreference: enumeration
-            //font.italic: bool
-            //font.kerning: bool
-            //font.letterSpacing: real
-            //font.pixelSize: int
-            //font.pointSize: real
-            //font.preferShaping: bool
-            //font.strikeout: bool
-            //font.styleName: string
-            //font.underline: bool
-            //font.weight: enumeration
-            //font.wordSpacing: real
-            //fontInfo.bold: bool
-            //fontInfo.family: string
-            //fontInfo.italic: bool
-            //fontInfo.pixelSize: string
-            //fontInfo.pointSize: real
-            //fontInfo.styleName: string
-            //fontInfo.weight: int
-            //fontSizeMode: enumeration
-            //horizontalAlignment: enumeration
-            //hoveredLink: string
-            //leftPadding: real
-            //lineCount: int
-            //lineHeight: real
-            //lineHeightMode: enumeration
-            //linkColor: color
-            //maximumLineCount: int
-            //minimumPixelSize: int
-            //minimumPointSize: int
-            //padding: real
-            //renderType: enumeration
-            //rightPadding: real
-            //style: enumeration
-            //styleColor: color
-            //text: string
-            //textFormat: enumeration
-            //topPadding: real
-            //truncated: bool
-            //verticalAlignment: enumeration
-            //wrapMode: enumeration
-            //doLayout()(obsolete)
-            //forceLayout()
-            //lineLaidOut(objectline)
-            //linkActivated(stringlink)
-            //linkAt(realx,realy)
-            //linkHovered(stringlink)
-            //
-            //
-            //activeFocus: bool
-            //activeFocusOnTab: bool
-            //anchors.alignWhenCentered: bool
-            //anchors.baseline: AnchorLine
-            //anchors.baselineOffset: real
-            //anchors.bottom: AnchorLine
-            //anchors.bottomMargin: real
-            //anchors.centerIn: Item
-            //anchors.fill: Item
-            //anchors.horizontalCenter: AnchorLine
-            //anchors.horizontalCenterOffset: real
-            //anchors.left: AnchorLine
-            //anchors.leftMargin: real
-            //anchors.margins: real
-            //anchors.right: AnchorLine
-            //anchors.rightMargin: real
-            //anchors.top: AnchorLine
-            //anchors.topMargin: real
-            //anchors.verticalCenter: AnchorLine
-            //anchors.verticalCenterOffset: real
-            //antialiasing: bool
-            //baselineOffset: int
-            //children: list<Item>
-            //childrenRect.height: real
-            //childrenRect.width: real
-            //childrenRect.x: real
-            //childrenRect.y: real
-            //clip: bool
-            //containmentMask: QObject*
-            //data: list<Object>
-            //enabled: bool
-            //focus: bool
-            //height: real
-            //implicitHeight: real
-            //implicitWidth: real
-            //layer.effect: Component
-            //layer.enabled: bool
-            //layer.format: enumeration
-            //layer.mipmap: bool
-            //layer.samplerName: string
-            //layer.samples: enumeration
-            //layer.smooth: bool
-            //layer.sourceRect: rect
-            //layer.textureMirroring: enumeration
-            //layer.textureSize: size
-            //layer.wrapMode: enumeration
-            //opacity: real
-            //parent: Item
-            //resources: list<Object>
-            //rotation: real
-            //scale: real
-            //smooth: bool
-            //state: string
-            //states: list<State>
-            //transform: list<Transform>
-            //transformOrigin: enumeration
-            //transitions: list<Transition>
-            //visible: bool
-            //visibleChildren: list<Item>
-            //width: real
-            //x: real
-            //y: real
-            //z: real
-            //childAt(realx,realy)
-            //forceActiveFocus()
-            //forceActiveFocus(Qt: : FocusReasonreason)
-            //nextItemInFocusChain(boolforward)
-            //objectName: string
+            height: parent.height/4
+
+
+            Text{
+                id: dept
+                Layout.alignment: Qt.AlignCenter
+                text: deptText // And use them here
+            }
+            
+            Text{
+                id: resp_name
+                text: respNameText
+
+                Layout.alignment: Qt.AlignCenter
+
+            }
         }
         
         Text{
             id: date
-            x: parent.width/2
-            y: parent.height/2
+
             width: (parent.width-parent.height)/2
             height: parent.height/4
             anchors {
-                verticalCenter : dept.verticalCenter
+                top: parent.verticalCenter
+                left: parent.horizontalCenter
             }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter

@@ -99,11 +99,14 @@ Item {
                     clip: true
                     anchors.fill: parent
                     anchors.topMargin: 5
+                    anchors.bottomMargin: 5
+                    anchors.leftMargin:5
+                    anchors.rightMargin:5
                     delegate: Halo{
                         visible: model.statusRole == "Passed" || model.statusRole == "Failed" ? true : false
-                        height: visible ? completed_view.height/10 : 0
-                        anchors.left: parent.left
-                        anchors.right: parent.right
+                        height: visible ? passive_view.height/8 : 0
+                        anchors.left: parent ? parent.left : undefined
+                        anchors.right: parent ? parent.right : undefined
                         sfitext: model.sfiRole
                         nameText: model.nameRole
                         clsText: model.clsRole
@@ -114,6 +117,7 @@ Item {
                         hourText: model.qmlHourRole
                         estText: model.qmlEstRole
                         statText: model.statusRole
+                        respNameText: model.respNameRole
                     }
                 }
             }
@@ -167,11 +171,14 @@ Item {
                     clip: true
                     anchors.fill: parent
                     anchors.topMargin: 5
+                    anchors.bottomMargin: 5
+                    anchors.leftMargin:5
+                    anchors.rightMargin:5
                     delegate: Halo{
                         visible: model.statusRole == "Active" ? true : false
-                        height: visible ? active_view.height/10 : 0
-                        anchors.left: parent.left
-                        anchors.right: parent.right
+                        height: visible ? passive_view.height/8 : 0
+                        anchors.left: parent ? parent.left : undefined
+                        anchors.right: parent ? parent.right : undefined
                         sfitext: model.sfiRole
                         nameText: model.nameRole
                         clsText: model.clsRole
@@ -182,6 +189,7 @@ Item {
                         hourText: model.qmlHourRole
                         estText: model.qmlEstRole
                         statText: model.statusRole
+                        respNameText: model.respNameRole
                     }
                 }
             
@@ -258,6 +266,7 @@ Item {
                         hourText: model.qmlHourRole
                         estText: model.qmlEstRole
                         statText: model.statusRole
+                        respNameText: model.respNameRole
                     }
                 }
             }
