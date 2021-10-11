@@ -1,6 +1,6 @@
 from datetime import datetime, time
 from scheduleclasses import Schedule, TestItem
-from typing import Any, Optional, Union
+from typing import Any, List, Optional, Union
 from dataclasses import dataclass
 
 import openpyxl
@@ -13,14 +13,13 @@ tick = b'\xe2\x9c\x93'.decode('utf-8')
 class XlsIO(QObject):
     """A class for handling file IO and parsing and handling xls files"""
 
-    schedule_to_update = Signal(list)
+    schedule_to_update = Signal(Schedule)
 
     def __init__(self) -> None:
         super().__init__()
         self.__file_path = ""
         self.__worksheet = None
         self.parser = Xlparser()
-        self.schedule_data = None
 
     @property
     def filepath(self) -> Any:
@@ -48,8 +47,9 @@ class XlsIO(QObject):
         self.filepath = import_path
         self.xlsheet_from_path(self.filepath)
         self.parser.parse_xl(self.xl_worksheet)
-        self.schedule_data = self.parser.schedule.agenda_items
-        self.schedule_to_update.emit(self.schedule_data)
+        self.schedule_to_update.emit(
+            self.parser.schedule
+        )
 
 
 @dataclass
@@ -59,13 +59,14 @@ class Xlparser:
         self.merged_cells: list = []
         self.indexes: dict = {}
         self.schedule: Schedule = Schedule()
+        self.xldata: Optional[Worksheet] = None
 
-    def find_merged_cells(self, xldata: Worksheet) -> None:
-        self.merged_cells = xldata.merged_cells
+    def find_merged_cells(self) -> None:
+        self.merged_cells = self.xldata.merged_cells
 
-    def get_header_info(self, xldata: Worksheet) -> None:
+    def get_header_info(self) -> None:
         self.header_row_bottom = None
-        for row in xldata.rows:
+        for row in self.xldata.rows:
             for cell in row:
                 if type(cell.value) is not str:
                     pass
@@ -102,14 +103,14 @@ class Xlparser:
             if cell.coordinate in r:
                 return r
 
-    def add_rows2schedule(self, row: tuple, xldata) -> None:
+    def add_rows2schedule(self, row: tuple) -> None:
         item = TestItem()
 
         for cell in row:
             if cell.coordinate in self.merged_cells:
                 r = self.get_cell_range(cell)
                 i_row, i_col = r.top[0]
-                cell = xldata.cell(i_row, i_col)
+                cell = self.xldata.cell(i_row, i_col)
 
             if cell.column == self.indexes['sfi']:
                 item.sfi =\
@@ -155,19 +156,19 @@ class Xlparser:
 
         if item.date == '' or\
                 item.start_hour == '':
-            return
+            return None
         else:
             self.schedule.add_item(item)
 
     @staticmethod
-    def correct_attendance(char: str):
+    def correct_attendance(char: str) -> str:
         if char == 'ü':
             return tick
         else:
             return char
 
     @staticmethod
-    def correct_time_format(data: Union[datetime, time]):
+    def correct_time_format(data: Union[datetime, time]) -> Union[time, str]:
         if isinstance(data, datetime):
             return time(data.hour, data.minute)
         if isinstance(data, time):
@@ -175,13 +176,28 @@ class Xlparser:
         else:
             return '-'
 
-    def get_item_rows(self, xldata: Worksheet) -> None:
+    def get_attendee_selection(self) -> List[str]:
+        selection = []
+        for row_num in range(self.header_row_bottom+1,
+                             self.xldata.max_row):
+            val = self.xldata.cell(
+                    row_num, self.indexes['responsible']
+                ).value
+            if val not in selection and val is not None:
+                selection.append(val)
+        print(selection)
+        return selection
+
+    def get_item_rows(self) -> None:
         min_row = self.header_row_bottom+1
-        for row in xldata.iter_rows(min_row):
-            self.add_rows2schedule(row, xldata)
+        for row in self.xldata.iter_rows(min_row):
+            self.add_rows2schedule(row)
 
     def parse_xl(self, xldata: Worksheet) -> None:
+        self.xldata = xldata
         self.schedule.reset_items()
-        self.get_header_info(xldata)
-        self.find_merged_cells(xldata)
-        self.get_item_rows(xldata)
+        self.get_header_info()
+        self.schedule.responsible_selection = self.get_attendee_selection()
+        self.find_merged_cells()
+        self.get_item_rows()
+        self.get_attendee_selection()

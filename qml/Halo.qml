@@ -168,6 +168,7 @@ Item {
             id: stat
             height: parent.height
             width: parent.height*3/4
+            wrapMode: Text.WordWrap
             anchors {
                 right: parent.right
                 top: parent.top    

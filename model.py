@@ -1,4 +1,4 @@
-from scheduleclasses import Status, TestItem
+from scheduleclasses import Schedule, Status, TestItem
 import typing
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
 from datetime import datetime, time
@@ -21,6 +21,7 @@ class ScheduleModel(QAbstractListModel):
     QmlHourRole = Qt.UserRole + 13
     QmlEstRole = Qt.UserRole + 14
     RespNameRole = Qt.UserRole + 15
+    RespSelectionRole = Qt.UserRole + 16
 
     state_list = [
         'Passive',
@@ -37,9 +38,10 @@ class ScheduleModel(QAbstractListModel):
         return len(self._data)
 
     @Slot()
-    def updateSchedule(self, schedule_items: list):
+    def updateSchedule(self, schedule: Schedule):
         self.beginResetModel()
-        self._data = schedule_items
+        self.schedule = schedule
+        self._data = self.schedule.agenda_items
         self.endResetModel()
         self.check_activated()
 
@@ -79,6 +81,8 @@ class ScheduleModel(QAbstractListModel):
                     if isinstance(item.est, time) else item.est
             elif role == self.RespNameRole:
                 return item.responsible_name
+            elif role == self.RespSelectionRole:
+                return self.schedule.responsible_selection
 
         else:
             return None

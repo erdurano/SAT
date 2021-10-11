@@ -23,15 +23,6 @@ class ItemEditor(QWidget):
         tick: 'tick'
     }
 
-    departments = [
-        ' ',
-        'Commissioning',
-        'Electricity',
-        'Quality',
-        'Hull',
-        'Piping',
-    ]
-
     def __init__(self,
                  parent: QWidget,
                  option: QStyleOptionViewItem,
@@ -56,8 +47,6 @@ class ItemEditor(QWidget):
         # self.name_edit.setMinimumWidth(100)
 
         self.dept_edit = QComboBox(parent=self)
-        self.dept_edit.addItems([i + ' Dept.' if i != ' ' else ' '
-                                for i in self.departments])
         self.edit_layout.addWidget(self.dept_edit, 3, 1, 3, 1)
 
         self.resp_name_edit = QLineEdit(parent=self)
@@ -249,6 +238,9 @@ class TestItemDelegate(QStyledItemDelegate):
 
     def setEditorData(self, editor: ItemEditor, index: QModelIndex):
         if index.isValid():
+            editor.dept_edit.addItems(index.data(
+                ScheduleModel.RespSelectionRole)
+            )
             editor.sfi_edit.setText(index.data(ScheduleModel.SfiRole))
             editor.name_edit.setText(index.data(ScheduleModel.NameRole))
 

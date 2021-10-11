@@ -30,6 +30,7 @@ class TestItem():
 @dataclass
 class Schedule():
     agenda_items: list[TestItem] = field(default_factory=list)
+    responsible_selection: list[str] = field(default_factory=list)
 
     def add_item(self, agenda_item: TestItem) -> None:
         self.agenda_items.append(agenda_item)
