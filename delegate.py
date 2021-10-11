@@ -257,7 +257,7 @@ class TestItemDelegate(QStyledItemDelegate):
                 ScheduleModel.ClsRole,
                 ScheduleModel.FlagRole,
                 ScheduleModel.OwnrRole,
-                ]
+            ]
 
             for i, p in enumerate(bodies_prefix):
                 if i == 0:

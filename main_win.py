@@ -1,6 +1,6 @@
 import typing
 from PySide2.QtCore import QItemSelectionModel, Signal
-from PySide2.QtGui import QCloseEvent
+from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -22,7 +22,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.dash_button = QPushButton("Dash It!")
+        self.setWindowTitle('SAT Scheduler')
+        self.setWindowIcon(QIcon(QPixmap('./imgsrc/cemre_logo.ico')))
+
+        self.dash_button = QPushButton("Show Dash")
         self.import_button = QPushButton("Import .xls")
 
         main_widget = QWidget()

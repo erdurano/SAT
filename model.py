@@ -1,7 +1,10 @@
-from scheduleclasses import Schedule, Status, TestItem
 import typing
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, Slot
 from datetime import datetime, time
+
+from PySide2.QtCore import (QAbstractListModel, QDate, QModelIndex, Qt, QTime,
+                            Slot)
+
+from scheduleclasses import Schedule, Status, TestItem
 
 
 class ScheduleModel(QAbstractListModel):
@@ -72,10 +75,12 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.StatusRole:
                 return item.status.value
             elif role == self.QmlDateRole:
-                return item.date.strftime('%d/%m/%Y') \
-                    if item.date is not None else ' '
+                d = item.date
+                y, m, da = d.year, d.month, d.day
+                return QDate(y, m, da)
             elif role == self.QmlHourRole:
-                return item.start_hour.strftime('%H:%M')
+                h, mi = item.start_hour.hour, item.start_hour.minute
+                return QTime(h, mi)
             elif role == self.QmlEstRole:
                 return item.est.strftime('%H:%M')\
                     if isinstance(item.est, time) else item.est
