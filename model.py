@@ -36,15 +36,20 @@ class ScheduleModel(QAbstractListModel):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._data: list[TestItem] = []
+        self.dataChanged.connect(self.curious_one)
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
+
+    def columnCount(self, parent=QModelIndex()) -> int:
+        return 0
 
     @Slot()
     def updateSchedule(self, schedule: Schedule):
         self.beginResetModel()
         self.schedule = schedule
         self._data = self.schedule.agenda_items
+        self.sort()
         self.endResetModel()
         self.check_activated()
 
@@ -133,10 +138,30 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.RespNameRole:
                 self._data[index.row()].responsible_name = value
 
+            self.sort()
+
             return True
 
         else:
             return False
+
+    @Slot()
+    def curious_one(self, *args):
+        for arg in args:
+            print(arg)
+
+    def sort(self,
+             column: int = 0,
+             order: Qt.SortOrder = Qt.SortOrder.AscendingOrder) -> None:
+
+        if self.columnCount() < column:
+            return
+        elif order == Qt.SortOrder.DescendingOrder:
+            self._data.sort(key=TestItem.dt, reverse=True)
+        elif order == Qt.SortOrder.AscendingOrder:
+            self._data.sort(key=TestItem.dt, reverse=False)
+        else:
+            return super().sort(column, order=order)
 
     def roleNames(self):
         roles = dict()
@@ -211,4 +236,4 @@ class ScheduleModel(QAbstractListModel):
                 )
                 self.dataChanged.emit(index, index, roles_to_change[0])
 
-            self.dataChanged.emit(index, index, roles_to_change[1])
+        self.dataChanged.emit(index, index, [self.IsNearRole, ])

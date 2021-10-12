@@ -26,6 +26,15 @@ class TestItem():
     status: Status = Status.NOT_STARTED
     responsible_name: Optional[str] = ""
 
+    def dt(self):
+        return datetime(
+            self.date.year,
+            self.date.month,
+            self.date.day,
+            self.start_hour.hour,
+            self.start_hour.minute
+        )
+
 
 @dataclass
 class Schedule():
