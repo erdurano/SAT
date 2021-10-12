@@ -1,8 +1,7 @@
 import typing
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
-from PySide2.QtCore import (QAbstractListModel, QDate, QModelIndex, Qt, QTime,
-                            Slot)
+from PySide2.QtCore import (QAbstractListModel, QModelIndex, Qt, Slot)
 
 from scheduleclasses import Schedule, Status, TestItem
 
@@ -25,6 +24,7 @@ class ScheduleModel(QAbstractListModel):
     QmlEstRole = Qt.UserRole + 14
     RespNameRole = Qt.UserRole + 15
     RespSelectionRole = Qt.UserRole + 16
+    IsNearRole = Qt.UserRole + 17
 
     state_list = [
         'Passive',
@@ -75,12 +75,9 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.StatusRole:
                 return item.status.value
             elif role == self.QmlDateRole:
-                d = item.date
-                y, m, da = d.year, d.month, d.day
-                return QDate(y, m, da)
+                return item.date.strftime('%d-%m-%Y')
             elif role == self.QmlHourRole:
-                h, mi = item.start_hour.hour, item.start_hour.minute
-                return QTime(h, mi)
+                return item.start_hour.strftime('%H:%M')
             elif role == self.QmlEstRole:
                 return item.est.strftime('%H:%M')\
                     if isinstance(item.est, time) else item.est
@@ -88,6 +85,18 @@ class ScheduleModel(QAbstractListModel):
                 return item.responsible_name
             elif role == self.RespSelectionRole:
                 return self.schedule.responsible_selection
+            elif role == self.IsNearRole:
+                t_date = item.date
+                t_hour = item.start_hour
+                dt = datetime(
+                    t_date.year,
+                    t_date.month,
+                    t_date.day,
+                    t_hour.hour,
+                    t_hour.minute
+                )
+                isNear = dt - datetime.now() <= timedelta(hours=2)
+                return isNear
 
         else:
             return None
@@ -147,6 +156,7 @@ class ScheduleModel(QAbstractListModel):
         roles[self.QmlHourRole] = b'qmlHourRole'
         roles[self.QmlEstRole] = b'qmlEstRole'
         roles[self.RespNameRole] = b'respNameRole'
+        roles[self.IsNearRole] = b'isNearRole'
 
         return roles
 
@@ -167,6 +177,7 @@ class ScheduleModel(QAbstractListModel):
         now = datetime.now()
         for rown in range(self.rowCount()):
             index = self.index(rown)
+            roles_to_change = [self.StatusRole, self.IsNearRole]
             year, month, day = (
                 self.data(index, self.DateStrRole).year,
                 self.data(index, self.DateStrRole).month,
@@ -181,20 +192,23 @@ class ScheduleModel(QAbstractListModel):
             if now > dt and\
                     self.data(index, self.StatusRole) ==\
                     Status.NOT_STARTED.value:
+
                 self.setData(
                     index,
                     Status.ACTIVE.value,
                     self.StatusRole
                 )
-                self.dataChanged.emit(index, index, [self.StatusRole])
+                self.dataChanged.emit(index, index, roles_to_change[0])
 
             elif now < dt and\
                     self.data(index, self.StatusRole) ==\
                     Status.ACTIVE.value:
+
                 self.setData(
                     index,
                     Status.NOT_STARTED.value,
                     self.StatusRole
                 )
+                self.dataChanged.emit(index, index, roles_to_change[0])
 
-                self.dataChanged.emit(index, index, [self.StatusRole])
+            self.dataChanged.emit(index, index, roles_to_change[1])

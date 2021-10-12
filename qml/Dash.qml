@@ -118,6 +118,7 @@ Item {
                         estText: model.qmlEstRole
                         statText: model.statusRole
                         respNameText: model.respNameRole
+                        isNear: model.isNearRole
                     }
                 }
             }
@@ -190,6 +191,8 @@ Item {
                         estText: model.qmlEstRole
                         statText: model.statusRole
                         respNameText: model.respNameRole
+                        isNear: model.isNearRole
+
                     }
                 }
             
@@ -267,6 +270,7 @@ Item {
                         estText: model.qmlEstRole
                         statText: model.statusRole
                         respNameText: model.respNameRole
+                        isNear: model.isNearRole
                     }
                 }
             }

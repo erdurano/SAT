@@ -13,6 +13,7 @@ Item {
         property string estText
         property string statText
         property string respNameText
+        property bool isNear
 
         id: base
         width:30
@@ -182,8 +183,13 @@ Item {
 
     onStatTextChanged: {
         if (statText == 'Not Started') {
-            var gradient = passive_gradient.createObject(background)
-            background.gradient = gradient;
+            if (isNear == true) {
+                var gradient = near_gradient.createObject(background)
+                background.gradient = gradient;
+            } else if (isNear == false) {
+                var gradient = passive_gradient.createObject(background)
+                background.gradient = gradient;
+            }
         } else if (statText == 'Active') {
             var gradient = active_gradient.createObject(background)
             background.gradient = gradient;
@@ -196,6 +202,18 @@ Item {
         }
     }
 
+    onIsNearChanged: {
+        console.log(isNear)
+        if (statText == 'Not Started') {
+            if (isNear == true) {
+                var gradient = near_gradient.createObject(background)
+                background.gradient = gradient;
+            } else if (isNear == false) {
+                var gradient = passive_gradient.createObject(background)
+                background.gradient = gradient;
+            }
+        }
+    }
 
     Component{
         id: passive_gradient
@@ -208,6 +226,26 @@ Item {
             GradientStop {
                 position: 0.01
                 color: "#bdc2e8"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#e6dee9"
+            }
+        }
+    }
+
+    Component{
+        id: near_gradient
+        Gradient {
+            GradientStop {
+                position: 0
+                color: "#5769cb"
+            }
+
+            GradientStop {
+                position: 0.01
+                color: "#5769cb"
             }
 
             GradientStop {
