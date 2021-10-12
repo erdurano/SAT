@@ -36,7 +36,6 @@ class ScheduleModel(QAbstractListModel):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._data: list[TestItem] = []
-        self.dataChanged.connect(self.curious_one)
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -145,11 +144,6 @@ class ScheduleModel(QAbstractListModel):
         else:
             return False
 
-    @Slot()
-    def curious_one(self, *args):
-        for arg in args:
-            print(arg)
-
     def sort(self,
              column: int = 0,
              order: Qt.SortOrder = Qt.SortOrder.AscendingOrder) -> None:
@@ -236,4 +230,9 @@ class ScheduleModel(QAbstractListModel):
                 )
                 self.dataChanged.emit(index, index, roles_to_change[0])
 
-        self.dataChanged.emit(index, index, [self.IsNearRole, ])
+        if self.index is not None:
+            self.dataChanged.emit(
+                self.index(0),
+                self.index(self.rowCount()),
+                [self.IsNearRole, ]
+            )

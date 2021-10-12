@@ -27,11 +27,15 @@ class MainWindow(QMainWindow):
 
         self.dash_button = QPushButton("Show Dash")
         self.import_button = QPushButton("Import .xls")
+        self.new_item_button = QPushButton('New Item')
 
         main_widget = QWidget()
         main_layout = QVBoxLayout()
         self.schedule_view = ScheduleView(self)
         main_layout.addWidget(self.schedule_view)
+
+        main_layout.addWidget(self.new_item_button)
+
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.dash_button)
         button_layout.addItem(

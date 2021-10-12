@@ -1,10 +1,12 @@
 from datetime import datetime, time
 
-from PySide2.QtCore import QDate, QModelIndex, QRect, QSize, Qt, QTime, Signal
-from PySide2.QtGui import (QBrush, QColor, QPainter, QPainterPath, QPen)
+from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
+                            Signal, Slot)
+from PySide2.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
                                QListView, QPushButton, QStyledItemDelegate,
-                               QStyleOptionViewItem, QTimeEdit, QWidget)
+                               QStyleOption, QStyleOptionViewItem, QTimeEdit,
+                               QWidget)
 
 from main_win import ScheduleView
 from model import ScheduleModel
@@ -120,7 +122,7 @@ class TestItemDelegate(QStyledItemDelegate):
 
     def __init__(self, parent: ScheduleView) -> None:
         super().__init__(parent)
-        self.model = self.parent().model()
+        self.model: ScheduleModel = self.parent().model()
 
     def paint(self, painter: QPainter,
               option: QStyleOptionViewItem, index: QModelIndex):
@@ -374,3 +376,12 @@ class TestItemDelegate(QStyledItemDelegate):
 
             # Signal for updating dash and qt side at the same time
             model.dataChanged.emit(index, index)
+
+    @Slot()
+    def newItem(self):
+        new_index = self.model.rowCount()+1
+        self.createEditor(
+            self,
+            QStyleOption.init(self.parent().parent()),
+            index=self.model.index(new_index)
+        )
