@@ -1,7 +1,8 @@
 import typing
-from PySide2.QtCore import QItemSelectionModel, Signal
+from PySide2.QtCore import QItemSelectionModel, QSize, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
+    QAbstractScrollArea,
     QApplication,
     QHBoxLayout,
     QListView,
@@ -30,8 +31,8 @@ class MainWindow(QMainWindow):
         self.new_item_button = QPushButton('New Item')
 
         main_widget = QWidget()
-        main_layout = QVBoxLayout()
-        self.schedule_view = ScheduleView(self)
+        main_layout = QVBoxLayout(main_widget)
+        self.schedule_view = ScheduleView(main_widget)
         main_layout.addWidget(self.schedule_view)
 
         main_layout.addWidget(self.new_item_button)
@@ -47,6 +48,8 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
         self.setFixedSize(600, 480)
+        self.schedule_view.setSelectionRectVisible(True)
+        self.schedule_view.setVerticalScrollMode(self.schedule_view.ScrollPerPixel)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()

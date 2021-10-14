@@ -233,6 +233,6 @@ class ScheduleModel(QAbstractListModel):
         if self.index is not None:
             self.dataChanged.emit(
                 self.index(0),
-                self.index(self.rowCount()),
+                self.index(self.rowCount()-1),
                 [self.IsNearRole, ]
             )

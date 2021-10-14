@@ -82,9 +82,9 @@ class App(QApplication):
         self.updateTimer.start(10000)
 
         # TODO: Editor option must be found
-        # self.main_window.new_item_button.clicked.connect(
-        #     self.main_window.schedule_view.itemDelegate().newItem
-        # )
+        self.main_window.new_item_button.clicked.connect(
+            self.main_window.schedule_view.itemDelegate().newItem
+        )
 
         # Not sure what this does
         self.main_window.schedule_view.itemDelegate().closeEditor.connect(

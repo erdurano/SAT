@@ -124,6 +124,8 @@ class TestItemDelegate(QStyledItemDelegate):
         super().__init__(parent)
         self.model: ScheduleModel = self.parent().model()
 
+        return None
+
     def paint(self, painter: QPainter,
               option: QStyleOptionViewItem, index: QModelIndex):
 
@@ -220,13 +222,14 @@ class TestItemDelegate(QStyledItemDelegate):
             Qt.AlignCenter,
             est_str
         )
+        return None
 
     def createEditor(self, parent, option, index):
         editor = ItemEditor(parent, option, index)
         return editor
 
-    def sizeHint(self, option, index):
-        size = QSize(300, 60)
+    def sizeHint(self, option: QStyleOptionViewItem, index):
+        size = QSize(option.rect.width(), 55)
         return size
 
     def updateEditorGeometry(self, editor: QWidget, option, index):
@@ -235,8 +238,10 @@ class TestItemDelegate(QStyledItemDelegate):
             x, y, w, h = option.rect.getRect()
             editor.setGeometry(x+3, y+3, w-6, h-6)
 
-        else:
-            return super().updateEditorGeometry(editor, option, index)
+            return None
+
+        # else:
+        #     return super().updateEditorGeometry(editor, option, index)
 
     def setEditorData(self, editor: ItemEditor, index: QModelIndex):
         if index.isValid():
@@ -379,9 +384,16 @@ class TestItemDelegate(QStyledItemDelegate):
 
     @Slot()
     def newItem(self):
-        new_index = self.model.rowCount()+1
+        new_index = self.model.rowCount()
+        print(new_index)
+        st_parent = self
+        print(st_parent)
+        option = QStyleOption()
+        option.initFrom(st_parent)
+        print(type(option))
+        print(self.model._data)
         self.createEditor(
-            self,
-            QStyleOption.init(self.parent().parent()),
+            self.parent(),
+            option,
             index=self.model.index(new_index)
-        )
+        ).show()
