@@ -200,4 +200,3 @@ class Xlparser:
         self.schedule.responsible_selection = self.get_attendee_selection()
         self.find_merged_cells()
         self.get_item_rows()
-        self.get_attendee_selection()

@@ -1,16 +1,16 @@
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
                             Signal, Slot)
 from PySide2.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
-                               QListView, QPushButton, QStyledItemDelegate,
-                               QStyleOption, QStyleOptionViewItem, QTimeEdit,
-                               QWidget)
+                               QListView, QPushButton,
+                               QStyledItemDelegate, QStyleOptionViewItem,
+                               QTimeEdit, QWidget)
 
 from main_win import ScheduleView
 from model import ScheduleModel
-from scheduleclasses import Status
+from scheduleclasses import Status, TestItem
 from xlsIO import tick
 
 
@@ -31,7 +31,10 @@ class ItemEditor(QWidget):
                  index: QModelIndex) -> None:
 
         super().__init__(parent=parent)
+        self.index = index
         self.setAutoFillBackground(True)
+
+        self.setGeometry(option.rect)
 
         self.edit_layout = QGridLayout()
         self.setLayout(self.edit_layout)
@@ -105,7 +108,6 @@ class ItemEditor(QWidget):
 
     def saveButton(self):
         view: QListView = self.parent().parent()
-        view.commitData(self)
         view.closeEditor(self, QStyledItemDelegate.SubmitModelCache)
 
 
@@ -222,14 +224,13 @@ class TestItemDelegate(QStyledItemDelegate):
             Qt.AlignCenter,
             est_str
         )
-        return None
 
     def createEditor(self, parent, option, index):
         editor = ItemEditor(parent, option, index)
         return editor
 
     def sizeHint(self, option: QStyleOptionViewItem, index):
-        size = QSize(option.rect.width(), 55)
+        size = QSize(option.rect.width()-6, 55)
         return size
 
     def updateEditorGeometry(self, editor: QWidget, option, index):
@@ -384,16 +385,24 @@ class TestItemDelegate(QStyledItemDelegate):
 
     @Slot()
     def newItem(self):
-        new_index = self.model.rowCount()
-        print(new_index)
-        st_parent = self
-        print(st_parent)
-        option = QStyleOption()
-        option.initFrom(st_parent)
-        print(type(option))
-        print(self.model._data)
-        self.createEditor(
-            self.parent(),
-            option,
-            index=self.model.index(new_index)
-        ).show()
+        self.model.beginInsertRows(
+            QModelIndex(),
+            self.model.rowCount(),
+            self.model.rowCount(),
+        )
+        self.model._data.append(TestItem(
+            sfi='',
+            item_name='',
+            class_attendance='-',
+            flag_attendance='-',
+            owner_attendance='-',
+            record_status='',
+            responsible_dept='Quality',
+            date=datetime.today(),
+            start_hour=(datetime.now()+timedelta(hours=3)).time(),
+            est=time()
+            )
+        )
+        self.model.endInsertRows()
+        parr: ScheduleView = self.parent()
+        parr.edit(self.model.index(self.model.rowCount()-1))

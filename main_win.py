@@ -1,8 +1,7 @@
 import typing
-from PySide2.QtCore import QItemSelectionModel, QSize, Signal
+from PySide2.QtCore import QItemSelectionModel, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
-    QAbstractScrollArea,
     QApplication,
     QHBoxLayout,
     QListView,
@@ -10,6 +9,7 @@ from PySide2.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSpacerItem,
+    QStyledItemDelegate,
     QVBoxLayout,
     QWidget,
 )
@@ -49,7 +49,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main_widget)
         self.setFixedSize(600, 480)
         self.schedule_view.setSelectionRectVisible(True)
-        self.schedule_view.setVerticalScrollMode(self.schedule_view.ScrollPerPixel)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()
@@ -62,12 +61,26 @@ class ScheduleView(QListView):
         super().__init__(parent=parent)
         self.setSpacing(4)
 
+        self.setVerticalScrollMode(
+            self.ScrollPerPixel
+        )
+
     def commitData(self, editor: QWidget) -> None:
         # Holds the view from updating the model when exiting the item
         # else passes the commitData slot
         if type(self.sender()) == QItemSelectionModel:
             return None
-        return super().commitData(editor)
+        else:
+            return super().commitData(editor)
+
+    def closeEditor(self,
+                    editor: QWidget,
+                    hint: QStyledItemDelegate.EndEditHint) -> None:
+        if hint == QStyledItemDelegate.SubmitModelCache:
+            self.commitData(editor)
+        if hint == QStyledItemDelegate.RevertModelCache:
+            pass
+        super().closeEditor(editor, hint)
 
 
 if __name__ == "__main__":

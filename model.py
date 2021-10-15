@@ -36,6 +36,7 @@ class ScheduleModel(QAbstractListModel):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._data: list[TestItem] = []
+        self.schedule = Schedule
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -88,7 +89,10 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.RespNameRole:
                 return item.responsible_name
             elif role == self.RespSelectionRole:
-                return self.schedule.responsible_selection
+                if hasattr(self.schedule, 'responsible_selection'):
+                    return self.schedule.responsible_selection
+                else:
+                    return ['Quality']
             elif role == self.IsNearRole:
                 t_date = item.date
                 t_hour = item.start_hour
