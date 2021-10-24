@@ -52,6 +52,7 @@ class ItemEditor(QWidget):
         # self.name_edit.setMinimumWidth(100)
 
         self.dept_edit = QComboBox(parent=self)
+        self.dept_edit.setEditable(True)
         self.edit_layout.addWidget(self.dept_edit, 3, 1, 3, 1)
 
         self.resp_name_edit = QLineEdit(parent=self)

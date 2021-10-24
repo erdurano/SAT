@@ -10,7 +10,7 @@ class ImageModel(QAbstractTableModel):
         self.modelImage: QImage = QImage()
 
     
-    def setImage(self, image: QImage):
+    def setImage(self, image: QImage) -> None:
         self.beginResetModel()
         self.modelImage = image
         self.endResetModel()

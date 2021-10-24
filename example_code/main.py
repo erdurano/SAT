@@ -5,7 +5,7 @@ import os
 def main():
     app = QApplication()
     window = MainWindow()
-    window.openImage(os.path.join(os.path.dirname(__file__), "images\qt.png"))
+    window.openImage(os.path.join(os.path.dirname(__file__), "images/qt.png"))
     window.show()
     
 
