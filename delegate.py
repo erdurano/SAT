@@ -108,8 +108,11 @@ class ItemEditor(QWidget):
         self.save_button.clicked.connect(self.saveButton)
 
     def saveButton(self):
+        if self.dept_edit.findText(self.dept_edit.currentText()) == -1:
+            self.dept_edit.addItem(self.dept_edit.currentText())
         view: QListView = self.parent().parent()
         view.closeEditor(self, QStyledItemDelegate.SubmitModelCache)
+        view.model().check_activated()
 
 
 class TestItemDelegate(QStyledItemDelegate):
@@ -158,7 +161,8 @@ class TestItemDelegate(QStyledItemDelegate):
         back_brush.setColor(self.COLORS[status])
 
         rect_path = QPainterPath()
-        rect_path.addRoundedRect(option.rect, 10, 10)
+        r = option.rect
+        rect_path.addRoundedRect(r.x()+3, r.y()+3, r.width()-6, r.height()-6, 10, 10)
         pen = QPen()
         pen.setColor("Black")
         pen.setWidth(1)
@@ -231,14 +235,14 @@ class TestItemDelegate(QStyledItemDelegate):
         return editor
 
     def sizeHint(self, option: QStyleOptionViewItem, index):
-        size = QSize(option.rect.width()-6, 55)
+        size = QSize(option.rect.width(), 70)
         return size
 
     def updateEditorGeometry(self, editor: QWidget, option, index):
 
         if index.isValid():
             x, y, w, h = option.rect.getRect()
-            editor.setGeometry(x+3, y+3, w-6, h-6)
+            editor.setGeometry(x+6, y+6, w-12, h-12)
 
             return None
 

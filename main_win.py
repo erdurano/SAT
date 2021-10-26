@@ -59,7 +59,7 @@ class ScheduleView(QListView):
 
     def __init__(self, parent: typing.Optional[QWidget]) -> None:
         super().__init__(parent=parent)
-        self.setSpacing(4)
+        self.setSpacing(1)
 
         self.setVerticalScrollMode(
             self.ScrollPerPixel
@@ -68,7 +68,8 @@ class ScheduleView(QListView):
     def commitData(self, editor: QWidget) -> None:
         # Holds the view from updating the model when exiting the item
         # else passes the commitData slot
-        if type(self.sender()) == QItemSelectionModel:
+        if type(self.sender()) == QItemSelectionModel or\
+                type(self.sender()) == None:
             return None
         else:
             return super().commitData(editor)

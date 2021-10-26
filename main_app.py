@@ -86,10 +86,6 @@ class App(QApplication):
             self.main_window.schedule_view.itemDelegate().newItem
         )
 
-        # Not sure what this does
-        self.main_window.schedule_view.itemDelegate().closeEditor.connect(
-            self.schedule_model.check_activated
-        )
 
 
 if __name__ == "__main__":
