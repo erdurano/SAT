@@ -36,7 +36,7 @@ class ScheduleModel(QAbstractListModel):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._data: list[TestItem] = []
-        self.schedule = Schedule
+        self.schedule = Schedule()
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)

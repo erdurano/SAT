@@ -4,7 +4,7 @@ from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
                             Signal, Slot)
 from PySide2.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
-                               QListView, QPushButton,
+                               QListView, QPushButton, QStyle,
                                QStyledItemDelegate, QStyleOptionViewItem,
                                QTimeEdit, QWidget)
 
@@ -135,8 +135,6 @@ class TestItemDelegate(QStyledItemDelegate):
     def paint(self, painter: QPainter,
               option: QStyleOptionViewItem, index: QModelIndex):
 
-        canvas = option.rect.getRect()
-
         painter.setRenderHint(QPainter.Antialiasing, on=True)
 
         # Supplying data from model
@@ -151,6 +149,9 @@ class TestItemDelegate(QStyledItemDelegate):
         est_duration = index.data(ScheduleModel.EstTimeRole)
         status = index.data(ScheduleModel.StatusRole)
         resp_name = index.data(ScheduleModel.RespNameRole)
+
+        if option.state & QStyle.State_Selected:
+            painter.fillRect(option.rect, option.palette.highlight())
 
         # Frame and Background(s)
 
@@ -174,7 +175,7 @@ class TestItemDelegate(QStyledItemDelegate):
 
         painter.setPen(Qt.black)
         # Coordinates for delegate background
-        x, y, w, h = canvas
+        x, y, w, h = option.rect.getRect()
 
         # Drawing of the texts
         painter.drawText(

@@ -64,6 +64,7 @@ class ScheduleView(QListView):
         self.setVerticalScrollMode(
             self.ScrollPerPixel
         )
+        self.setSelectionMode(self.ExtendedSelection)
 
     def commitData(self, editor: QWidget) -> None:
         # Holds the view from updating the model when exiting the item
