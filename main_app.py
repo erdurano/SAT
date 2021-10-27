@@ -64,7 +64,8 @@ class App(QApplication):
 
     def filename(self):
         path, _ = app.import_diag.getOpenFileName()
-        self.import_path.emit(path)
+        if path.endswith(('.xlsx', '.xls')):
+            self.import_path.emit(path)
 
     def make_connections(self):
         # Connections.

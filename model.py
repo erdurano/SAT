@@ -240,3 +240,15 @@ class ScheduleModel(QAbstractListModel):
                 self.index(self.rowCount()-1),
                 [self.IsNearRole, ]
             )
+
+    def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
+        if self.index(row).isValid():
+            self.beginRemoveRows(
+                QModelIndex(),
+                row,
+                row
+            )
+            self._data.pop(row)
+            self.endRemoveRows()
+            return True
+        return False

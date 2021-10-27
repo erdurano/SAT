@@ -1,5 +1,5 @@
-import typing
-from PySide2.QtCore import QItemSelectionModel, Signal
+from typing import List, Optional
+from PySide2.QtCore import QItemSelectionModel, QModelIndex, QSocketDescriptor, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
     QApplication,
@@ -29,13 +29,21 @@ class MainWindow(QMainWindow):
         self.dash_button = QPushButton("Show Dash")
         self.import_button = QPushButton("Import .xls")
         self.new_item_button = QPushButton('New Item')
+        self.delete_button = QPushButton("Delete Selected")
 
         main_widget = QWidget()
         main_layout = QVBoxLayout(main_widget)
         self.schedule_view = ScheduleView(main_widget)
         main_layout.addWidget(self.schedule_view)
 
-        main_layout.addWidget(self.new_item_button)
+        add_remove_layout = QHBoxLayout()
+        add_remove_layout.addItem(
+            QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        )
+        add_remove_layout.addWidget(self.new_item_button)
+        add_remove_layout.addWidget(self.delete_button)
+
+        main_layout.addLayout(add_remove_layout)
 
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.dash_button)
@@ -49,15 +57,23 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main_widget)
         self.setFixedSize(600, 480)
         self.schedule_view.setSelectionRectVisible(True)
+        self.delete_button.clicked.connect(self.delete_handler)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()
         return super().closeEvent(event)
-
+    
+    def delete_handler(self):
+        rows_to_del = self.schedule_view.selectionModel().selectedRows()
+        while rows_to_del:
+            self.schedule_view.model().removeRow(rows_to_del[0].row())
+            if not rows_to_del:
+                break
+            rows_to_del = self.schedule_view.selectionModel().selectedRows()
 
 class ScheduleView(QListView):
 
-    def __init__(self, parent: typing.Optional[QWidget]) -> None:
+    def __init__(self, parent: Optional[QWidget]) -> None:
         super().__init__(parent=parent)
         self.setSpacing(1)
 
@@ -83,6 +99,9 @@ class ScheduleView(QListView):
         if hint == QStyledItemDelegate.RevertModelCache:
             pass
         super().closeEditor(editor, hint)
+
+    def getSelected(self) -> List[QModelIndex]:
+        return self.selectionModel().selectedRows()
 
 
 if __name__ == "__main__":
