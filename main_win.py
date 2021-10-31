@@ -1,11 +1,12 @@
 from typing import List, Optional
-from PySide2.QtCore import QItemSelectionModel, QModelIndex, QSocketDescriptor, Signal
+from PySide2.QtCore import QEvent, QItemSelectionModel, QModelIndex, QSocketDescriptor, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
     QApplication,
     QHBoxLayout,
     QListView,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QSizePolicy,
     QSpacerItem,
@@ -13,6 +14,7 @@ from PySide2.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from model import ScheduleModel
 
 
 class MainWindow(QMainWindow):
@@ -63,13 +65,30 @@ class MainWindow(QMainWindow):
         self.window_closed.emit()
         return super().closeEvent(event)
     
-    def delete_handler(self):
-        rows_to_del = self.schedule_view.selectionModel().selectedRows()
-        while rows_to_del:
-            self.schedule_view.model().removeRow(rows_to_del[0].row())
-            if not rows_to_del:
-                break
-            rows_to_del = self.schedule_view.selectionModel().selectedRows()
+    def delete_handler(self) -> None:
+        del_list = 'Are you sure about deletion of below items?\n'
+        rows_to_del = self.schedule_view.getSelected()
+        for index in rows_to_del:
+            item_name = index.data(ScheduleModel.NameRole)
+            if item_name is None or item_name == '':
+                item_name = "(Empty Item)"
+
+            del_list += '-' + item_name + "\n"
+        
+        if rows_to_del != [] and self.schedule_view.model().rowCount() != 0:
+            delete_answer = QMessageBox().question(
+                self,
+                self.tr('Delete'),
+                self.tr(del_list),
+                QMessageBox.Yes|QMessageBox.No
+            )
+
+            if delete_answer == delete_answer.Yes:
+                while rows_to_del:
+                    self.schedule_view.model().removeRow(rows_to_del[0].row())
+                    if not rows_to_del:
+                        break
+                    rows_to_del = self.schedule_view.selectionModel().selectedRows()
 
 class ScheduleView(QListView):
 
@@ -96,7 +115,7 @@ class ScheduleView(QListView):
                     hint: QStyledItemDelegate.EndEditHint) -> None:
         if hint == QStyledItemDelegate.SubmitModelCache:
             self.commitData(editor)
-        if hint == QStyledItemDelegate.RevertModelCache:
+        elif hint == QStyledItemDelegate.RevertModelCache:
             pass
         super().closeEditor(editor, hint)
 
