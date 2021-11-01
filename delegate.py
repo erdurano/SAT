@@ -163,7 +163,9 @@ class TestItemDelegate(QStyledItemDelegate):
 
         rect_path = QPainterPath()
         r = option.rect
-        rect_path.addRoundedRect(r.x()+3, r.y()+3, r.width()-6, r.height()-6, 10, 10)
+        rect_path.addRoundedRect(
+            r.x()+3, r.y()+3, r.width()-6, r.height()-6, 10, 10
+        )
         pen = QPen()
         pen.setColor("Black")
         pen.setWidth(1)
@@ -255,61 +257,61 @@ class TestItemDelegate(QStyledItemDelegate):
             editor.dept_edit.addItems(index.data(
                 ScheduleModel.RespSelectionRole)
             )
-            editor.sfi_edit.setText(index.data(ScheduleModel.SfiRole))
-            editor.name_edit.setText(index.data(ScheduleModel.NameRole))
+            if editor.isHidden():
+                editor.sfi_edit.setText(index.data(ScheduleModel.SfiRole))
+                editor.name_edit.setText(index.data(ScheduleModel.NameRole))
 
-            dept_index = editor.dept_edit.findText(
-                index.data(ScheduleModel.DeptRole))
-            editor.dept_edit.setCurrentIndex(dept_index)
+                dept_index = editor.dept_edit.findText(
+                    index.data(ScheduleModel.DeptRole))
+                editor.dept_edit.setCurrentIndex(dept_index)
 
-            editor.resp_name_edit.setText(
-                index.data(ScheduleModel.RespNameRole)
-            )
-
-            bodies_prefix = ['C: ', 'F: ', 'O: ']
-            roles = [
-                ScheduleModel.ClsRole,
-                ScheduleModel.FlagRole,
-                ScheduleModel.OwnrRole,
-            ]
-
-            for i, p in enumerate(bodies_prefix):
-                if i == 0:
-                    widget = editor.cls_edit
-                elif i == 1:
-                    widget = editor.flag_edit
-                else:
-                    widget = editor.owner_edit
-
-                sel_index = widget.findText(p + index.data(roles[i]))
-                widget.setCurrentIndex(sel_index)
-
-            date = index.data(ScheduleModel.DateStrRole)
-            editor.date_edit.setDate(QDate(date.year, date.month, date.day))
-
-            hour = index.data(ScheduleModel.HourRole)
-            editor.hour_edit.setTime(QTime(hour.hour, hour.minute))
-
-            est_dur = index.data(ScheduleModel.EstTimeRole)
-            if type(est_dur) is time or type(est_dur) is datetime:
-                editor.duration_edit.setTime(
-                    QTime(est_dur.hour, est_dur.minute)
+                editor.resp_name_edit.setText(
+                    index.data(ScheduleModel.RespNameRole)
                 )
-            else:
-                editor.duration_edit.hide()
 
-            state = index.data(ScheduleModel.StatusRole)
-            state_ind = editor.state_edit.findText(state)
-            editor.state_edit.setCurrentIndex(state_ind)
+                bodies_prefix = ['C: ', 'F: ', 'O: ']
+                roles = [
+                    ScheduleModel.ClsRole,
+                    ScheduleModel.FlagRole,
+                    ScheduleModel.OwnrRole,
+                ]
 
-            # Changing editor's background color according to the state
-            new_pallete = editor.palette()
-            new_pallete.setColor(
-                editor.backgroundRole(), self.COLORS[state])
-            editor.setPalette(new_pallete)
+                for i, p in enumerate(bodies_prefix):
+                    if i == 0:
+                        widget = editor.cls_edit
+                    elif i == 1:
+                        widget = editor.flag_edit
+                    else:
+                        widget = editor.owner_edit
 
-        else:
-            return super().setEditorData(editor, index)
+                    sel_index = widget.findText(p + index.data(roles[i]))
+                    widget.setCurrentIndex(sel_index)
+
+                date = index.data(ScheduleModel.DateStrRole)
+                editor.date_edit.setDate(
+                    QDate(date.year, date.month, date.day)
+                )
+
+                hour = index.data(ScheduleModel.HourRole)
+                editor.hour_edit.setTime(QTime(hour.hour, hour.minute))
+
+                est_dur = index.data(ScheduleModel.EstTimeRole)
+                if type(est_dur) is time or type(est_dur) is datetime:
+                    editor.duration_edit.setTime(
+                        QTime(est_dur.hour, est_dur.minute)
+                    )
+                else:
+                    editor.duration_edit.hide()
+
+                state = index.data(ScheduleModel.StatusRole)
+                state_ind = editor.state_edit.findText(state)
+                editor.state_edit.setCurrentIndex(state_ind)
+
+                # Changing editor's background color according to the state
+                new_pallete = editor.palette()
+                new_pallete.setColor(
+                    editor.backgroundRole(), self.COLORS[state])
+                editor.setPalette(new_pallete)
 
     def setModelData(
             self,
@@ -387,7 +389,7 @@ class TestItemDelegate(QStyledItemDelegate):
             )
 
             # Signal for updating dash and qt side at the same time
-            model.dataChanged.emit(index, index)
+            model.dataChanged.emit(index, index, [])
 
     @Slot()
     def newItem(self):

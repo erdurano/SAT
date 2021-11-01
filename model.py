@@ -103,7 +103,7 @@ class ScheduleModel(QAbstractListModel):
                     t_hour.hour,
                     t_hour.minute
                 )
-                isNear = dt - datetime.now() <= timedelta(hours=2)
+                isNear = (dt - datetime.now()) <= timedelta(hours=2)
                 return isNear
 
         else:
@@ -140,7 +140,6 @@ class ScheduleModel(QAbstractListModel):
                 self._data[index.row()].status = Status(value)
             elif role == self.RespNameRole:
                 self._data[index.row()].responsible_name = value
-
             self.sort()
 
             return True
@@ -198,9 +197,10 @@ class ScheduleModel(QAbstractListModel):
 
     def check_activated(self):
         now = datetime.now()
+        roles_to_change = [self.StatusRole, self.IsNearRole]
         for rown in range(self.rowCount()):
             index = self.index(rown)
-            roles_to_change = [self.StatusRole, self.IsNearRole]
+
             year, month, day = (
                 self.data(index, self.DateStrRole).year,
                 self.data(index, self.DateStrRole).month,
@@ -221,7 +221,7 @@ class ScheduleModel(QAbstractListModel):
                     Status.ACTIVE.value,
                     self.StatusRole
                 )
-                self.dataChanged.emit(index, index, roles_to_change[0])
+                self.dataChanged.emit(index, index, roles_to_change[0:1])
 
             elif now < dt and\
                     self.data(index, self.StatusRole) ==\
@@ -232,14 +232,13 @@ class ScheduleModel(QAbstractListModel):
                     Status.NOT_STARTED.value,
                     self.StatusRole
                 )
-                self.dataChanged.emit(index, index, roles_to_change[0])
+                self.dataChanged.emit(index, index, roles_to_change[0:1])
 
-        if self.index is not None:
-            self.dataChanged.emit(
-                self.index(0),
-                self.index(self.rowCount()-1),
-                [self.IsNearRole, ]
-            )
+            if index.isValid():
+                self.dataChanged.emit(
+                    index, index,
+                    roles_to_change[1:]
+                )
 
     def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
         if self.index(row).isValid():
