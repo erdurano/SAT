@@ -64,7 +64,8 @@ class App(QApplication):
 
     def filename(self):
         path, _ = app.import_diag.getOpenFileName()
-        self.import_path.emit(path)
+        if path.endswith(('.xlsx', '.xls')):
+            self.import_path.emit(path)
 
     def make_connections(self):
         # Connections.
@@ -79,7 +80,11 @@ class App(QApplication):
         self.main_window.window_closed.connect(self.dash_window.close)
 
         self.updateTimer.timeout.connect(self.schedule_model.check_activated)
-        self.updateTimer.start(60000)
+        self.updateTimer.start(10000)
+
+        self.main_window.new_item_button.clicked.connect(
+            self.main_window.schedule_view.itemDelegate().newItem
+        )
 
 
 if __name__ == "__main__":

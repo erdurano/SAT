@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.11
 
 Item {
         property string sfitext // Declare properties here
@@ -11,6 +12,8 @@ Item {
         property string hourText
         property string estText
         property string statText
+        property string respNameText
+        property bool isNear
 
         id: base
         width:30
@@ -22,17 +25,19 @@ Item {
         radius: height/2
         border.width: 2
         anchors.fill: parent
-        anchors.rightMargin: 5
+        // anchors.rightMargin: 5
         anchors.bottomMargin: 2.5
-        anchors.leftMargin: 5
+        // anchors.leftMargin: 5
         anchors.topMargin: 2.5
 
         
         Text{
             id: sfi
-            y: 0
-            x: 0
-            width: parent.height/2
+            anchors {
+                top: parent.top
+                left: parent.left
+            }
+            width: parent.height*3/4
             height: parent.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -44,11 +49,16 @@ Item {
         
         Text {
             id: name
-            width: parent.width - parent.height
+            width: parent.width - sfi.width - stat.width
             height: parent.height/2
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-
+            wrapMode: Text.WordWrap
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: 'Effra'
+            }
             anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
@@ -88,29 +98,39 @@ Item {
             text: "O: " + ownrText // And use them here
         }
         
-        
-        Text{
-            id: dept
-            width: (parent.width - parent.height)/2
-            height: parent.height/4
+        RowLayout{
+            id: resp_layout
             anchors {
                 top: parent.verticalCenter
                 left: sfi.right
+                right: parent.horizontalCenter
             }
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: deptText // And use them here
+            height: parent.height/4
+
+
+            Text{
+                id: dept
+                Layout.alignment: Qt.AlignCenter
+                text: deptText // And use them here
+            }
+            
+            Text{
+                id: resp_name
+                text: respNameText
+
+                Layout.alignment: Qt.AlignCenter
+
+            }
         }
-        
         
         Text{
             id: date
-            x: parent.width/2
-            y: parent.height/2
+
             width: (parent.width-parent.height)/2
             height: parent.height/4
             anchors {
-                verticalCenter : dept.verticalCenter
+                top: parent.verticalCenter
+                left: parent.horizontalCenter
             }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
@@ -146,10 +166,16 @@ Item {
         }
         
         Text{
-            x : parent.width - parent.height/2
+            id: stat
+            height: parent.height
+            width: parent.height*3/4
+            wrapMode: Text.WordWrap
             anchors {
-                verticalCenter: sfi.verticalCenter
+                right: parent.right
+                top: parent.top    
             }
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
             text: statText // And use them here
         }
         
@@ -157,8 +183,13 @@ Item {
 
     onStatTextChanged: {
         if (statText == 'Not Started') {
-            var gradient = passive_gradient.createObject(background)
-            background.gradient = gradient;
+            if (isNear == true) {
+                var gradient = near_gradient.createObject(background)
+                background.gradient = gradient;
+            } else if (isNear == false) {
+                var gradient = passive_gradient.createObject(background)
+                background.gradient = gradient;
+            }
         } else if (statText == 'Active') {
             var gradient = active_gradient.createObject(background)
             background.gradient = gradient;
@@ -171,6 +202,18 @@ Item {
         }
     }
 
+    onIsNearChanged: {
+        console.log(isNear)
+        if (statText == 'Not Started') {
+            if (isNear == true) {
+                var gradient = near_gradient.createObject(background)
+                background.gradient = gradient;
+            } else if (isNear == false) {
+                var gradient = passive_gradient.createObject(background)
+                background.gradient = gradient;
+            }
+        }
+    }
 
     Component{
         id: passive_gradient
@@ -183,6 +226,26 @@ Item {
             GradientStop {
                 position: 0.01
                 color: "#bdc2e8"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#e6dee9"
+            }
+        }
+    }
+
+    Component{
+        id: near_gradient
+        Gradient {
+            GradientStop {
+                position: 0
+                color: "#5769cb"
+            }
+
+            GradientStop {
+                position: 0.01
+                color: "#5769cb"
             }
 
             GradientStop {
