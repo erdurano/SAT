@@ -67,15 +67,6 @@ class MainWindow(QMainWindow):
         pixelSizeSpinBox.valueChanged.connect(self.delegate.setPixelSize)
         pixelSizeSpinBox.valueChanged.connect(self.updateView)
 
-        # self.connect(openAction, openAction.triggered, self, self.chooseImage)
-        # self.connect(self.printAction, self.printAction.triggered, self, self.printImage)
-        # self.connect(quitAction, quitAction.triggered, QApplication.instance(),
-        #              QApplication.instance().quit)
-        # self.connect(aboutAction, aboutAction.triggered, self, self.showAboutBox)
-        # self.connect(pixelSizeSpinBox, pixelSizeSpinBox.valueChanged, self.delegate, self.delegate.setPixelSixe)
-
-        # self.connect(pixelSizeSpinBox, pixelSizeSpinBox.valueChanged, self, self.updateView)
-    
         controlsLayout = QHBoxLayout()
         controlsLayout.addWidget(pixelSizeLabel)
         controlsLayout.addWidget(pixelSizeSpinBox)
