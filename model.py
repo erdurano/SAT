@@ -254,6 +254,7 @@ class ScheduleModel(QAbstractListModel):
 
     def insertRow(self, row: int, parent=QModelIndex()) -> bool:
         if self.index(row).isValid or row == self.rowCount():
+            another = datetime.now() + timedelta(hours=3)
             self.beginInsertRows(parent, row, row)
             new_item = TestItem(
                 sfi='',
@@ -263,8 +264,8 @@ class ScheduleModel(QAbstractListModel):
                 owner_attendance='-',
                 record_status='',
                 responsible_dept='Quality',
-                date=datetime.today(),
-                start_hour=(datetime.now()+timedelta(hours=3)).time(),
+                date=another.date(),
+                start_hour=another.time(),
                 est=time()
             )
             self._data.insert(row, new_item)

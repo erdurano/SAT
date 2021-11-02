@@ -25,6 +25,7 @@ class MainWindow(QMainWindow):
     # Signals
     window_closed = Signal()
     import_path = Signal(str)
+    delete_selected = Signal()
 
     def __init__(self):
         super().__init__()
@@ -85,16 +86,12 @@ class MainWindow(QMainWindow):
         return super().closeEvent(event)
 
     def delete_handler(self) -> None:
-        rows_to_del = self.schedule_view.getSelected()
+        delete_answer = DeletionBox(self).ask()
 
-        if rows_to_del:
-            delete_answer = DeletionBox(self).ask()
+        if delete_answer is not None and\
+            delete_answer == delete_answer.Yes:
+            self.delete_selected.emit()
 
-            if delete_answer == delete_answer.Yes:
-                rows_to_del.sort(key=QModelIndex.row)
-
-                for index in rows_to_del[::-1]:
-                    self.schedule_view.model().removeRow(index.row())
 
     def make_connections(self):
         # Connections.
@@ -112,6 +109,7 @@ class MainWindow(QMainWindow):
             self.schedule_view.newItem
         )
         self.delete_button.clicked.connect(self.delete_handler)
+        self.delete_selected.connect(self.schedule_view.deleteSelected)
 
     def createDashWindow(self):
         dash_window = DashWindow()
@@ -140,20 +138,23 @@ class DeletionBox(QMessageBox):
     def __init__(self, parent: Optional[MainWindow] = None) -> None:
         super().__init__(parent=parent)
         self.setWindowTitle(self.tr('Delete'))
-        self.setText(self.getMessageBody())
         self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
 
-    def getMessageBody(self) -> str:
+    def getMessageBody(self) -> Optional[str]:
         prefix = 'Are you sure about deletion of below items?\n'
         titles = self.itemTitleList()
-        for title in titles:
-            prefix += '-' + title + '\n'
-        return prefix
+        if titles:
+            for title in titles:
+                prefix += '-' + title + '\n'
+            return prefix
+        else:
+            return None
+
 
     def itemTitleList(self) -> List[str]:
         title_list = list()
-        indexes = self.parent().schedule_view.getSelected()
-        for index in indexes:
+        indexes_to_delete = self.parent().schedule_view.getSelected()
+        for index in indexes_to_delete:
             name = index.data(ScheduleModel.NameRole)
             if name is None or name == "":
                 title_list.append("(Empty Item)")
@@ -162,9 +163,12 @@ class DeletionBox(QMessageBox):
         return title_list
 
     def ask(self) -> QMessageBox.StandardButton:
-        return self.question(
-            self.parent(),
-            self.windowTitle(),
-            self.text(),
-            self.standardButtons()
-        )
+        body = self.getMessageBody()
+        if body:
+            self.setText(body)
+            return self.question(
+                self.parent(),
+                self.windowTitle(),
+                self.text(),
+                self.standardButtons()
+            )

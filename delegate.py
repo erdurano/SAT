@@ -245,9 +245,11 @@ class TestItemDelegate(QStyledItemDelegate):
 
         if index.isValid():
             x, y, w, h = option.rect.getRect()
-            editor.setGeometry(x+6, y+6, w-12, h-12)
-
-            return None
+            view: ScheduleView = self.parent()
+            if view.verticalScrollBar().isVisible():
+                editor.setGeometry(x+6, y+6, w-15, h-12)
+            else:
+                editor.setGeometry(x+6, y+6, w-12, h-12)
 
         # else:
         #     return super().updateEditorGeometry(editor, option, index)

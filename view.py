@@ -43,3 +43,10 @@ class ScheduleView(QListView):
         end = self.model().rowCount()
         self.model().insertRow(end)
         self.edit(self.model().index(end))
+
+    @Slot()
+    def deleteSelected(self):
+        rows_to_del = self.getSelected()
+        rows_to_del.sort(key=QModelIndex.row)
+        for index in rows_to_del[::-1]:
+            self.model().removeRow(index.row())
