@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from PySide2.QtCore import QTimer, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
@@ -85,22 +85,10 @@ class MainWindow(QMainWindow):
         return super().closeEvent(event)
 
     def delete_handler(self) -> None:
-        del_list = 'Are you sure about deletion of below items?\n'
         rows_to_del = self.schedule_view.getSelected()
-        for index in rows_to_del:
-            item_name = index.data(ScheduleModel.NameRole)
-            if item_name is None or item_name == '':
-                item_name = "(Empty Item)"
 
-            del_list += '-' + item_name + "\n"
-
-        if rows_to_del != [] and self.schedule_view.model().rowCount() != 0:
-            delete_answer = QMessageBox().question(
-                self,
-                self.tr('Delete'),
-                self.tr(del_list),
-                QMessageBox.Yes | QMessageBox.No
-            )
+        if rows_to_del:
+            delete_answer = DeletionBox(self).ask()
 
             if delete_answer == delete_answer.Yes:
                 while rows_to_del:
@@ -146,3 +134,38 @@ class MainWindow(QMainWindow):
             return path
         else:
             return None
+
+
+class DeletionBox(QMessageBox):
+
+    def __init__(self, parent: Optional[MainWindow] = None) -> None:
+        super().__init__(parent=parent)
+        self.setWindowTitle(self.tr('Delete'))
+        self.setText(self.getMessageBody())
+        self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+
+    def getMessageBody(self) -> str:
+        prefix = 'Are you sure about deletion of below items?\n'
+        titles = self.itemTitleList()
+        for title in titles:
+            prefix += '-' + title + '\n'
+        return prefix
+
+    def itemTitleList(self) -> List[str]:
+        title_list = list()
+        indexes = self.parent().schedule_view.getSelected()
+        for index in indexes:
+            name = index.data(ScheduleModel.NameRole)
+            if name is None or name == "":
+                title_list.append("(Empty Item)")
+            else:
+                title_list.append(name)
+        return title_list
+
+    def ask(self) -> QMessageBox.StandardButton:
+        return self.question(
+            self.parent(),
+            self.windowTitle(),
+            self.text(),
+            self.standardButtons()
+        )
