@@ -1,7 +1,7 @@
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 
 from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
-                            Signal, Slot)
+                            Signal)
 from PySide2.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
                                QListView, QPushButton, QStyle,
@@ -10,7 +10,7 @@ from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
 
 from view import ScheduleView
 from model import ScheduleModel
-from scheduleclasses import Status, TestItem
+from scheduleclasses import Status
 from xlsIO import tick
 
 
@@ -390,27 +390,3 @@ class TestItemDelegate(QStyledItemDelegate):
 
             # Signal for updating dash and qt side at the same time
             model.dataChanged.emit(index, index, [])
-
-    @Slot()
-    def newItem(self):
-        self.model.beginInsertRows(
-            QModelIndex(),
-            self.model.rowCount(),
-            self.model.rowCount(),
-        )
-        self.model._data.append(TestItem(
-            sfi='',
-            item_name='',
-            class_attendance='-',
-            flag_attendance='-',
-            owner_attendance='-',
-            record_status='',
-            responsible_dept='Quality',
-            date=datetime.today(),
-            start_hour=(datetime.now()+timedelta(hours=3)).time(),
-            est=time()
-            )
-        )
-        self.model.endInsertRows()
-        parr: ScheduleView = self.parent()
-        parr.edit(self.model.index(self.model.rowCount()-1))

@@ -65,7 +65,6 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
         self.setFixedSize(600, 480)
-        self.schedule_view.setSelectionRectVisible(True)
 
         # Initialization of data structures and other functions
         self.updateTimer = QTimer(self)
@@ -124,7 +123,7 @@ class MainWindow(QMainWindow):
         self.updateTimer.timeout.connect(self.schedule_model.check_activated)
         self.updateTimer.start(10000)
         self.new_item_button.clicked.connect(
-            self.schedule_view.itemDelegate().newItem
+            self.schedule_view.newItem
         )
         self.delete_button.clicked.connect(self.delete_handler)
 

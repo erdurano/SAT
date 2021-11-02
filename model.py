@@ -251,3 +251,23 @@ class ScheduleModel(QAbstractListModel):
             self.endRemoveRows()
             return True
         return False
+
+    def insertRow(self, row: int, parent=QModelIndex()) -> bool:
+        if self.index(row).isValid or row == self.rowCount():
+            self.beginInsertRows(parent, row, row)
+            new_item = TestItem(
+                sfi='',
+                item_name='',
+                class_attendance='-',
+                flag_attendance='-',
+                owner_attendance='-',
+                record_status='',
+                responsible_dept='Quality',
+                date=datetime.today(),
+                start_hour=(datetime.now()+timedelta(hours=3)).time(),
+                est=time()
+            )
+            self._data.insert(row, new_item)
+            self.endInsertRows()
+            return True
+        return False
