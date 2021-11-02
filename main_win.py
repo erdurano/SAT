@@ -1,29 +1,36 @@
-from typing import List, Optional
-from PySide2.QtCore import QItemSelectionModel, QModelIndex, Signal
+import os
+from typing import Optional
+from PySide2.QtCore import QTimer, QUrl, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
-    QApplication,
+    QFileDialog,
     QHBoxLayout,
-    QListView,
     QMainWindow,
     QMessageBox,
     QPushButton,
     QSizePolicy,
     QSpacerItem,
-    QStyledItemDelegate,
     QVBoxLayout,
     QWidget,
 )
+from dash_window import DashWindow
+from delegate import TestItemDelegate
 from model import ScheduleModel
+from view import ScheduleView
+from xlsIO import XlsIO
 
 
 class MainWindow(QMainWindow):
     """MainWindow class to import, see and adjust test items"""
 
+    # Signals
     window_closed = Signal()
+    import_path = Signal(str)
 
     def __init__(self):
         super().__init__()
+
+        # Visual of main window
 
         self.setWindowTitle('SAT Scheduler')
         self.setWindowIcon(QIcon(QPixmap('./imgsrc/cemre_logo.ico')))
@@ -59,7 +66,21 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main_widget)
         self.setFixedSize(600, 480)
         self.schedule_view.setSelectionRectVisible(True)
-        self.delete_button.clicked.connect(self.delete_handler)
+
+        # Initialization of data structures and other functions
+        self.updateTimer = QTimer(self)
+
+        self.file_handler = XlsIO()
+        self.schedule_model = ScheduleModel()
+        self.schedule_view.setModel(self.schedule_model)
+        self.schedule_view.setItemDelegate(
+            TestItemDelegate(self.schedule_view)
+        )
+        self.filename = ''
+
+        self.dash_window = self.createDashWindow()
+
+        self.make_connections()
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()
@@ -90,45 +111,46 @@ class MainWindow(QMainWindow):
                         break
                     rows_to_del = self.schedule_view.getSelected()
 
+    def make_connections(self):
+        # Connections.
+        self.import_button.clicked.connect(self.get_filename)
+        self.import_path.connect(self.file_handler.import_excel)
 
-class ScheduleView(QListView):
-
-    def __init__(self, parent: Optional[QWidget]) -> None:
-        super().__init__(parent=parent)
-        self.setSpacing(1)
-
-        self.setVerticalScrollMode(
-            self.ScrollPerPixel
+        self.file_handler.schedule_to_update.connect(
+            self.schedule_model.updateSchedule
         )
-        self.setSelectionMode(self.ExtendedSelection)
+        self.dash_button.clicked.connect(self.dash_window.show)
+        self.window_closed.connect(self.dash_window.close)
+        self.updateTimer.timeout.connect(self.schedule_model.check_activated)
+        self.updateTimer.start(10000)
+        self.new_item_button.clicked.connect(
+            self.schedule_view.itemDelegate().newItem
+        )
+        self.delete_button.clicked.connect(self.delete_handler)
 
-    def commitData(self, editor: QWidget) -> None:
-        # Holds the view from updating the model when exiting the item
-        # else passes the commitData slot
-        if type(self.sender()) == QItemSelectionModel or\
-                type(self.sender()) is None:
-            return None
+    def createDashWindow(self):
+        dash_window = DashWindow(None)
+        dash_window.hide()
+        dash_window.model = self.schedule_view.model()
+        dash_window.rootContext().setContextProperty(
+            "ScheduleModel", self.schedule_model
+        )
+        dash_window.setSource(
+            QUrl.fromLocalFile(
+                os.path.join(os.path.dirname(__file__), "qml/Dash.qml")
+            )
+        )
+        return dash_window
+
+    def get_filename(self) -> Optional[str]:
+        diag = QFileDialog(
+            parent=self,
+            caption="Import SAT Excel",
+            filter="Excel file (*.xlsx)",
+        )
+        path, _ = diag.getOpenFileName()
+        if path.endswith(('.xlsx', '.xls')):
+            self.import_path.emit(path)
+            return path
         else:
-            return super().commitData(editor)
-
-    def closeEditor(self,
-                    editor: QWidget,
-                    hint: QStyledItemDelegate.EndEditHint) -> None:
-        if hint == QStyledItemDelegate.SubmitModelCache:
-            self.commitData(editor)
-        elif hint == QStyledItemDelegate.RevertModelCache:
-            pass
-        super().closeEditor(editor, hint)
-
-    def getSelected(self) -> List[QModelIndex]:
-        return self.selectionModel().selectedRows()
-
-
-if __name__ == "__main__":
-    app = QApplication()
-
-    win = MainWindow()
-
-    win.show()
-
-    app.exec_()
+            return None

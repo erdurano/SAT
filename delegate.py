@@ -8,7 +8,7 @@ from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
                                QStyledItemDelegate, QStyleOptionViewItem,
                                QTimeEdit, QWidget)
 
-from main_win import ScheduleView
+from view import ScheduleView
 from model import ScheduleModel
 from scheduleclasses import Status, TestItem
 from xlsIO import tick
