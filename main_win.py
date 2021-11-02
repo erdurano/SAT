@@ -1,6 +1,5 @@
-import os
 from typing import Optional
-from PySide2.QtCore import QTimer, QUrl, Signal
+from PySide2.QtCore import QTimer, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
     QFileDialog,
@@ -128,17 +127,11 @@ class MainWindow(QMainWindow):
         self.delete_button.clicked.connect(self.delete_handler)
 
     def createDashWindow(self):
-        dash_window = DashWindow(None)
-        dash_window.hide()
-        dash_window.model = self.schedule_view.model()
+        dash_window = DashWindow()
         dash_window.rootContext().setContextProperty(
             "ScheduleModel", self.schedule_model
         )
-        dash_window.setSource(
-            QUrl.fromLocalFile(
-                os.path.join(os.path.dirname(__file__), "qml/Dash.qml")
-            )
-        )
+        dash_window.setDashRoot()
         return dash_window
 
     def get_filename(self) -> Optional[str]:
