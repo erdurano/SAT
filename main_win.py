@@ -1,5 +1,5 @@
 from typing import List, Optional
-from PySide2.QtCore import QTimer, Signal
+from PySide2.QtCore import QModelIndex, QTimer, Signal
 from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide2.QtWidgets import (
     QFileDialog,
@@ -91,11 +91,10 @@ class MainWindow(QMainWindow):
             delete_answer = DeletionBox(self).ask()
 
             if delete_answer == delete_answer.Yes:
-                while rows_to_del:
-                    self.schedule_view.model().removeRow(rows_to_del[0].row())
-                    if not rows_to_del:
-                        break
-                    rows_to_del = self.schedule_view.getSelected()
+                rows_to_del.sort(key=QModelIndex.row)
+
+                for index in rows_to_del[::-1]:
+                    self.schedule_view.model().removeRow(index.row())
 
     def make_connections(self):
         # Connections.
