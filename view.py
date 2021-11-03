@@ -1,7 +1,7 @@
 from typing import List, Optional
 
-from PySide2.QtCore import QItemSelectionModel, QModelIndex, Slot
-from PySide2.QtWidgets import QListView, QStyledItemDelegate, QWidget
+from PySide6.QtCore import QItemSelectionModel, QModelIndex, Slot
+from PySide6.QtWidgets import QListView, QStyledItemDelegate, QWidget
 
 
 class ScheduleView(QListView):

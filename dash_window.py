@@ -1,6 +1,6 @@
 import os
-from PySide2.QtCore import QUrl
-from PySide2.QtQuickWidgets import QQuickWidget
+from PySide6.QtCore import QUrl
+from PySide6.QtQuickWidgets import QQuickWidget
 
 
 class DashWindow(QQuickWidget):

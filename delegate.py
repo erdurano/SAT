@@ -1,9 +1,9 @@
 from datetime import datetime, time
 
-from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
+from PySide6.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
                             Signal)
-from PySide2.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
-from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
+from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
+from PySide6.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
                                QListView, QPushButton, QStyle,
                                QStyledItemDelegate, QStyleOptionViewItem,
                                QTimeEdit, QWidget)
@@ -39,7 +39,6 @@ class ItemEditor(QWidget):
         self.edit_layout = QGridLayout()
         self.setLayout(self.edit_layout)
         self.edit_layout.setSpacing(3)
-        self.edit_layout.setMargin(0)
 
         self.sfi_edit = QLineEdit(parent=self)
         self.sfi_edit.setMaximumWidth(40)
