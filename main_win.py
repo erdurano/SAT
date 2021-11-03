@@ -79,7 +79,7 @@ class MainWindow(QMainWindow):
 
         self.dash_window = self.createDashWindow()
 
-        self.make_connections()
+        self.makeConnections()
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()
@@ -89,11 +89,10 @@ class MainWindow(QMainWindow):
         delete_answer = DeletionBox(self).ask()
 
         if delete_answer is not None and\
-            delete_answer == delete_answer.Yes:
+                delete_answer == delete_answer.Yes:
             self.delete_selected.emit()
 
-
-    def make_connections(self):
+    def makeConnections(self):
         # Connections.
         self.import_button.clicked.connect(self.get_filename)
         self.import_path.connect(self.file_handler.import_excel)
@@ -149,7 +148,6 @@ class DeletionBox(QMessageBox):
             return prefix
         else:
             return None
-
 
     def itemTitleList(self) -> List[str]:
         title_list = list()
