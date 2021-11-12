@@ -8,7 +8,6 @@ class ScheduleView(QListView):
 
     def __init__(self, parent: Optional[QWidget]) -> None:
         super().__init__(parent=parent)
-        self.setSpacing(1)
 
         self.setVerticalScrollMode(
             self.ScrollPerPixel

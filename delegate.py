@@ -38,7 +38,7 @@ class ItemEditor(QWidget):
 
         self.edit_layout = QGridLayout()
         self.setLayout(self.edit_layout)
-        self.edit_layout.setSpacing(3)
+        self.edit_layout.setSpacing(2)
 
         self.sfi_edit = QLineEdit(parent=self)
         self.sfi_edit.setMaximumWidth(40)
@@ -246,7 +246,7 @@ class TestItemDelegate(QStyledItemDelegate):
             x, y, w, h = option.rect.getRect()
             view: ScheduleView = self.parent()
             if view.verticalScrollBar().isVisible():
-                editor.setGeometry(x+6, y+6, w-15, h-12)
+                editor.setGeometry(x+6, y+6, w-12, h-12)
             else:
                 editor.setGeometry(x+6, y+6, w-12, h-12)
 
