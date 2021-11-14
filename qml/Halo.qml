@@ -22,7 +22,7 @@ Item {
     Rectangle {
         id: background
         // color: "#bdc2e8"
-        radius: height/2
+        radius: height/8
         border.width: 2
         anchors.fill: parent
         // anchors.rightMargin: 5
@@ -142,10 +142,10 @@ Item {
         Text{
             id: startHour
             height: parent.height/4
-            width: date.width/2
             anchors {
-                left: date.left
+                right: date.horizontalCenter
                 verticalCenter: flag.verticalCenter
+                rightMargin:5
             }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
@@ -154,10 +154,10 @@ Item {
         
         Text{
             height: parent.height/4
-            width: date.width/2
             anchors {
                 verticalCenter: startHour.verticalCenter
-                left: startHour.right
+                left: date.horizontalCenter
+                leftMargin: 5
             }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
