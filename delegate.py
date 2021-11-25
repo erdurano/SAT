@@ -32,9 +32,10 @@ class ItemEditor(QWidget):
 
         super().__init__(parent=parent)
         self.index = index
-        self.setAutoFillBackground(True)
+        x, y, w, h = option.rect.getRect()
 
-        self.setGeometry(option.rect)
+        self.setGeometry(x+6, y+6, w-12, h-12)
+        self.setContentsMargins(-3, -3, -3, -3)
 
         self.edit_layout = QGridLayout()
         self.setLayout(self.edit_layout)
@@ -103,6 +104,9 @@ class ItemEditor(QWidget):
         self.duration_edit = QTimeEdit(parent=self)
         self.duration_edit.setDisplayFormat('HH:mm')
         self.edit_layout.addWidget(self.duration_edit, 3, 6, 3, 1)
+        x, y, w, h = self.geometry().getRect()
+        self.edit_layout.setGeometry(QRect(x-12, y-12, w+24, h+24))
+        print(self.edit_layout.geometry())
 
         self.save_button.clicked.connect(self.saveButton)
 
@@ -234,22 +238,21 @@ class TestItemDelegate(QStyledItemDelegate):
 
     def createEditor(self, parent, option, index):
         editor = ItemEditor(parent, option, index)
+        self.updateEditorGeometry(editor, option, index)
         return editor
 
     def sizeHint(self, option: QStyleOptionViewItem, index):
-        size = QSize(option.rect.width(), 70)
-        return size
+        if index.isValid():
+            size = QSize(option.rect.width(), 70)
+            return size
 
-    def updateEditorGeometry(self, editor: QWidget, option, index):
+    def updateEditorGeometry(self, editor: ItemEditor, option, index):
+        print('ey')
 
         if index.isValid():
             x, y, w, h = option.rect.getRect()
-            view: ScheduleView = self.parent()
-            if view.verticalScrollBar().isVisible():
-                editor.setGeometry(x+6, y+6, w-12, h-12)
-            else:
-                editor.setGeometry(x+6, y+6, w-12, h-12)
-
+            editor.setGeometry(x+6, y+6, w-12, h-12)
+            editor.edit_layout.setGeometry(QRect(-6, -6, w, h))
         # else:
         #     return super().updateEditorGeometry(editor, option, index)
 
