@@ -1,42 +1,40 @@
 from datetime import datetime, time
 
-from PySide6.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
-                            Signal)
-from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
+from PySide6.QtCore import QDate, QModelIndex, QRect, QSize, Qt, QTime, Signal
+from PySide6.QtGui import (QBrush, QColor, QPainter, QPainterPath, QPaintEvent,
+                           QPen)
 from PySide6.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
-                               QListView, QPushButton, QStyle,
-                               QStyledItemDelegate, QStyleOptionViewItem,
-                               QTimeEdit, QWidget)
+                               QPushButton, QStyle, QStyledItemDelegate,
+                               QStyleOptionViewItem, QTimeEdit, QWidget)
 
-from view import ScheduleView
 from model import ScheduleModel
 from scheduleclasses import Status
+from view import ScheduleView
 from xlsIO import tick
 
 
 class ItemEditor(QWidget):
     editing_finished = Signal()
     attendance_dict = {
-        '-': ' ',
-        'A': 'Approval',
-        'NA': 'Not Applicable',
-        'R': 'Review',
-        'W': 'Witness',
-        tick: 'tick'
+        "-": " ",
+        "A": "Approval",
+        "NA": "Not Applicable",
+        "R": "Review",
+        "W": "Witness",
+        tick: "tick",
     }
 
-    def __init__(self,
-                 parent: QWidget,
-                 option: QStyleOptionViewItem,
-                 index: QModelIndex) -> None:
+    def __init__(
+        self, parent: QWidget, option: QStyleOptionViewItem, index: QModelIndex
+    ) -> None:
 
         super().__init__(parent=parent)
-        self.index = index
-        x, y, w, h = option.rect.getRect()
+        self.index: QModelIndex = index
 
-        self.setGeometry(x+6, y+6, w-12, h-12)
-        self.setContentsMargins(-3, -3, -3, -3)
+        self.option = option
+        self.parent = parent
 
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.edit_layout = QGridLayout()
         self.setLayout(self.edit_layout)
         self.edit_layout.setSpacing(2)
@@ -68,52 +66,66 @@ class ItemEditor(QWidget):
         self.state_edit.addItems(combo_items)
         self.edit_layout.addWidget(self.state_edit, 0, 3, 3, 1)
 
-        self.save_button = QPushButton('Save Changes', parent=self)
+        self.save_button = QPushButton("Save Changes", parent=self)
         self.edit_layout.addWidget(self.save_button, 3, 3, 3, 1)
 
         self.cls_edit = QComboBox(parent=self)
         self.cls_edit.addItems(
-            ['C: ' + i for i in self.attendance_dict.keys()]
-            )
+            ["C: " + i for i in self.attendance_dict.keys()])
         self.edit_layout.addWidget(self.cls_edit, 0, 4, 2, 1)
         self.cls_edit.setFixedWidth(55)
 
         self.flag_edit = QComboBox(parent=self)
         self.flag_edit.addItems(
-            ['F: ' + i for i in self.attendance_dict.keys()]
-            )
+            ["F: " + i for i in self.attendance_dict.keys()])
         self.edit_layout.addWidget(self.flag_edit, 2, 4, 2, 1)
         self.flag_edit.setFixedWidth(55)
 
         self.owner_edit = QComboBox(parent=self)
         self.owner_edit.addItems(
-            ['O: ' + i for i in self.attendance_dict.keys()]
-            )
+            ["O: " + i for i in self.attendance_dict.keys()])
         self.edit_layout.addWidget(self.owner_edit, 4, 4, 2, 1)
         self.owner_edit.setFixedWidth(55)
 
         self.date_edit = QDateEdit(parent=self, calendarPopup=True)
-        self.date_edit.setDisplayFormat('dd-MM-yyyy')
+        self.date_edit.setDisplayFormat("dd-MM-yyyy")
         self.date_edit.setFixedWidth(100)
         self.edit_layout.addWidget(self.date_edit, 0, 5, 3, -1)
 
         self.hour_edit = QTimeEdit(parent=self)
-        self.hour_edit.setDisplayFormat('HH:mm')
+        self.hour_edit.setDisplayFormat("HH:mm")
         self.edit_layout.addWidget(self.hour_edit, 3, 5, 3, 1)
 
         self.duration_edit = QTimeEdit(parent=self)
-        self.duration_edit.setDisplayFormat('HH:mm')
+        self.duration_edit.setDisplayFormat("HH:mm")
         self.edit_layout.addWidget(self.duration_edit, 3, 6, 3, 1)
-        x, y, w, h = self.geometry().getRect()
-        self.edit_layout.setGeometry(QRect(x-12, y-12, w+24, h+24))
-        print(self.edit_layout.geometry())
+
+        x, y, w, h = option.rect.getRect()
+
+        self.setGeometry(x, y, w, h)
 
         self.save_button.clicked.connect(self.saveButton)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+
+        x, y, w, h = self.option.rect.getRect()
+        print(self.option.rect.getRect())
+        status = self.index.data(ScheduleModel.StatusRole)
+        color = QColor(TestItemDelegate.COLORS[status])
+
+        painter = QPainter(self)
+
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(color)
+        painter.drawRect(QRect(0 + 6, 0 + 6, w - 12, h - 12))
+        painter.end()
+        # return super().paintEvent(event)
 
     def saveButton(self):
         if self.dept_edit.findText(self.dept_edit.currentText()) == -1:
             self.dept_edit.addItem(self.dept_edit.currentText())
-        view: QListView = self.parent().parent()
+        view = self.parent.parent()
         view.closeEditor(self, QStyledItemDelegate.SubmitModelCache)
         view.model().check_activated()
 
@@ -122,11 +134,11 @@ class TestItemDelegate(QStyledItemDelegate):
     """A delegate to show test items in listview in qt side"""
 
     COLORS = {
-        'Set State': Qt.white,
-        'Not Started': Qt.lightGray,
-        'Active': QColor(0, 114, 206),
-        'Passed': QColor(68, 214, 44),
-        'Failed': QColor(227, 120, 120)
+        "Set State": Qt.white,
+        "Not Started": Qt.lightGray,
+        "Active": QColor(0, 114, 206),
+        "Passed": QColor(68, 214, 44),
+        "Failed": QColor(227, 120, 120),
     }
 
     def __init__(self, parent: ScheduleView) -> None:
@@ -135,8 +147,10 @@ class TestItemDelegate(QStyledItemDelegate):
 
         return None
 
-    def paint(self, painter: QPainter,
-              option: QStyleOptionViewItem, index: QModelIndex):
+    def paint(
+        self, painter: QPainter, option: QStyleOptionViewItem,
+        index: QModelIndex
+    ):
 
         painter.setRenderHint(QPainter.Antialiasing, on=True)
 
@@ -167,7 +181,7 @@ class TestItemDelegate(QStyledItemDelegate):
         rect_path = QPainterPath()
         r = option.rect
         rect_path.addRoundedRect(
-            r.x()+3, r.y()+3, r.width()-6, r.height()-6, 10, 10
+            r.x() + 3, r.y() + 3, r.width() - 6, r.height() - 6, 10, 10
         )
         pen = QPen()
         pen.setColor("Black")
@@ -183,57 +197,59 @@ class TestItemDelegate(QStyledItemDelegate):
         x, y, w, h = option.rect.getRect()
 
         # Drawing of the texts
-        painter.drawText(
-            QRect(x + 50, y, w-200, h//2),
-            Qt.AlignVCenter, name)
+        painter.drawText(QRect(x + 50, y, w - 200, h // 2),
+                         Qt.AlignVCenter, name)
+
+        painter.drawText(QRect(x, y, h, h), Qt.AlignCenter, sfi)
 
         painter.drawText(
-            QRect(x, y, h, h),
-            Qt.AlignCenter, sfi)
-
-        painter.drawText(
-            QRect(x+w-150, y, 50, h//3),
+            QRect(x + w - 150, y, 50, h // 3),
             Qt.AlignVCenter,
-            "C:{}".format('-' if cls_att == '' else cls_att))
-
-        painter.drawText(
-            QRect(x+w-150, y+h//3, 50, h//3),
-            Qt.AlignVCenter,
-            "F:{}".format('-' if flg_att == '' else flg_att))
-
-        painter.drawText(
-            QRect(x+w-150, y + 2*h//3, 50, h//3),
-            Qt.AlignVCenter,
-            "O:{}".format('-' if ownr_att == '' else ownr_att))
-
-        painter.drawText(
-            QRect(x+50, y+h//2, w//3, h//2),
-            Qt.AlignVCenter, resp_dept)
-
-        painter.drawText(
-            QRect(x+50+w//3, y+h//2, w//3, h//2),
-            Qt.AlignVCenter, resp_name
+            "C:{}".format("-" if cls_att == "" else cls_att),
         )
 
         painter.drawText(
-            QRect(x+w-100, y, 100, h//2),
-            Qt.AlignCenter, date_str.strftime('%d-%m-%Y')
+            QRect(x + w - 150, y + h // 3, 50, h // 3),
+            Qt.AlignVCenter,
+            "F:{}".format("-" if flg_att == "" else flg_att),
         )
 
         painter.drawText(
-            QRect(x+w-100, y+h//2, 50, h//2),
-            Qt.AlignCenter, hour_str.strftime('%H:%M')
+            QRect(x + w - 150, y + 2 * h // 3, 50, h // 3),
+            Qt.AlignVCenter,
+            "O:{}".format("-" if ownr_att == "" else ownr_att),
+        )
+
+        painter.drawText(
+            QRect(x + 50, y + h // 2, w // 3, h //
+                  2), Qt.AlignVCenter, resp_dept
+        )
+
+        painter.drawText(
+            QRect(x + 50 + w // 3, y + h // 2, w // 3, h // 2),
+            Qt.AlignVCenter,
+            resp_name,
+        )
+
+        painter.drawText(
+            QRect(x + w - 100, y, 100, h // 2),
+            Qt.AlignCenter,
+            date_str.strftime("%d-%m-%Y"),
+        )
+
+        painter.drawText(
+            QRect(x + w - 100, y + h // 2, 50, h // 2),
+            Qt.AlignCenter,
+            hour_str.strftime("%H:%M"),
         )
 
         if type(est_duration) is time:
-            est_str = est_duration.strftime('%H:%M')
+            est_str = est_duration.strftime("%H:%M")
         else:
             est_str = est_duration
 
         painter.drawText(
-            QRect(x+w-50, y+h//2, 50, h//2),
-            Qt.AlignCenter,
-            est_str
+            QRect(x + w - 50, y + h // 2, 50, h // 2), Qt.AlignCenter, est_str
         )
 
     def createEditor(self, parent, option, index):
@@ -247,33 +263,31 @@ class TestItemDelegate(QStyledItemDelegate):
             return size
 
     def updateEditorGeometry(self, editor: ItemEditor, option, index):
-        print('ey')
 
         if index.isValid():
             x, y, w, h = option.rect.getRect()
-            editor.setGeometry(x+6, y+6, w-12, h-12)
-            editor.edit_layout.setGeometry(QRect(-6, -6, w, h))
+            editor.setGeometry(x, y, w, h)
+            # editor.edit_layout.setGeometry(QRect(-6, -6, w, h))
         # else:
         #     return super().updateEditorGeometry(editor, option, index)
 
     def setEditorData(self, editor: ItemEditor, index: QModelIndex):
         if index.isValid():
             editor.dept_edit.addItems(index.data(
-                ScheduleModel.RespSelectionRole)
-            )
+                ScheduleModel.RespSelectionRole))
             if editor.isHidden():
                 editor.sfi_edit.setText(index.data(ScheduleModel.SfiRole))
                 editor.name_edit.setText(index.data(ScheduleModel.NameRole))
 
                 dept_index = editor.dept_edit.findText(
-                    index.data(ScheduleModel.DeptRole))
+                    index.data(ScheduleModel.DeptRole)
+                )
                 editor.dept_edit.setCurrentIndex(dept_index)
 
                 editor.resp_name_edit.setText(
-                    index.data(ScheduleModel.RespNameRole)
-                )
+                    index.data(ScheduleModel.RespNameRole))
 
-                bodies_prefix = ['C: ', 'F: ', 'O: ']
+                bodies_prefix = ["C: ", "F: ", "O: "]
                 roles = [
                     ScheduleModel.ClsRole,
                     ScheduleModel.FlagRole,
@@ -293,8 +307,7 @@ class TestItemDelegate(QStyledItemDelegate):
 
                 date = index.data(ScheduleModel.DateStrRole)
                 editor.date_edit.setDate(
-                    QDate(date.year, date.month, date.day)
-                )
+                    QDate(date.year, date.month, date.day))
 
                 hour = index.data(ScheduleModel.HourRole)
                 editor.hour_edit.setTime(QTime(hour.hour, hour.minute))
@@ -302,8 +315,7 @@ class TestItemDelegate(QStyledItemDelegate):
                 est_dur = index.data(ScheduleModel.EstTimeRole)
                 if type(est_dur) is time or type(est_dur) is datetime:
                     editor.duration_edit.setTime(
-                        QTime(est_dur.hour, est_dur.minute)
-                    )
+                        QTime(est_dur.hour, est_dur.minute))
                 else:
                     editor.duration_edit.hide()
 
@@ -311,85 +323,62 @@ class TestItemDelegate(QStyledItemDelegate):
                 state_ind = editor.state_edit.findText(state)
                 editor.state_edit.setCurrentIndex(state_ind)
 
-                # Changing editor's background color according to the state
-                new_pallete = editor.palette()
-                new_pallete.setColor(
-                    editor.backgroundRole(), self.COLORS[state])
-                editor.setPalette(new_pallete)
-
     def setModelData(
-            self,
-            editor: ItemEditor,
-            model: ScheduleModel,
-            index: QModelIndex) -> None:
+        self, editor: ItemEditor, model: ScheduleModel, index: QModelIndex
+    ) -> None:
 
         if index.isValid():
 
-            model.setData(
-                index,
-                editor.sfi_edit.text(),
-                ScheduleModel.SfiRole
-            )
-            model.setData(
-                index,
-                editor.name_edit.text(),
-                ScheduleModel.NameRole
-            )
+            model.setData(index, editor.sfi_edit.text(), ScheduleModel.SfiRole)
+            model.setData(index, editor.name_edit.text(),
+                          ScheduleModel.NameRole)
+
+            model.setData(index, editor.dept_edit.currentText(),
+                          ScheduleModel.DeptRole)
 
             model.setData(
                 index,
-                editor.dept_edit.currentText(),
-                ScheduleModel.DeptRole)
-
-            model.setData(
-                index,
-                editor.cls_edit.currentText().split(' ')[-1],
-                ScheduleModel.ClsRole
+                editor.cls_edit.currentText().split(" ")[-1],
+                ScheduleModel.ClsRole,
             )
 
             model.setData(
                 index,
-                editor.flag_edit.currentText().split(' ')[-1],
-                ScheduleModel.FlagRole
+                editor.flag_edit.currentText().split(" ")[-1],
+                ScheduleModel.FlagRole,
             )
 
             model.setData(
                 index,
-                editor.owner_edit.currentText().split(' ')[-1],
-                ScheduleModel.OwnrRole
+                editor.owner_edit.currentText().split(" ")[-1],
+                ScheduleModel.OwnrRole,
             )
 
             model.setData(
                 index,
                 datetime.combine(
-                    editor.date_edit.date().toPython(),
-                    datetime.min.time()
+                    editor.date_edit.date().toPython(), datetime.min.time()
                 ),
-                ScheduleModel.DateStrRole
+                ScheduleModel.DateStrRole,
             )
 
             model.setData(
-                index,
-                editor.hour_edit.time().toPython(),
+                index, editor.hour_edit.time().toPython(),
                 ScheduleModel.HourRole
             )
 
             model.setData(
-                index,
-                editor.duration_edit.time().toPython(),
+                index, editor.duration_edit.time().toPython(),
                 ScheduleModel.EstTimeRole
             )
 
             model.setData(
-                index,
-                editor.state_edit.currentText(),
+                index, editor.state_edit.currentText(),
                 ScheduleModel.StatusRole
             )
 
             model.setData(
-                index,
-                editor.resp_name_edit.text(),
-                ScheduleModel.RespNameRole
+                index, editor.resp_name_edit.text(), ScheduleModel.RespNameRole
             )
 
             # Signal for updating dash and qt side at the same time
