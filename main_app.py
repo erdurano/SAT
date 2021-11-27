@@ -1,7 +1,7 @@
 import os
 
-from PySide2.QtCore import QTimer, QUrl, Signal
-from PySide2.QtWidgets import QApplication, QFileDialog
+from PySide6.QtCore import QTimer, QUrl, Signal
+from PySide6.QtWidgets import QApplication, QFileDialog
 
 from dash_window import DashWindow
 from delegate import TestItemDelegate

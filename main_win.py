@@ -1,7 +1,7 @@
 from typing import List, Optional
-from PySide2.QtCore import QItemSelectionModel, QModelIndex, Signal
-from PySide2.QtGui import QCloseEvent, QIcon, QPixmap
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QItemSelectionModel, QModelIndex, Signal
+from PySide6.QtGui import QCloseEvent, QIcon, QPixmap
+from PySide6.QtWidgets import (
     QApplication,
     QHBoxLayout,
     QListView,

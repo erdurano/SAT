@@ -1,9 +1,9 @@
 from datetime import datetime, time, timedelta
 
-from PySide2.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
+from PySide6.QtCore import (QDate, QModelIndex, QRect, QSize, Qt, QTime,
                             Signal, Slot)
-from PySide2.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
-from PySide2.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
+from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
+from PySide6.QtWidgets import (QComboBox, QDateEdit, QGridLayout, QLineEdit,
                                QListView, QPushButton, QStyle,
                                QStyledItemDelegate, QStyleOptionViewItem,
                                QTimeEdit, QWidget)

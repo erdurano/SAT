@@ -1,7 +1,7 @@
 import typing
 from datetime import datetime, time, timedelta
 
-from PySide2.QtCore import (QAbstractListModel, QModelIndex, Qt, Slot)
+from PySide6.QtCore import (QAbstractListModel, QModelIndex, Qt, Slot)
 
 from scheduleclasses import Schedule, Status, TestItem
 

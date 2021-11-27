@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
-from PySide2.QtCore import QObject, Signal, Slot
+from PySide6.QtCore import QObject, Signal, Slot
 
 tick = b'\xe2\x9c\x93'.decode('utf-8')
 
