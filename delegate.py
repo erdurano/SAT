@@ -109,7 +109,7 @@ class ItemEditor(QWidget):
     def paintEvent(self, event: QPaintEvent) -> None:
 
         x, y, w, h = self.option.rect.getRect()
-        print(self.option.rect.getRect())
+
         status = self.index.data(ScheduleModel.StatusRole)
         color = QColor(TestItemDelegate.COLORS[status])
 
@@ -267,6 +267,7 @@ class TestItemDelegate(QStyledItemDelegate):
         if index.isValid():
             x, y, w, h = option.rect.getRect()
             editor.setGeometry(x, y, w, h)
+            editor.update()
             # editor.edit_layout.setGeometry(QRect(-6, -6, w, h))
         # else:
         #     return super().updateEditorGeometry(editor, option, index)

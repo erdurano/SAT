@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
         # Visual of main window
 
         self.setWindowTitle('SAT Scheduler')
-        self.setWindowIcon(QIcon(QPixmap('./imgsrc/cemre_logo.ico')))
+        self.setWindowIcon(QIcon(QPixmap('./rsrc/img/cemre_logo.ico')))
 
         self.dash_button = QPushButton("Show Dash")
         self.import_button = QPushButton("Import .xls")
