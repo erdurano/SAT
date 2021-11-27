@@ -203,7 +203,6 @@ Item {
     }
 
     onIsNearChanged: {
-        console.log(isNear)
         if (statText == 'Not Started') {
             if (isNear == true) {
                 var gradient = near_gradient.createObject(background)
