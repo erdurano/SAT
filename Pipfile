@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 openpyxl = "*"
+pyside6 = "*"
 
 [dev-packages]
 flake8 = "*"

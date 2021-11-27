@@ -1,32 +1,39 @@
 from typing import List, Optional
-from PySide6.QtCore import QItemSelectionModel, QModelIndex, Signal
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide6.QtWidgets import (
-    QApplication,
+    QFileDialog,
     QHBoxLayout,
-    QListView,
     QMainWindow,
     QMessageBox,
     QPushButton,
     QSizePolicy,
     QSpacerItem,
-    QStyledItemDelegate,
     QVBoxLayout,
     QWidget,
 )
+from dash_window import DashWindow
+from delegate import TestItemDelegate
 from model import ScheduleModel
+from view import ScheduleView
+from xlsIO import XlsIO
 
 
 class MainWindow(QMainWindow):
     """MainWindow class to import, see and adjust test items"""
 
+    # Signals
     window_closed = Signal()
+    import_path = Signal(str)
+    delete_selected = Signal()
 
     def __init__(self):
         super().__init__()
 
+        # Visual of main window
+
         self.setWindowTitle('SAT Scheduler')
-        self.setWindowIcon(QIcon(QPixmap('./imgsrc/cemre_logo.ico')))
+        self.setWindowIcon(QIcon(QPixmap('./rsrc/img/cemre_logo.ico')))
 
         self.dash_button = QPushButton("Show Dash")
         self.import_button = QPushButton("Import .xls")
@@ -58,77 +65,108 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
         self.setFixedSize(600, 480)
-        self.schedule_view.setSelectionRectVisible(True)
-        self.delete_button.clicked.connect(self.delete_handler)
+
+        # Initialization of data structures and other functions
+        self.updateTimer = QTimer(self)
+
+        self.file_handler = XlsIO()
+        self.schedule_model = ScheduleModel()
+        self.schedule_view.setModel(self.schedule_model)
+        self.schedule_view.setItemDelegate(
+            TestItemDelegate(self.schedule_view)
+        )
+        self.filename = ''
+
+        self.dash_window = self.createDashWindow()
+
+        self.makeConnections()
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()
         return super().closeEvent(event)
 
     def delete_handler(self) -> None:
-        del_list = 'Are you sure about deletion of below items?\n'
-        rows_to_del = self.schedule_view.getSelected()
-        for index in rows_to_del:
-            item_name = index.data(ScheduleModel.NameRole)
-            if item_name is None or item_name == '':
-                item_name = "(Empty Item)"
+        delete_answer = DeletionBox(self).ask()
 
-            del_list += '-' + item_name + "\n"
+        if delete_answer is not None and\
+                delete_answer == delete_answer.Yes:
+            self.delete_selected.emit()
 
-        if rows_to_del != [] and self.schedule_view.model().rowCount() != 0:
-            delete_answer = QMessageBox().question(
-                self,
-                self.tr('Delete'),
-                self.tr(del_list),
-                QMessageBox.Yes | QMessageBox.No
-            )
+    def makeConnections(self):
+        # Connections.
+        self.import_button.clicked.connect(self.get_filename)
+        self.import_path.connect(self.file_handler.import_excel)
 
-            if delete_answer == delete_answer.Yes:
-                while rows_to_del:
-                    self.schedule_view.model().removeRow(rows_to_del[0].row())
-                    if not rows_to_del:
-                        break
-                    rows_to_del = self.schedule_view.getSelected()
-
-
-class ScheduleView(QListView):
-
-    def __init__(self, parent: Optional[QWidget]) -> None:
-        super().__init__(parent=parent)
-        self.setSpacing(1)
-
-        self.setVerticalScrollMode(
-            self.ScrollPerPixel
+        self.file_handler.schedule_to_update.connect(
+            self.schedule_model.updateSchedule
         )
-        self.setSelectionMode(self.ExtendedSelection)
+        self.dash_button.clicked.connect(self.dash_window.show)
+        self.window_closed.connect(self.dash_window.close)
+        self.updateTimer.timeout.connect(self.schedule_model.check_activated)
+        self.updateTimer.start(10000)
+        self.new_item_button.clicked.connect(
+            self.schedule_view.newItem
+        )
+        self.delete_button.clicked.connect(self.delete_handler)
+        self.delete_selected.connect(self.schedule_view.deleteSelected)
 
-    def commitData(self, editor: QWidget) -> None:
-        # Holds the view from updating the model when exiting the item
-        # else passes the commitData slot
-        if type(self.sender()) == QItemSelectionModel or\
-                type(self.sender()) is None:
-            return None
+    def createDashWindow(self):
+        dash_window = DashWindow()
+        dash_window.rootContext().setContextProperty(
+            "ScheduleModel", self.schedule_model
+        )
+        dash_window.setDashRoot()
+        return dash_window
+
+    def get_filename(self) -> Optional[str]:
+        diag = QFileDialog(
+            parent=self,
+            caption="Import SAT Excel",
+            filter="Excel file (*.xlsx)",
+        )
+        path, _ = diag.getOpenFileName()
+        if path.endswith(('.xlsx', '.xls')):
+            self.import_path.emit(path)
+            return path
         else:
-            return super().commitData(editor)
-
-    def closeEditor(self,
-                    editor: QWidget,
-                    hint: QStyledItemDelegate.EndEditHint) -> None:
-        if hint == QStyledItemDelegate.SubmitModelCache:
-            self.commitData(editor)
-        elif hint == QStyledItemDelegate.RevertModelCache:
-            pass
-        super().closeEditor(editor, hint)
-
-    def getSelected(self) -> List[QModelIndex]:
-        return self.selectionModel().selectedRows()
+            return None
 
 
-if __name__ == "__main__":
-    app = QApplication()
+class DeletionBox(QMessageBox):
 
-    win = MainWindow()
+    def __init__(self, parent: Optional[MainWindow] = None) -> None:
+        super().__init__(parent=parent)
+        self.setWindowTitle(self.tr('Delete'))
+        self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
 
-    win.show()
+    def getMessageBody(self) -> Optional[str]:
+        prefix = 'Are you sure about deletion of below items?\n'
+        titles = self.itemTitleList()
+        if titles:
+            for title in titles:
+                prefix += '-' + title + '\n'
+            return prefix
+        else:
+            return None
 
-    app.exec_()
+    def itemTitleList(self) -> List[str]:
+        title_list = list()
+        indexes_to_delete = self.parent().schedule_view.getSelected()
+        for index in indexes_to_delete:
+            name = index.data(ScheduleModel.NameRole)
+            if name is None or name == "":
+                title_list.append("(Empty Item)")
+            else:
+                title_list.append(name)
+        return title_list
+
+    def ask(self) -> QMessageBox.StandardButton:
+        body = self.getMessageBody()
+        if body:
+            self.setText(body)
+            return self.question(
+                self.parent(),
+                self.windowTitle(),
+                self.text(),
+                self.standardButtons()
+            )

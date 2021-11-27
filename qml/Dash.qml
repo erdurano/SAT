@@ -1,9 +1,9 @@
-import QtQuick 2.2
-import QtQuick.Window 2.2
-import QtQuick.Dialogs.qml 1.0
-import QtQuick.Dialogs 1.3
-import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.2
+import QtQuick
+import QtQuick.Window
+import QtQuick.Dialogs
+import QtQuick.Dialogs
+import QtQuick.Layouts
+import QtQuick.Controls
 
 
 Item {
