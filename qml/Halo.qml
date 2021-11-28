@@ -14,6 +14,7 @@ Item {
         property string statText
         property string respNameText
         property bool isNear
+        property string cemre_font
 
         id: base
         width:30
@@ -38,6 +39,12 @@ Item {
                 left: parent.left
             }
             width: parent.height*3/4
+            font{
+                pixelSize: Math.floor(background.height/4)
+                weight: Font.Medium
+                family: cemre_font
+
+            }
             height: parent.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -55,9 +62,10 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             font{
-                pixelSize: Math.floor(background.height/5)
+                pixelSize: Math.floor(background.height/4)
                 weight: Font.Medium
-                family: 'Effra'
+                family: cemre_font
+
             }
             anchors {
             top: parent.top
@@ -74,6 +82,12 @@ Item {
             anchors {
                 left: sfi.right
             }
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+
+            }
             text: "C: " + clsText // And use them here
         }
         
@@ -85,6 +99,12 @@ Item {
             anchors {
                 left: cls.right
                 }
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+
+            }
             text: "F: " + flagText // And use them here
         }
         
@@ -94,6 +114,12 @@ Item {
             y: parent.height*3/4
             anchors {
                 left: flag.right
+            }
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+
             }
             text: "O: " + ownrText // And use them here
         }
@@ -105,21 +131,31 @@ Item {
                 left: sfi.right
                 right: parent.horizontalCenter
             }
+
             height: parent.height/4
 
 
             Text{
                 id: dept
                 Layout.alignment: Qt.AlignCenter
+                font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+
+                }
                 text: deptText // And use them here
             }
             
             Text{
                 id: resp_name
                 text: respNameText
-
+                font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+                }
                 Layout.alignment: Qt.AlignCenter
-
             }
         }
         
@@ -134,7 +170,12 @@ Item {
             }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
 
+            }
             text: dateText // And use them here
         }
         
@@ -147,6 +188,12 @@ Item {
                 verticalCenter: flag.verticalCenter
                 rightMargin:5
             }
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+
+            }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             text: hourText // And use them here
@@ -158,6 +205,12 @@ Item {
                 verticalCenter: startHour.verticalCenter
                 left: date.horizontalCenter
                 leftMargin: 5
+            }
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+
             }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
@@ -173,6 +226,12 @@ Item {
             anchors {
                 right: parent.right
                 top: parent.top    
+            }
+            font{
+                pixelSize: Math.floor(background.height/5)
+                weight: Font.Medium
+                family: cemre_font
+
             }
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter

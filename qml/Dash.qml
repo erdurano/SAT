@@ -12,6 +12,8 @@ Item {
     height: 720
     visible: true
 
+    Fonts{}
+
     Rectangle {
         id: background
         color: "#ffffff"
@@ -23,7 +25,7 @@ Item {
             id: topbar
             height: parent.height/10
             opacity: 1
-            color: "#8b8989"
+            color: "#686464"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -31,6 +33,19 @@ Item {
             anchors.rightMargin: 0
             anchors.leftMargin: 0
             anchors.topMargin: 0
+
+            Image{
+                fillMode: Image.PreserveAspectFit
+                mipmap: true
+                source: "../rsrc/img/cemre_logo.png"
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 2
+                anchors.left: parent.left
+                anchors.leftMargin: 2
+                anchors.top: parent.top
+                anchors.topMargin: 2
+                antialiasing: true
+            }
         }
 
         Rectangle {
@@ -271,6 +286,7 @@ Item {
                         statText: model.statusRole
                         respNameText: model.respNameRole
                         isNear: model.isNearRole
+                        cemre_font: "Effra"
                     }
                 }
             }

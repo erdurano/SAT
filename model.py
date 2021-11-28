@@ -157,8 +157,7 @@ class ScheduleModel(QAbstractListModel):
             self._data.sort(key=TestItem.dt, reverse=True)
         elif order == Qt.SortOrder.AscendingOrder:
             self._data.sort(key=TestItem.dt, reverse=False)
-        else:
-            return super().sort(column, order=order)
+        # self.dataChanged.emit(self.index(0), self.index(len(self._data)), [])
 
     def roleNames(self):
         roles = dict()
@@ -239,6 +238,7 @@ class ScheduleModel(QAbstractListModel):
                     index, index,
                     roles_to_change[1:]
                 )
+        self.dataChanged.emit(self.index(0), self.index(self.rowCount()))
 
     def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
         if self.index(row).isValid():
