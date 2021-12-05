@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 )
 from dash_window import DashWindow
 from delegate import TestItemDelegate
-from model import ScheduleModel
+from model import ProxyModel, ScheduleModel
 from view import ScheduleView
 from xlsIO import XlsIO
 
@@ -71,7 +71,11 @@ class MainWindow(QMainWindow):
 
         self.file_handler = XlsIO()
         self.schedule_model = ScheduleModel()
-        self.schedule_view.setModel(self.schedule_model)
+        self.proxyModel = ProxyModel()
+        self.proxyModel.setSourceModel(self.schedule_model)
+        self.schedule_view.setModel(self.proxyModel)
+        self.proxyModel.setDynamicSortFilter(True)
+
         self.schedule_view.setItemDelegate(
             TestItemDelegate(self.schedule_view)
         )
@@ -80,6 +84,7 @@ class MainWindow(QMainWindow):
         self.dash_window = self.createDashWindow()
 
         self.makeConnections()
+        self.proxyModel.sort(0)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()
@@ -113,7 +118,7 @@ class MainWindow(QMainWindow):
     def createDashWindow(self):
         dash_window = DashWindow()
         dash_window.rootContext().setContextProperty(
-            "ScheduleModel", self.schedule_model
+            "ScheduleModel", self.proxyModel
         )
         dash_window.setDashRoot()
         return dash_window

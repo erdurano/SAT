@@ -1,7 +1,8 @@
 import typing
-from datetime import datetime, time, timedelta
+from datetime import date, datetime, time, timedelta
 
-from PySide6.QtCore import (QAbstractListModel, QModelIndex, Qt, Slot)
+from PySide6.QtCore import (
+    QAbstractListModel, QModelIndex, QSortFilterProxyModel, Qt, Slot)
 
 from scheduleclasses import Schedule, Status, TestItem
 
@@ -31,7 +32,7 @@ class ScheduleModel(QAbstractListModel):
         'Active',
         'Passed',
         'Failed',
-        ]
+    ]
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -272,3 +273,25 @@ class ScheduleModel(QAbstractListModel):
             self.endInsertRows()
             return True
         return False
+
+
+class ProxyModel(QSortFilterProxyModel):
+
+    def lessThan(
+            self, source_left: QModelIndex, source_right: QModelIndex
+    ) -> bool:
+        le = source_left
+        r = source_right
+        ldt = le.data(ScheduleModel.DateStrRole) + timedelta(
+            hours=le.data(ScheduleModel.HourRole).hour,
+            minutes=le.data(ScheduleModel.HourRole).minute)
+        rdt = r.data(ScheduleModel.DateStrRole) + timedelta(
+            hours=r.data(ScheduleModel.HourRole).hour,
+            minutes=r.data(ScheduleModel.HourRole).minute)
+
+        if isinstance(ldt, date):
+            ldt = datetime.combine(ldt, datetime.min.time())
+        if isinstance(rdt, date):
+            rdt = datetime.combine(rdt, datetime.min.time())
+
+        return ldt < rdt

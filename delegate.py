@@ -127,7 +127,7 @@ class ItemEditor(QWidget):
             self.dept_edit.addItem(self.dept_edit.currentText())
         view = self.parent.parent()
         view.closeEditor(self, QStyledItemDelegate.SubmitModelCache)
-        view.model().check_activated()
+        view.model().sourceModel().check_activated()
 
 
 class TestItemDelegate(QStyledItemDelegate):
