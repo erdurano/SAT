@@ -1,8 +1,8 @@
 from datetime import date, datetime, time, timedelta
 from typing import Any
 
-from PySide6.QtCore import (QAbstractListModel, QModelIndex,
-                            QSortFilterProxyModel, Qt, Slot)
+from PySide6.QtCore import (Property, QAbstractListModel, QModelIndex,
+                            QSortFilterProxyModel, Qt, Signal, Slot)
 
 from scheduleclasses import Schedule, Status, TestItem
 
@@ -38,6 +38,8 @@ class ScheduleModel(QAbstractListModel):
         super().__init__(parent)
         self._data: list[TestItem] = []
         self.schedule = Schedule()
+        self._hull_number = 'NB70'          # These lines are subject to change
+        self._owner_firm = 'Atlantic Dawn'  # These lines are subject to change
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -281,3 +283,31 @@ class ProxyModel(QSortFilterProxyModel):
             rdt = datetime.combine(rdt, datetime.min.time())
 
         return ldt < rdt
+
+    def sourceModel(self) -> ScheduleModel:
+        return super().sourceModel()
+
+    def hullNum(self):
+        return self.sourceModel()._hull_number
+
+    @Signal
+    def hullNumChanged(self):
+        pass
+
+    hullNumber = Property(
+                    str,
+                    fget=hullNum,
+                    notify=hullNumChanged
+                    )
+
+    def get_owner_firm(self):
+        return self.sourceModel()._owner_firm
+
+    @Signal
+    def owner_changed(self):
+        pass
+
+    ownerFirm = Property(
+                    str,
+                    fget=get_owner_firm,
+                    notify=owner_changed)

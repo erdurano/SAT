@@ -46,6 +46,12 @@ Item {
                 anchors.topMargin: 2
                 antialiasing: true
             }
+
+            Text{
+                
+                anchors.centerIn: parent.center
+                text: ScheduleModel.hullNumber
+            }
         }
 
         Rectangle {
