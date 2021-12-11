@@ -47,9 +47,9 @@ Item {
                 antialiasing: true
             }
 
-            Text{
-                
-                anchors.centerIn: parent.center
+            Text{         
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
                 text: ScheduleModel.hullNumber
             }
         }

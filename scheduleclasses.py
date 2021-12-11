@@ -40,12 +40,16 @@ class TestItem():
 class Schedule():
     agenda_items: list[TestItem] = field(default_factory=list)
     responsible_selection: list[str] = field(default_factory=list)
+    hull_number: str = ''
+    owner_firm: str = ''
 
     def add_item(self, agenda_item: TestItem) -> None:
         self.agenda_items.append(agenda_item)
 
     def reset_items(self) -> None:
         self.agenda_items = []
+        self.hull_number = ''
+        self.owner_firm = ''
 
 
 if __name__ == '__main__':

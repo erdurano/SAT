@@ -1,4 +1,6 @@
 from datetime import datetime, time
+
+from openpyxl.cell.cell import Cell
 from scheduleclasses import Schedule, TestItem
 from typing import Any, List, Optional, Union
 from dataclasses import dataclass
@@ -68,6 +70,7 @@ class Xlparser:
         self.header_row_bottom = None
         for row in self.xldata.rows:
             for cell in row:
+                cell: Cell
                 if type(cell.value) is not str:
                     pass
                 elif "SFI" in cell.value:
@@ -94,6 +97,8 @@ class Xlparser:
                 elif "Estimated" in cell.value:
                     self.indexes.update(
                         est=cell.column)
+                elif "Cemre NB" in cell.value:
+                    self.get_hull_and_owner(cell)
 
             if self.header_row_bottom is not None:
                 break
@@ -102,6 +107,15 @@ class Xlparser:
         for r in self.merged_cells:
             if cell.coordinate in r:
                 return r
+
+    def get_hull_and_owner(self, cell: Cell):
+        for val in cell.value.split(' '):
+            if 'NB' in val:
+                self.schedule.hull_number = val
+                owner_cell = self.xldata.cell(
+                    cell.row + 1, cell.column
+                )
+                self.schedule.owner_firm = owner_cell.value.title()
 
     def add_rows2schedule(self, row: tuple) -> None:
         item = TestItem()

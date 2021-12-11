@@ -9,6 +9,8 @@ from scheduleclasses import Schedule, Status, TestItem
 
 class ScheduleModel(QAbstractListModel):
 
+    modelChanged = Signal()
+
     SfiRole = Qt.UserRole + 1
     NameRole = Qt.UserRole + 2
     ClsRole = Qt.UserRole + 3
@@ -38,8 +40,8 @@ class ScheduleModel(QAbstractListModel):
         super().__init__(parent)
         self._data: list[TestItem] = []
         self.schedule = Schedule()
-        self._hull_number = 'NB70'          # These lines are subject to change
-        self._owner_firm = 'Atlantic Dawn'  # These lines are subject to change
+        self._hull_number = 'test'  # These lines are subject to change
+        self._owner_firm = 'test2'  # These lines are subject to change
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -51,8 +53,10 @@ class ScheduleModel(QAbstractListModel):
     def updateSchedule(self, schedule: Schedule):
         self.beginResetModel()
         self.schedule = schedule
+
         self._data = self.schedule.agenda_items
         self.endResetModel()
+        self.modelChanged.emit()
         self.check_activated()
 
     def data(self, index=QModelIndex(), role: int = Qt.DisplayRole):
@@ -304,10 +308,10 @@ class ProxyModel(QSortFilterProxyModel):
         return self.sourceModel()._owner_firm
 
     @Signal
-    def owner_changed(self):
+    def ownerChanged(self):
         pass
 
     ownerFirm = Property(
                     str,
                     fget=get_owner_firm,
-                    notify=owner_changed)
+                    notify=ownerChanged)
