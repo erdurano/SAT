@@ -1,7 +1,7 @@
 from datetime import date, datetime, time, timedelta
 from typing import Any
 
-from PySide6.QtCore import (Property, QAbstractListModel, QModelIndex,
+from PySide6.QtCore import (Property, QAbstractListModel, QModelIndex, QObject,
                             QSortFilterProxyModel, Qt, Signal, Slot)
 
 from scheduleclasses import Schedule, Status, TestItem
@@ -55,6 +55,8 @@ class ScheduleModel(QAbstractListModel):
         self.schedule = schedule
 
         self._data = self.schedule.agenda_items
+        self._hull_number = self.schedule.hull_number
+        self._owner_firm = self.schedule.owner_firm
         self.endResetModel()
         self.modelChanged.emit()
         self.check_activated()
@@ -269,9 +271,13 @@ class ScheduleModel(QAbstractListModel):
 
 class ProxyModel(QSortFilterProxyModel):
 
+    def __init__(self, parent: QObject = None) -> None:
+        super().__init__(parent=parent)
+
     def lessThan(
-            self, source_left: QModelIndex, source_right: QModelIndex
-    ) -> bool:
+            self, source_left: QModelIndex,
+            source_right: QModelIndex) -> bool:
+
         le = source_left
         r = source_right
         ldt = le.data(ScheduleModel.DateStrRole) + timedelta(
@@ -294,15 +300,13 @@ class ProxyModel(QSortFilterProxyModel):
     def hullNum(self):
         return self.sourceModel()._hull_number
 
-    @Signal
-    def hullNumChanged(self):
-        pass
+    hullNumChanged = Signal()
 
     hullNumber = Property(
                     str,
                     fget=hullNum,
                     notify=hullNumChanged
-                    )
+                )
 
     def get_owner_firm(self):
         return self.sourceModel()._owner_firm
@@ -314,4 +318,5 @@ class ProxyModel(QSortFilterProxyModel):
     ownerFirm = Property(
                     str,
                     fget=get_owner_firm,
-                    notify=ownerChanged)
+                    notify=ownerChanged
+                )

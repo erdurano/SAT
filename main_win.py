@@ -114,6 +114,9 @@ class MainWindow(QMainWindow):
         )
         self.delete_button.clicked.connect(self.delete_handler)
         self.delete_selected.connect(self.schedule_view.deleteSelected)
+        self.schedule_model.modelChanged.connect(
+            self.proxyModel.hullNumChanged.emit
+        )
 
     def createDashWindow(self):
         dash_window = DashWindow()

@@ -47,7 +47,8 @@ Item {
                 antialiasing: true
             }
 
-            Text{         
+            Text{     
+                id : hull_text    
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ScheduleModel.hullNumber
@@ -268,7 +269,7 @@ Item {
 
                 ListView {
                     id: passive_view
-                    model: ScheduleModel
+                    model: ScheduleModel 
                     clip: true
                     anchors.fill: parent
                     anchors.topMargin: 5
