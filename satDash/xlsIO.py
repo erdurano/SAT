@@ -1,13 +1,13 @@
-from datetime import datetime, time
-
-from openpyxl.cell.cell import Cell
-from scheduleclasses import Schedule, TestItem
-from typing import Any, List, Optional, Union
 from dataclasses import dataclass
+from datetime import datetime, time
+from typing import Any, List, Optional, Union
 
 import openpyxl
+from openpyxl.cell.cell import Cell
 from openpyxl.worksheet.worksheet import Worksheet
 from PySide6.QtCore import QObject, Signal, Slot
+
+from scheduleclasses import Schedule, TestItem
 
 tick = b'\xe2\x9c\x93'.decode('utf-8')
 

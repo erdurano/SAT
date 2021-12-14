@@ -13,6 +13,7 @@ autopep8 = "*"
 black = "*"
 mypy = "*"
 openpyxl-stubs = "*"
+pyinstaller = "*"
 
 [requires]
 python_version = "3.9"
