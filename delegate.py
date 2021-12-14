@@ -274,8 +274,15 @@ class TestItemDelegate(QStyledItemDelegate):
 
     def setEditorData(self, editor: ItemEditor, index: QModelIndex):
         if index.isValid():
+
             editor.dept_edit.addItems(index.data(
                 ScheduleModel.RespSelectionRole))
+            if index.data(ScheduleModel.DeptRole) not in\
+                    index.data(ScheduleModel.RespSelectionRole):
+                editor.dept_edit.addItems(
+                    [index.data(ScheduleModel.DeptRole), ]
+                )
+
             if editor.isHidden():
                 editor.sfi_edit.setText(index.data(ScheduleModel.SfiRole))
                 editor.name_edit.setText(index.data(ScheduleModel.NameRole))
@@ -333,6 +340,24 @@ class TestItemDelegate(QStyledItemDelegate):
             model.setData(index, editor.sfi_edit.text(), ScheduleModel.SfiRole)
             model.setData(index, editor.name_edit.text(),
                           ScheduleModel.NameRole)
+
+            if editor.dept_edit.currentText() == '':
+                editor.dept_edit.removeItem(
+                    editor.dept_edit.findText(index.data(
+                        ScheduleModel.DeptRole)
+                    )
+                )
+                nl = model.data(index, ScheduleModel.RespSelectionRole)
+                if model.data(index, ScheduleModel.DeptRole) in\
+                        model.data(index, ScheduleModel.RespSelectionRole):
+                    nl.remove(model.data(index, ScheduleModel.DeptRole))
+                model.setData(index, nl, ScheduleModel.RespSelectionRole)
+
+            elif editor.dept_edit.currentText() not in\
+                    model.data(index, ScheduleModel.RespSelectionRole):
+                nl = model.data(index, ScheduleModel.RespSelectionRole)
+                nl.append(editor.dept_edit.currentText())
+                model.setData(index, nl, ScheduleModel.RespSelectionRole)
 
             model.setData(index, editor.dept_edit.currentText(),
                           ScheduleModel.DeptRole)

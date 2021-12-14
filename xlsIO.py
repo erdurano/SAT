@@ -90,8 +90,6 @@ class Xlparser:
                     self.indexes.update(responsible=cell.column)
                 elif "Date" in cell.value:
                     self.indexes.update(date=cell.column)
-                    print(cell.row)
-                    print(cell.column)
                 elif "Start Time" in cell.value:
                     self.indexes.update(start_time=cell.column)
                 elif "Estimated" in cell.value:
@@ -199,7 +197,6 @@ class Xlparser:
                 ).value
             if val not in selection and val is not None:
                 selection.append(val)
-        print(selection)
         return selection
 
     def get_item_rows(self) -> None:

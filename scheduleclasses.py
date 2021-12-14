@@ -50,7 +50,4 @@ class Schedule():
         self.agenda_items = []
         self.hull_number = ''
         self.owner_firm = ''
-
-
-if __name__ == '__main__':
-    print(Status('Active'))
+        self.responsible_selection = []

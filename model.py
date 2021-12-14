@@ -113,10 +113,14 @@ class ScheduleModel(QAbstractListModel):
             elif role == self.RespNameRole:
                 return item.responsible_name
             elif role == self.RespSelectionRole:
-                if hasattr(self.schedule, 'responsible_selection'):
+                if self.schedule.responsible_selection != list():
                     return self.schedule.responsible_selection
                 else:
-                    return ['Quality']
+                    return ['Quality',
+                            'Hull Construction',
+                            'Outfitting',
+                            'Interior',
+                            'Captain']
             elif role == self.IsNearRole:
                 t_date = item.date
                 t_hour = item.start_hour
@@ -164,7 +168,8 @@ class ScheduleModel(QAbstractListModel):
                 self._data[index.row()].status = Status(value)
             elif role == self.RespNameRole:
                 self._data[index.row()].responsible_name = value
-
+            elif role == self.RespSelectionRole:
+                self.schedule.responsible_selection = value
             return True
 
         else:
