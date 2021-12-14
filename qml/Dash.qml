@@ -52,6 +52,9 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ScheduleModel.hullNumber
+                font.pixelSize: Math.floor(parent.height/2)
+                font.weight: Font.Bold
+                // color: "#0072ce"
             }
         }
 
@@ -141,6 +144,7 @@ Item {
                         statText: model.statusRole
                         respNameText: model.respNameRole
                         isNear: model.isNearRole
+                        cemre_font: "Effra"
                     }
                 }
             }
@@ -214,6 +218,7 @@ Item {
                         statText: model.statusRole
                         respNameText: model.respNameRole
                         isNear: model.isNearRole
+                        cemre_font: "Effra"
 
                     }
                 }

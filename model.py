@@ -1,5 +1,5 @@
 from datetime import date, datetime, time, timedelta
-from typing import Any
+from typing import Any, Dict, Union
 
 from PySide6.QtCore import (Property, QAbstractListModel, QModelIndex, QObject,
                             QSortFilterProxyModel, Qt, Signal, Slot)
@@ -40,8 +40,24 @@ class ScheduleModel(QAbstractListModel):
         super().__init__(parent)
         self._data: list[TestItem] = []
         self.schedule = Schedule()
-        self._hull_number = 'test'  # These lines are subject to change
-        self._owner_firm = 'test2'  # These lines are subject to change
+        self._hull_number = ''  # These lines are subject to change
+        self._owner_firm = ''  # These lines are subject to change
+
+    @property
+    def hullNumber(self):
+        return f'{self._hull_number} Sea Acceptance Trial'
+
+    @hullNumber.setter
+    def hullNumber(self, new: str):
+        self._hull_number = new
+
+    @property
+    def ownerFirm(self) -> str:
+        return self.ownerFirm.title()
+
+    @ownerFirm.setter
+    def ownerFirm(self, new: str) -> None:
+        self._owner_firm = new
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -55,8 +71,8 @@ class ScheduleModel(QAbstractListModel):
         self.schedule = schedule
 
         self._data = self.schedule.agenda_items
-        self._hull_number = self.schedule.hull_number
-        self._owner_firm = self.schedule.owner_firm
+        self.hullNumber = self.schedule.hull_number
+        self.ownerFirm = self.schedule.owner_firm
         self.endResetModel()
         self.modelChanged.emit()
         self.check_activated()
@@ -154,7 +170,7 @@ class ScheduleModel(QAbstractListModel):
         else:
             return False
 
-    def roleNames(self):
+    def roleNames(self) -> Dict[int, bytes]:
         roles = dict()
 
         roles[self.SfiRole] = b'sfiRole'
@@ -177,19 +193,20 @@ class ScheduleModel(QAbstractListModel):
         return roles
 
     @staticmethod
-    def correct_est_value(record, new_value):
+    def correct_est_value(record: Union[time, str],
+                          new_value: str) -> str:
         if isinstance(record, time):
             return new_value
         if isinstance(record, str):
             return record
 
-    def flags(self, index):
+    def flags(self, index: QModelIndex) -> int:
         if index.isValid():
             return (Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable)
 
         return super().flags(index)
 
-    def check_activated(self):
+    def check_activated(self) -> None:
         now = datetime.now()
         roles_to_change = [self.StatusRole, self.IsNearRole]
         for rown in range(self.rowCount()):
@@ -298,7 +315,7 @@ class ProxyModel(QSortFilterProxyModel):
         return super().sourceModel()
 
     def hullNum(self):
-        return self.sourceModel()._hull_number
+        return self.sourceModel().hullNumber
 
     hullNumChanged = Signal()
 
@@ -309,14 +326,14 @@ class ProxyModel(QSortFilterProxyModel):
                 )
 
     def get_owner_firm(self):
-        return self.sourceModel()._owner_firm
+        return self.sourceModel().ownerFirm
 
     @Signal
-    def ownerChanged(self):
+    def ownerChanged(self) -> None:
         pass
 
     ownerFirm = Property(
-                    str,
+                    type=str,
                     fget=get_owner_firm,
                     notify=ownerChanged
                 )
