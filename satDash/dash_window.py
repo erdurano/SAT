@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtQuickWidgets import QQuickWidget
@@ -8,7 +9,8 @@ class DashWindow(QQuickWidget):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setWindowIcon(QIcon(QPixmap('./rsrc/img/cemre_logo.ico')))
+        ico_path = Path(__file__).parent/'rsrc'/'img'/'cemre_logo.ico'
+        self.setWindowIcon(QIcon(QPixmap(ico_path)))
 
         self.setResizeMode(QQuickWidget.SizeRootObjectToView)
 

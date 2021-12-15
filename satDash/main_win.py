@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Optional
 from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import QCloseEvent, QIcon, QPixmap
@@ -33,7 +34,8 @@ class MainWindow(QMainWindow):
         # Visual of main window
 
         self.setWindowTitle('SAT Scheduler')
-        self.setWindowIcon(QIcon(QPixmap('./rsrc/img/cemre_logo.ico')))
+        ico_path = Path(__file__).parent/'rsrc'/'img'/'cemre_logo.ico'
+        self.setWindowIcon(QIcon(QPixmap(ico_path)))
 
         self.dash_button = QPushButton("Show Dash")
         self.import_button = QPushButton("Import .xls")

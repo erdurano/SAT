@@ -3,3 +3,7 @@ __pycache__/**
 mess.py
 example_code/__pycache__/**
 .mypy_cache/**
+*.spec
+build/**/*
+dist/**/*
+satDash/__pychache__/**
