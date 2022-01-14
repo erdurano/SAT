@@ -1,9 +1,8 @@
 .vscode
-__pycache__/**
+satDash/__pycache__/**
 mess.py
-example_code/__pycache__/**
+example_code/**/*
 .mypy_cache/**
 *.spec
 build/**/*
 dist/**/*
-satDash/__pychache__/**

@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from PySide6.QtCore import QItemSelectionModel, QModelIndex, Slot
+from PySide6.QtCore import QItemSelectionModel, QModelIndex, Slot, Qt
 from PySide6.QtWidgets import QListView, QStyledItemDelegate, QWidget
 
 
@@ -15,6 +15,8 @@ class ScheduleView(QListView):
 
         self.setSelectionMode(self.ExtendedSelection)
         self.setSelectionRectVisible(True)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
 
     def commitData(self, editor: QWidget) -> None:
         # Holds the view from updating the model when exiting the item
