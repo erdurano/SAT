@@ -174,19 +174,13 @@ class Xlparser:
 
     @staticmethod
     def correct_attendance(char: str) -> str:
-        if char == 'ü':
-            return tick
-        else:
-            return char
+        return tick if char == 'ü' else char
 
     @staticmethod
     def correct_time_format(data: Union[datetime, time]) -> Union[time, str]:
         if isinstance(data, datetime):
             return time(data.hour, data.minute)
-        if isinstance(data, time):
-            return data
-        else:
-            return '-'
+        return data if isinstance(data, time) else '-'
 
     def get_attendee_selection(self) -> List[str]:
         selection = []

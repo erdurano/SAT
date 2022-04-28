@@ -1,8 +1,16 @@
 from datetime import date, datetime, time, timedelta
 from typing import Any, Dict, Union
 
-from PySide6.QtCore import (Property, QAbstractListModel, QModelIndex, QObject,
-                            QSortFilterProxyModel, Qt, Signal, Slot)
+from PySide6.QtCore import (
+    Property,
+    QAbstractListModel,
+    QModelIndex,
+    QObject,
+    QSortFilterProxyModel,
+    Qt,
+    Signal,
+    Slot,
+)
 
 from scheduleclasses import Schedule, Status, TestItem
 
@@ -30,22 +38,22 @@ class ScheduleModel(QAbstractListModel):
     IsNearRole = Qt.UserRole + 17
 
     state_list = [
-        'Passive',
-        'Active',
-        'Passed',
-        'Failed',
+        "Passive",
+        "Active",
+        "Passed",
+        "Failed",
     ]
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._data: list[TestItem] = []
         self.schedule = Schedule()
-        self._hull_number = ''  # These lines are subject to change
-        self._owner_firm = ''  # These lines are subject to change
+        self._hull_number = ""  # These lines are subject to change
+        self._owner_firm = ""  # These lines are subject to change
 
     @property
     def hullNumber(self):
-        return f'{self._hull_number} Sea Acceptance Trial'
+        return f"{self._hull_number} Sea Acceptance Trial"
 
     @hullNumber.setter
     def hullNumber(self, new: str):
@@ -78,70 +86,62 @@ class ScheduleModel(QAbstractListModel):
         self.check_activated()
 
     def data(self, index=QModelIndex(), role: int = Qt.DisplayRole):
-        if 0 <= index.row() < self.rowCount() and index.isValid():
-            item = self._data[index.row()]
-
-            if role == self.SfiRole:
-                return item.sfi
-            elif role == self.NameRole:
-                return item.item_name
-            elif role == self.ClsRole:
-                return item.class_attendance
-            elif role == self.FlagRole:
-                return item.flag_attendance
-            elif role == self.OwnrRole:
-                return item.owner_attendance
-            elif role == self.RecordRole:
-                return item.record_status
-            elif role == self.DeptRole:
-                return item.responsible_dept
-            elif role == self.DateStrRole:
-                return item.date
-            elif role == self.HourRole:
-                return item.start_hour
-            elif role == self.EstTimeRole:
-                return item.est
-            elif role == self.StatusRole:
-                return item.status.value
-            elif role == self.QmlDateRole:
-                return item.date.strftime('%d-%m-%Y')
-            elif role == self.QmlHourRole:
-                return item.start_hour.strftime('%H:%M')
-            elif role == self.QmlEstRole:
-                return item.est.strftime('%H:%M')\
-                    if isinstance(item.est, time) else item.est
-            elif role == self.RespNameRole:
-                return item.responsible_name
-            elif role == self.RespSelectionRole:
-                if self.schedule.responsible_selection != list():
-                    return self.schedule.responsible_selection
-                else:
-                    return ['Quality',
-                            'Hull Construction',
-                            'Outfitting',
-                            'Interior',
-                            'Captain']
-            elif role == self.IsNearRole:
-                t_date = item.date
-                t_hour = item.start_hour
-                dt = datetime(
-                    t_date.year,
-                    t_date.month,
-                    t_date.day,
-                    t_hour.hour,
-                    t_hour.minute
-                )
-                isNear = (dt - datetime.now()) <= timedelta(hours=2)
-                return isNear
-
-        else:
+        if not 0 <= index.row() < self.rowCount() or not index.isValid():
             return None
+        item = self._data[index.row()]
 
-    def setData(
-            self,
-            index: QModelIndex,
-            value: Any,
-            role: int) -> bool:
+        if role == self.SfiRole:
+            return item.sfi
+        elif role == self.NameRole:
+            return item.item_name
+        elif role == self.ClsRole:
+            return item.class_attendance
+        elif role == self.FlagRole:
+            return item.flag_attendance
+        elif role == self.OwnrRole:
+            return item.owner_attendance
+        elif role == self.RecordRole:
+            return item.record_status
+        elif role == self.DeptRole:
+            return item.responsible_dept
+        elif role == self.DateStrRole:
+            return item.date
+        elif role == self.HourRole:
+            return item.start_hour
+        elif role == self.EstTimeRole:
+            return item.est
+        elif role == self.StatusRole:
+            return item.status.value
+        elif role == self.QmlDateRole:
+            return item.date.strftime("%d-%m-%Y")
+        elif role == self.QmlHourRole:
+            return item.start_hour.strftime("%H:%M")
+        elif role == self.QmlEstRole:
+            return (
+                item.est.strftime("%H:%M") if isinstance(item.est, time) else item.est
+            )
+        elif role == self.RespNameRole:
+            return item.responsible_name
+        elif role == self.RespSelectionRole:
+            if self.schedule.responsible_selection != list():
+                return self.schedule.responsible_selection
+            else:
+                return [
+                    "Quality",
+                    "Hull Construction",
+                    "Outfitting",
+                    "Interior",
+                    "Captain",
+                ]
+        elif role == self.IsNearRole:
+            t_date = item.date
+            t_hour = item.start_hour
+            dt = datetime(
+                t_date.year, t_date.month, t_date.day, t_hour.hour, t_hour.minute
+            )
+            return (dt - datetime.now()) <= timedelta(hours=2)
+
+    def setData(self, index: QModelIndex, value: Any, role: int) -> bool:
 
         if index.isValid():
             if role == self.SfiRole:
@@ -176,30 +176,27 @@ class ScheduleModel(QAbstractListModel):
             return False
 
     def roleNames(self) -> Dict[int, bytes]:
-        roles = dict()
-
-        roles[self.SfiRole] = b'sfiRole'
-        roles[self.NameRole] = b'nameRole'
-        roles[self.ClsRole] = b'clsRole'
-        roles[self.FlagRole] = b'flagRole'
-        roles[self.OwnrRole] = b'ownrRole'
-        roles[self.RecordRole] = b'recordRole'
-        roles[self.DeptRole] = b'deptRole'
-        roles[self.DateStrRole] = b'dateStrRole'
-        roles[self.HourRole] = b'hourRole'
-        roles[self.EstTimeRole] = b'estTimeRole'
-        roles[self.StatusRole] = b'statusRole'
-        roles[self.QmlDateRole] = b'qmlDateRole'
-        roles[self.QmlHourRole] = b'qmlHourRole'
-        roles[self.QmlEstRole] = b'qmlEstRole'
-        roles[self.RespNameRole] = b'respNameRole'
-        roles[self.IsNearRole] = b'isNearRole'
-
-        return roles
+        return {
+            self.SfiRole: b"sfiRole",
+            self.NameRole: b"nameRole",
+            self.ClsRole: b"clsRole",
+            self.FlagRole: b"flagRole",
+            self.OwnrRole: b"ownrRole",
+            self.RecordRole: b"recordRole",
+            self.DeptRole: b"deptRole",
+            self.DateStrRole: b"dateStrRole",
+            self.HourRole: b"hourRole",
+            self.EstTimeRole: b"estTimeRole",
+            self.StatusRole: b"statusRole",
+            self.QmlDateRole: b"qmlDateRole",
+            self.QmlHourRole: b"qmlHourRole",
+            self.QmlEstRole: b"qmlEstRole",
+            self.RespNameRole: b"respNameRole",
+            self.IsNearRole: b"isNearRole",
+        }
 
     @staticmethod
-    def correct_est_value(record: Union[time, str],
-                          new_value: str) -> str:
+    def correct_est_value(record: Union[time, str], new_value: str) -> str:
         if isinstance(record, time):
             return new_value
         if isinstance(record, str):
@@ -207,7 +204,7 @@ class ScheduleModel(QAbstractListModel):
 
     def flags(self, index: QModelIndex) -> int:
         if index.isValid():
-            return (Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable)
+            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
 
         return super().flags(index)
 
@@ -228,42 +225,26 @@ class ScheduleModel(QAbstractListModel):
             )
             dt = datetime(year, month, day, hour, minute)
 
-            if now > dt and\
-                    self.data(index, self.StatusRole) ==\
-                    Status.NOT_STARTED.value:
+            if (
+                now > dt
+                and self.data(index, self.StatusRole) == Status.NOT_STARTED.value
+            ):
 
-                self.setData(
-                    index,
-                    Status.ACTIVE.value,
-                    self.StatusRole
-                )
-                self.dataChanged.emit(index, index, roles_to_change[0:1])
+                self.setData(index, Status.ACTIVE.value, self.StatusRole)
+                self.dataChanged.emit(index, index, roles_to_change[:1])
 
-            elif now < dt and\
-                    self.data(index, self.StatusRole) ==\
-                    Status.ACTIVE.value:
+            elif now < dt and self.data(index, self.StatusRole) == Status.ACTIVE.value:
 
-                self.setData(
-                    index,
-                    Status.NOT_STARTED.value,
-                    self.StatusRole
-                )
-                self.dataChanged.emit(index, index, roles_to_change[0:1])
+                self.setData(index, Status.NOT_STARTED.value, self.StatusRole)
+                self.dataChanged.emit(index, index, roles_to_change[:1])
 
             if index.isValid():
-                self.dataChanged.emit(
-                    index, index,
-                    roles_to_change[1:]
-                )
+                self.dataChanged.emit(index, index, roles_to_change[1:])
         self.dataChanged.emit(self.index(0), self.index(self.rowCount()))
 
     def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
         if self.index(row).isValid():
-            self.beginRemoveRows(
-                QModelIndex(),
-                row,
-                row
-            )
+            self.beginRemoveRows(QModelIndex(), row, row)
             self._data.pop(row)
             self.endRemoveRows()
             return True
@@ -274,16 +255,16 @@ class ScheduleModel(QAbstractListModel):
             another = datetime.now() + timedelta(hours=3)
             self.beginInsertRows(parent, row, row)
             new_item = TestItem(
-                sfi='',
-                item_name='',
+                sfi="",
+                item_name="",
                 class_attendance='-',
-                flag_attendance='-',
-                owner_attendance='-',
-                record_status='',
-                responsible_dept='Quality',
+                flag_attendance="-",
+                owner_attendance="-",
+                record_status="",
+                responsible_dept="Quality",
                 date=another.date(),
                 start_hour=another.time(),
-                est=time()
+                est=time(),
             )
             self._data.insert(row, new_item)
             self.endInsertRows()
@@ -292,22 +273,21 @@ class ScheduleModel(QAbstractListModel):
 
 
 class ProxyModel(QSortFilterProxyModel):
-
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent=parent)
 
-    def lessThan(
-            self, source_left: QModelIndex,
-            source_right: QModelIndex) -> bool:
+    def lessThan(self, source_left: QModelIndex, source_right: QModelIndex) -> bool:
 
         le = source_left
         r = source_right
         ldt = le.data(ScheduleModel.DateStrRole) + timedelta(
             hours=le.data(ScheduleModel.HourRole).hour,
-            minutes=le.data(ScheduleModel.HourRole).minute)
+            minutes=le.data(ScheduleModel.HourRole).minute,
+        )
         rdt = r.data(ScheduleModel.DateStrRole) + timedelta(
             hours=r.data(ScheduleModel.HourRole).hour,
-            minutes=r.data(ScheduleModel.HourRole).minute)
+            minutes=r.data(ScheduleModel.HourRole).minute,
+        )
 
         if isinstance(ldt, date):
             ldt = datetime.combine(ldt, datetime.min.time())
@@ -324,11 +304,7 @@ class ProxyModel(QSortFilterProxyModel):
 
     hullNumChanged = Signal()
 
-    hullNumber = Property(
-                    str,
-                    fget=hullNum,
-                    notify=hullNumChanged
-                )
+    hullNumber = Property(str, fget=hullNum, notify=hullNumChanged)
 
     def get_owner_firm(self):
         return self.sourceModel().ownerFirm
@@ -337,8 +313,4 @@ class ProxyModel(QSortFilterProxyModel):
     def ownerChanged(self) -> None:
         pass
 
-    ownerFirm = Property(
-                    type=str,
-                    fget=get_owner_firm,
-                    notify=ownerChanged
-                )
+    ownerFirm = Property(type=str, fget=get_owner_firm, notify=ownerChanged)

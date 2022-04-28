@@ -15,6 +15,7 @@ mypy = "*"
 openpyxl-stubs = "*"
 pyinstaller = "*"
 pytest = "*"
+rich = "*"
 
 [requires]
 python_version = "3.9"

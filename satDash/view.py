@@ -32,8 +32,6 @@ class ScheduleView(QListView):
                     hint: QStyledItemDelegate.EndEditHint) -> None:
         if hint == QStyledItemDelegate.SubmitModelCache:
             self.commitData(editor)
-        elif hint == QStyledItemDelegate.RevertModelCache:
-            pass
         super().closeEditor(editor, hint)
 
     def getSelected(self) -> List[QModelIndex]:

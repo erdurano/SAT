@@ -129,12 +129,12 @@ class MainWindow(QMainWindow):
         return dash_window
 
     def get_filename(self) -> Optional[str]:
-        diag = QFileDialog(
+        diag = QFileDialog()
+        path, _ = diag.getOpenFileName(
             parent=self,
             caption="Import SAT Excel",
             filter="Excel file (*.xlsx)",
         )
-        path, _ = diag.getOpenFileName()
         if path.endswith(('.xlsx', '.xls')):
             self.import_path.emit(path)
             return path
@@ -150,17 +150,15 @@ class DeletionBox(QMessageBox):
         self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
 
     def getMessageBody(self) -> Optional[str]:
-        prefix = 'Are you sure about deletion of below items?\n'
-        titles = self.itemTitleList()
-        if titles:
-            for title in titles:
-                prefix += '-' + title + '\n'
-            return prefix
-        else:
+        if not (titles := self.itemTitleList()):
             return None
+        prefix = 'Are you sure about deletion of below items?\n'
+        for title in titles:
+            prefix += f'-{title}' + '\n'
+        return prefix
 
     def itemTitleList(self) -> List[str]:
-        title_list = list()
+        title_list = []
         indexes_to_delete = self.parent().schedule_view.getSelected()
         for index in indexes_to_delete:
             name = index.data(ScheduleModel.NameRole)
@@ -171,8 +169,7 @@ class DeletionBox(QMessageBox):
         return title_list
 
     def ask(self) -> QMessageBox.StandardButton:
-        body = self.getMessageBody()
-        if body:
+        if body := self.getMessageBody():
             self.setText(body)
             return self.question(
                 self.parent(),
