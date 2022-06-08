@@ -13,11 +13,11 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from dash_window import DashWindow
-from delegate import TestItemDelegate
-from model import ProxyModel, ScheduleModel
-from view import ScheduleView
-from xlsIO import XlsIO
+from .dash_window import DashWindow
+from .delegate import TestItemDelegate
+from .model import ProxyModel, ScheduleModel
+from .view import ScheduleView
+from .xlsIO import XlsIO
 
 
 class MainWindow(QMainWindow):

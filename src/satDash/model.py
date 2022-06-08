@@ -12,7 +12,7 @@ from PySide6.QtCore import (
     Slot,
 )
 
-from scheduleclasses import Schedule, Status, TestItem
+from .scheduleclasses import Schedule, Status, TestItem
 
 
 class ScheduleModel(QAbstractListModel):

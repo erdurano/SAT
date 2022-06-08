@@ -15,10 +15,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from model import ScheduleModel
-from scheduleclasses import Status
-from view import ScheduleView
-from xlsIO import tick
+from .model import ScheduleModel
+from .scheduleclasses import Status
+from .view import ScheduleView
+from .xlsIO import tick
 
 
 class ItemEditor(QWidget):
@@ -54,7 +54,7 @@ class ItemEditor(QWidget):
 
         self.name_edit = QLineEdit(parent=self)
         self.edit_layout.addWidget(self.name_edit, 0, 1, 3, 2)
-        self.edit_layout.setAlignment(self.name_edit, Qt.AlignBottom)
+        self.edit_layout.setAlignment(self.name_edit, Qt.AlignBottom) # type: ignore
         # self.name_edit.setMinimumWidth(100)
 
         self.dept_edit = QComboBox(parent=self)
@@ -92,7 +92,8 @@ class ItemEditor(QWidget):
         self.edit_layout.addWidget(self.owner_edit, 4, 4, 2, 1)
         self.owner_edit.setFixedWidth(55)
 
-        self.date_edit = QDateEdit(parent=self, calendarPopup=True)
+        self.date_edit = QDateEdit(parent=self)
+        self.date_edit.setCalendarPopup(True)
         self.date_edit.setDisplayFormat("dd-MM-yyyy")
         self.date_edit.setFixedWidth(100)
         self.edit_layout.addWidget(self.date_edit, 0, 5, 3, -1)

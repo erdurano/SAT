@@ -7,7 +7,7 @@ from openpyxl.cell.cell import Cell
 from openpyxl.worksheet.worksheet import Worksheet
 from PySide6.QtCore import QObject, Signal, Slot
 
-from scheduleclasses import Schedule, TestItem
+from .scheduleclasses import Schedule, TestItem
 
 tick = b'\xe2\x9c\x93'.decode('utf-8')
 
