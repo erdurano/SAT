@@ -40,6 +40,7 @@ class ItemEditor(QWidget):
         self.index: QModelIndex = index
 
         self.option = option
+        self.parent = parent
 
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.edit_layout = QGridLayout()
