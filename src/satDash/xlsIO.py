@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from datetime import datetime, time
 from typing import Any, List, Optional, Union
 
@@ -39,7 +38,7 @@ class XlsIO(QObject):
     def xl_worksheet(self, sheet: Worksheet) -> None:
         self.__worksheet = sheet
 
-    def xlsheet_from_path(self, path: str) -> Worksheet:
+    def xlsheet_from_path(self, path: str) -> Worksheet:  # type: ignore
         self.xl_worksheet = openpyxl.load_workbook(
             path,
             data_only=True).active
@@ -54,14 +53,12 @@ class XlsIO(QObject):
         )
 
 
-@dataclass
 class Xlparser:
     def __init__(self) -> None:
         self.header_row_bottom: Optional[int] = None
         self.merged_cells: list = []
         self.indexes: dict = {}
         self.schedule: Schedule = Schedule()
-        self.xldata: Optional[Worksheet] = None
 
     def find_merged_cells(self) -> None:
         self.merged_cells = self.xldata.merged_cells
@@ -70,7 +67,6 @@ class Xlparser:
         self.header_row_bottom = None
         for row in self.xldata.rows:
             for cell in row:
-                cell: Cell
                 if type(cell.value) is not str:
                     pass
                 elif "SFI" in cell.value:

@@ -40,7 +40,6 @@ class ItemEditor(QWidget):
         self.index: QModelIndex = index
 
         self.option = option
-        self.parent = parent
 
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.edit_layout = QGridLayout()
@@ -54,7 +53,7 @@ class ItemEditor(QWidget):
 
         self.name_edit = QLineEdit(parent=self)
         self.edit_layout.addWidget(self.name_edit, 0, 1, 3, 2)
-        self.edit_layout.setAlignment(self.name_edit, Qt.AlignBottom) # type: ignore
+        self.edit_layout.setAlignment(self.name_edit, Qt.AlignBottom)  # type: ignore
         # self.name_edit.setMinimumWidth(100)
 
         self.dept_edit = QComboBox(parent=self)
