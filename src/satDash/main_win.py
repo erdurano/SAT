@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Optional
-from PySide6.QtCore import QTimer, Signal
-from PySide6.QtGui import QCloseEvent, QIcon, QPixmap
+from PySide6.QtCore import QTimer, Signal, Slot, QEvent, Qt
+from PySide6.QtGui import QCloseEvent, QIcon, QPixmap, QKeyEvent
 from PySide6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
     window_closed = Signal()
     import_path = Signal(str)
     delete_selected = Signal()
+    change_fullscreen = Signal()
 
     def __init__(self):
         super().__init__()
@@ -88,6 +89,11 @@ class MainWindow(QMainWindow):
         self.makeConnections()
         self.proxyModel.sort(0)
 
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.key() == Qt.Key_F12:
+            self.change_fullscreen.emit()
+        return super().keyPressEvent(event)
+
     def closeEvent(self, event: QCloseEvent) -> None:
         self.window_closed.emit()
         return super().closeEvent(event)
@@ -98,6 +104,14 @@ class MainWindow(QMainWindow):
         if delete_answer is not None and\
                 delete_answer == delete_answer.Yes:
             self.delete_selected.emit()
+
+    @Slot()
+    def dash_fullscreen(self):
+        if self.dash_window.isFullScreen():
+            self.dash_window.showNormal()
+        else:
+            self.dash_window.showFullScreen()
+        self.setFocus()
 
     def makeConnections(self):
         # Connections.
@@ -119,6 +133,7 @@ class MainWindow(QMainWindow):
         self.schedule_model.modelChanged.connect(
             self.proxyModel.hullNumChanged.emit
         )
+        self.change_fullscreen.connect(self.dash_fullscreen)
 
     def createDashWindow(self):
         dash_window = DashWindow()
