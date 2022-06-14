@@ -25,7 +25,6 @@ Item {
             id: topbar
             height: parent.height/10
             opacity: 1
-            color: "#686464"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top

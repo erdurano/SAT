@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import List, Optional
 from PySide6.QtCore import QTimer, Signal, Slot, QEvent, Qt
@@ -145,10 +146,12 @@ class MainWindow(QMainWindow):
 
     def get_filename(self) -> Optional[str]:
         diag = QFileDialog()
+        home = os.getenv("HOME")
         path, _ = diag.getOpenFileName(
             parent=self,
             caption="Import SAT Excel",
             filter="Excel file (*.xlsx)",
+            dir=f"{home}/Documents"
         )
         if path.endswith(('.xlsx', '.xls')):
             self.import_path.emit(path)
