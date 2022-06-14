@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(button_layout)
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
-        # self.setFixedSize(600, 480)
+        self.setMinimumSize(600, 480)
 
         # Initialization of data structures and other functions
         self.updateTimer = QTimer(self)
