@@ -69,6 +69,7 @@ class ItemEditor(QWidget):
             Status.ACTIVE.value,
             Status.PASSED.value,
             Status.FAILED.value,
+            Status.COMMENTED.value,
         ]
         self.state_edit.addItems(combo_items)
         self.edit_layout.addWidget(self.state_edit, 0, 3, 3, 1)
@@ -144,6 +145,7 @@ class TestItemDelegate(QStyledItemDelegate):
         "Active": QColor(0, 114, 206),
         "Passed": QColor(68, 214, 44),
         "Failed": QColor(227, 120, 120),
+        "Commented": QColor(250, 118, 30),
     }
 
     def __init__(self, parent: ScheduleView) -> None:

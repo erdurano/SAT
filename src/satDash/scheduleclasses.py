@@ -5,14 +5,15 @@ from typing import Optional
 
 
 class Status(Enum):
-    NOT_STARTED = 'Not Started'
-    ACTIVE = 'Active'
-    PASSED = 'Passed'
-    FAILED = 'Failed'
+    NOT_STARTED = "Not Started"
+    ACTIVE = "Active"
+    PASSED = "Passed"
+    FAILED = "Failed"
+    COMMENTED = "Commented"
 
 
 @dataclass
-class TestItem():
+class TestItem:
     sfi: Optional[str] = None
     item_name: Optional[str] = None
     class_attendance: Optional[str] = None
@@ -32,22 +33,22 @@ class TestItem():
             self.date.month,
             self.date.day,
             self.start_hour.hour,
-            self.start_hour.minute
+            self.start_hour.minute,
         )
 
 
 @dataclass
-class Schedule():
+class Schedule:
     agenda_items: list[TestItem] = field(default_factory=list)
     responsible_selection: list[str] = field(default_factory=list)
-    hull_number: str = ''
-    owner_firm: str = ''
+    hull_number: str = ""
+    owner_firm: str = ""
 
     def add_item(self, agenda_item: TestItem) -> None:
         self.agenda_items.append(agenda_item)
 
     def reset_items(self) -> None:
         self.agenda_items = []
-        self.hull_number = ''
-        self.owner_firm = ''
+        self.hull_number = ""
+        self.owner_firm = ""
         self.responsible_selection = []

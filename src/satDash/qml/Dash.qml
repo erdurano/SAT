@@ -127,7 +127,7 @@ Item {
                     anchors.leftMargin:5
                     anchors.rightMargin:5
                     delegate: Halo{
-                        visible: model.statusRole == "Passed" || model.statusRole == "Failed" ? true : false
+                        visible: model.statusRole == "Passed" || model.statusRole == "Failed" || model.statusRole == "Commented" ? true : false
                         height: visible ? passive_view.height/8 : 0
                         anchors.left: parent ? parent.left : undefined
                         anchors.right: parent ? parent.right : undefined

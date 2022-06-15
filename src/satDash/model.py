@@ -42,6 +42,7 @@ class ScheduleModel(QAbstractListModel):
         "Active",
         "Passed",
         "Failed",
+        "Commented",
     ]
 
     def __init__(self, parent=None):
@@ -257,7 +258,7 @@ class ScheduleModel(QAbstractListModel):
             new_item = TestItem(
                 sfi="",
                 item_name="",
-                class_attendance='-',
+                class_attendance="-",
                 flag_attendance="-",
                 owner_attendance="-",
                 record_status="",

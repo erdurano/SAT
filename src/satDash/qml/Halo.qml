@@ -258,6 +258,9 @@ Item {
         } else if (statText == 'Failed') {
             var gradient = failed_gradient.createObject(background)
             background.gradient = gradient;
+        } else if (statText == 'Commented') {
+            var gradient = commented_gradient.createObject(background)
+            background.gradient = gradient;
         }
     }
 
@@ -377,4 +380,24 @@ Item {
 
     }
 
+    Component{
+        id: commented_gradient
+        Gradient {
+            GradientStop {
+                position: 0
+                color: "#fa761e"
+            }
+
+            GradientStop {
+                position: 0.01
+                color: "#fa761e"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#e6dee9"
+            }
+        }
+
+    }
 }
