@@ -18,6 +18,7 @@ black = "^22.3.0"
 flake8 = "^4.0.1"
 pytest = "^7.1.2"
 pyinstaller = "^5.1"
+rich = "^12.4.4"
 
 [tool.poetry.scripts]
 satdash = "satdash.__main__:main"
