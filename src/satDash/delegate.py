@@ -40,7 +40,6 @@ class ItemEditor(QWidget):
         self.index: QModelIndex = index
 
         self.option = option
-        self.parent = parent
 
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.edit_layout = QGridLayout()
@@ -131,7 +130,7 @@ class ItemEditor(QWidget):
     def saveButton(self):
         if self.dept_edit.findText(self.dept_edit.currentText()) == -1:
             self.dept_edit.addItem(self.dept_edit.currentText())
-        view = self.parent.parent()
+        view = self.parent().parent()
         view.closeEditor(self, QStyledItemDelegate.SubmitModelCache)
         view.model().sourceModel().check_activated()
 

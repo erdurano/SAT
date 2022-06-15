@@ -1,4 +1,4 @@
-from satDash.scheduleclasses import TestItem
+from satdash.scheduleclasses import TestItem
 
 
 class Test_TestItem():
