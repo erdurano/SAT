@@ -166,6 +166,8 @@ class ScheduleModel(QAbstractListModel):
                     self._data[index.row()].est, value
                 )
             elif role == self.StatusRole:
+                if value == "Not Done":
+                    value = "Not Started"
                 self._data[index.row()].status = Status(value)
             elif role == self.RespNameRole:
                 self._data[index.row()].responsible_name = value

@@ -65,11 +65,10 @@ class ItemEditor(QWidget):
 
         self.state_edit = QComboBox(self)
         combo_items = [
-            Status.NOT_STARTED.value,
-            Status.ACTIVE.value,
+            "Not Done",
             Status.PASSED.value,
-            Status.FAILED.value,
             Status.COMMENTED.value,
+            Status.FAILED.value,
         ]
         self.state_edit.addItems(combo_items)
         self.edit_layout.addWidget(self.state_edit, 0, 3, 3, 1)
@@ -329,6 +328,8 @@ class TestItemDelegate(QStyledItemDelegate):
             editor.duration_edit.hide()
 
         state = index.data(ScheduleModel.StatusRole)
+        if state in ["Not Started", "Active"]:
+            state = "Not Done"
         state_ind = editor.state_edit.findText(state)
         editor.state_edit.setCurrentIndex(state_ind)
 
