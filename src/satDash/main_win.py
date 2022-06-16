@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from typing import List, Optional
-from PySide6.QtCore import QTimer, Signal, Slot, QEvent, Qt
+from PySide6.QtCore import QTimer, Signal, Slot, Qt
 from PySide6.QtGui import QCloseEvent, QIcon, QPixmap, QKeyEvent
 from PySide6.QtWidgets import (
     QFileDialog,
@@ -35,13 +35,13 @@ class MainWindow(QMainWindow):
 
         # Visual of main window
 
-        self.setWindowTitle('SAT Scheduler')
-        ico_path = Path(__file__).parent/'rsrc'/'img'/'cemre_logo.ico'
+        self.setWindowTitle("SAT Scheduler")
+        ico_path = Path(__file__).parent / "rsrc" / "img" / "cemre_logo.ico"
         self.setWindowIcon(QIcon(QPixmap(ico_path)))
 
         self.dash_button = QPushButton("Show Dash")
         self.import_button = QPushButton("Import .xls")
-        self.new_item_button = QPushButton('New Item')
+        self.new_item_button = QPushButton("New Item")
         self.delete_button = QPushButton("Delete Selected")
 
         main_widget = QWidget()
@@ -80,10 +80,8 @@ class MainWindow(QMainWindow):
         self.schedule_view.setModel(self.proxyModel)
         self.proxyModel.setDynamicSortFilter(True)
 
-        self.schedule_view.setItemDelegate(
-            TestItemDelegate(self.schedule_view)
-        )
-        self.filename = ''
+        self.schedule_view.setItemDelegate(TestItemDelegate(self.schedule_view))
+        self.filename = ""
 
         self.dash_window = self.createDashWindow()
 
@@ -102,8 +100,7 @@ class MainWindow(QMainWindow):
     def delete_handler(self) -> None:
         delete_answer = DeletionBox(self).ask()
 
-        if delete_answer is not None and\
-                delete_answer == delete_answer.Yes:
+        if delete_answer is not None and delete_answer == delete_answer.Yes:
             self.delete_selected.emit()
 
     @Slot()
@@ -112,35 +109,28 @@ class MainWindow(QMainWindow):
             self.dash_window.showNormal()
         else:
             self.dash_window.showFullScreen()
-        self.setFocus()
+        self.activateWindow()
 
     def makeConnections(self):
         # Connections.
         self.import_button.clicked.connect(self.get_filename)
         self.import_path.connect(self.file_handler.import_excel)
 
-        self.file_handler.schedule_to_update.connect(
-            self.schedule_model.updateSchedule
-        )
+        self.file_handler.schedule_to_update.connect(self.schedule_model.updateSchedule)
         self.dash_button.clicked.connect(self.dash_window.show)
         self.window_closed.connect(self.dash_window.close)
         self.updateTimer.timeout.connect(self.schedule_model.check_activated)
         self.updateTimer.start(10000)
-        self.new_item_button.clicked.connect(
-            self.schedule_view.newItem
-        )
+        self.new_item_button.clicked.connect(self.schedule_view.newItem)
         self.delete_button.clicked.connect(self.delete_handler)
         self.delete_selected.connect(self.schedule_view.deleteSelected)
-        self.schedule_model.modelChanged.connect(
-            self.proxyModel.hullNumChanged.emit
-        )
+        self.schedule_model.modelChanged.connect(self.proxyModel.hullNumChanged.emit)
         self.change_fullscreen.connect(self.dash_fullscreen)
+        self.dash_window.request_fullscreen.connect(self.dash_fullscreen)
 
     def createDashWindow(self):
         dash_window = DashWindow()
-        dash_window.rootContext().setContextProperty(
-            "ScheduleModel", self.proxyModel
-        )
+        dash_window.rootContext().setContextProperty("ScheduleModel", self.proxyModel)
         dash_window.setDashRoot()
         return dash_window
 
@@ -151,9 +141,9 @@ class MainWindow(QMainWindow):
             parent=self,
             caption="Import SAT Excel",
             filter="Excel file (*.xlsx)",
-            dir=f"{home}/Documents"
+            dir=f"{home}/Documents",
         )
-        if path.endswith(('.xlsx', '.xls')):
+        if path.endswith((".xlsx", ".xls")):
             self.import_path.emit(path)
             return path
         else:
@@ -161,18 +151,17 @@ class MainWindow(QMainWindow):
 
 
 class DeletionBox(QMessageBox):
-
     def __init__(self, parent: Optional[MainWindow] = None) -> None:
         super().__init__(parent=parent)
-        self.setWindowTitle(self.tr('Delete'))
+        self.setWindowTitle(self.tr("Delete"))
         self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
 
     def getMessageBody(self) -> Optional[str]:
         if not (titles := self.itemTitleList()):
             return None
-        prefix = 'Are you sure about deletion of below items?\n'
+        prefix = "Are you sure about deletion of below items?\n"
         for title in titles:
-            prefix += f'-{title}' + '\n'
+            prefix += f"-{title}" + "\n"
         return prefix
 
     def itemTitleList(self) -> List[str]:
@@ -190,8 +179,5 @@ class DeletionBox(QMessageBox):
         if body := self.getMessageBody():
             self.setText(body)
             return self.question(
-                self.parent(),
-                self.windowTitle(),
-                self.text(),
-                self.standardButtons()
+                self.parent(), self.windowTitle(), self.text(), self.standardButtons()
             )
