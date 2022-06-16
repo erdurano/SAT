@@ -145,7 +145,7 @@ class TestItemDelegate(QStyledItemDelegate):
         "Active": QColor(0, 114, 206),
         "Passed": QColor(68, 214, 44),
         "Failed": QColor(227, 120, 120),
-        "Commented": QColor(250, 118, 30),
+        "Commented": QColor(255, 255, 49),
     }
 
     def __init__(self, parent: ScheduleView) -> None:

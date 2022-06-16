@@ -233,6 +233,7 @@ Item {
                 family: cemre_font
 
             }
+            rightPadding: 4
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             text: statText // And use them here
@@ -390,7 +391,7 @@ Item {
 
             GradientStop {
                 position: 0.01
-                color: "#fa761e"
+                color: "#ffff31"
             }
 
             GradientStop {
