@@ -264,7 +264,7 @@ Item {
             var gradient = commented_gradient.createObject(background)
             background.gradient = gradient;
         }
-        if (stat.text == 'Commented') {
+        if (statText == 'Commented') {
             stat.horizontalAlignment = Text.AlignRight
         } else {
             stat.horizontalAlignment = Text.AlignHCenter
