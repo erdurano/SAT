@@ -64,7 +64,7 @@ Item {
             lineHeight: 0.75
             font{
                 pixelSize: Math.floor(background.height/4)
-                weight: Font.Medium
+                weight: Font.DemiBold
                 family: cemre_font
 
             }
