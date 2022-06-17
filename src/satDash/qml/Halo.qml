@@ -61,8 +61,8 @@ Item {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
-            lineHeight: 0.75
-            font{
+            lineHeight: 0.8
+                font{
                 pixelSize: Math.floor(background.height/4)
                 weight: Font.DemiBold
                 family: cemre_font
@@ -70,6 +70,7 @@ Item {
             }
             anchors {
             top: parent.top
+            topMargin: 4
             horizontalCenter: parent.horizontalCenter
             }
             text: nameText // And use them here
