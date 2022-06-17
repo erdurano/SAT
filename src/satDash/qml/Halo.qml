@@ -61,6 +61,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
+            lineHeight: 0.75
             font{
                 pixelSize: Math.floor(background.height/4)
                 weight: Font.Medium
@@ -262,6 +263,11 @@ Item {
         } else if (statText == 'Commented') {
             var gradient = commented_gradient.createObject(background)
             background.gradient = gradient;
+        }
+        if (stat.text == 'Commented') {
+            stat.horizontalAlignment = Text.AlignRight
+        } else {
+            stat.horizontalAlignment = Text.AlignHCenter
         }
     }
 
