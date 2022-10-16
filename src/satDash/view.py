@@ -5,32 +5,28 @@ from PySide6.QtWidgets import QListView, QStyledItemDelegate, QWidget
 
 
 class ScheduleView(QListView):
-
     def __init__(self, parent: Optional[QWidget]) -> None:
         super().__init__(parent=parent)
 
-        self.setVerticalScrollMode(
-            self.ScrollPerPixel
-        )
+        self.setVerticalScrollMode(self.ScrollMode.ScrollPerPixel)
 
-        self.setSelectionMode(self.ExtendedSelection)
+        self.setSelectionMode(self.SelectionMode.ExtendedSelection)
         self.setSelectionRectVisible(True)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
     def commitData(self, editor: QWidget) -> None:
         # Holds the view from updating the model when exiting the item
         # else passes the commitData slot
-        if type(self.sender()) == QItemSelectionModel or\
-                type(self.sender()) is None:
+        if type(self.sender()) == QItemSelectionModel or type(self.sender()) is None:
             return None
         else:
             return super().commitData(editor)
 
-    def closeEditor(self,
-                    editor: QWidget,
-                    hint: QStyledItemDelegate.EndEditHint) -> None:
-        if hint == QStyledItemDelegate.SubmitModelCache:
+    def closeEditor(
+        self, editor: QWidget, hint: QStyledItemDelegate.EndEditHint
+    ) -> None:
+        if hint == QStyledItemDelegate.EndEditHint.SubmitModelCache:
             self.commitData(editor)
         super().closeEditor(editor, hint)
 

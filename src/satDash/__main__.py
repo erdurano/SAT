@@ -1,4 +1,4 @@
-from satdash import main
+from satDash import main
 
 
 if __name__ == "__main__":

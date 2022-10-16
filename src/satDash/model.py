@@ -276,7 +276,7 @@ class ScheduleModel(QAbstractListModel):
 
 
 class ProxyModel(QSortFilterProxyModel):
-    def __init__(self, parent: QObject = None) -> None:
+    def __init__(self, parent: QObject) -> None:
         super().__init__(parent=parent)
 
     def lessThan(self, source_left: QModelIndex, source_right: QModelIndex) -> bool:
