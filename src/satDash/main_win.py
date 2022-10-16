@@ -51,7 +51,9 @@ class MainWindow(QMainWindow):
 
         add_remove_layout = QHBoxLayout()
         add_remove_layout.addItem(
-            QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+            QSpacerItem(
+                40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+            )
         )
         add_remove_layout.addWidget(self.new_item_button)
         add_remove_layout.addWidget(self.delete_button)
@@ -61,7 +63,9 @@ class MainWindow(QMainWindow):
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.dash_button)
         button_layout.addItem(
-            QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+            QSpacerItem(
+                40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+            )
         )
         button_layout.addWidget(self.import_button)
 
@@ -75,7 +79,7 @@ class MainWindow(QMainWindow):
 
         self.file_handler = XlsIO()
         self.schedule_model = ScheduleModel()
-        self.proxyModel = ProxyModel()
+        self.proxyModel = ProxyModel(self)
         self.proxyModel.setSourceModel(self.schedule_model)
         self.schedule_view.setModel(self.proxyModel)
         self.proxyModel.setDynamicSortFilter(True)
@@ -89,7 +93,7 @@ class MainWindow(QMainWindow):
         self.proxyModel.sort(0)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() == Qt.Key_F12:
+        if event.key() == Qt.Key.Key_F12:
             self.change_fullscreen.emit()
         return super().keyPressEvent(event)
 

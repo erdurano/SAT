@@ -8,7 +8,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 
 from .scheduleclasses import Schedule, TestItem
 
-tick = b'\xe2\x9c\x93'.decode('utf-8')
+tick = b"\xe2\x9c\x93".decode("utf-8")
 
 
 class XlsIO(QObject):
@@ -39,18 +39,14 @@ class XlsIO(QObject):
         self.__worksheet = sheet
 
     def xlsheet_from_path(self, path: str) -> Worksheet:  # type: ignore
-        self.xl_worksheet = openpyxl.load_workbook(
-            path,
-            data_only=True).active
+        self.xl_worksheet = openpyxl.load_workbook(path, data_only=True).active
 
     @Slot(str)
     def import_excel(self, import_path: str) -> None:
         self.filepath = import_path
         self.xlsheet_from_path(self.filepath)
         self.parser.parse_xl(self.xl_worksheet)
-        self.schedule_to_update.emit(
-            self.parser.schedule
-        )
+        self.schedule_to_update.emit(self.parser.schedule)
 
 
 class Xlparser:
@@ -75,7 +71,7 @@ class Xlparser:
                     self.indexes.update(item_name=cell.column)
                 elif "Class" in cell.value:
                     self.header_row_bottom = cell.row
-                    self.indexes.update({'class': cell.column})
+                    self.indexes.update({"class": cell.column})
                 elif "Flag" in cell.value:
                     self.indexes.update(flag=cell.column)
                 elif "Owner" in cell.value:
@@ -89,8 +85,7 @@ class Xlparser:
                 elif "Start Time" in cell.value:
                     self.indexes.update(start_time=cell.column)
                 elif "Estimated" in cell.value:
-                    self.indexes.update(
-                        est=cell.column)
+                    self.indexes.update(est=cell.column)
                 elif "Cemre NB" in cell.value:
                     self.get_hull_and_owner(cell)
 
@@ -103,12 +98,10 @@ class Xlparser:
                 return r
 
     def get_hull_and_owner(self, cell: Cell):
-        for val in cell.value.split(' '):
-            if 'NB' in val:
+        for val in cell.value.strip(" "):
+            if "NB" in val:
                 self.schedule.hull_number = val
-                owner_cell = self.xldata.cell(
-                    cell.row + 1, cell.column
-                )
+                owner_cell = self.xldata.cell(cell.row + 1, cell.column)
                 self.schedule.owner_firm = owner_cell.value.title()
 
     def add_rows2schedule(self, row: tuple) -> None:
@@ -120,77 +113,73 @@ class Xlparser:
                 i_row, i_col = r.top[0]
                 cell = self.xldata.cell(i_row, i_col)
 
-            if cell.column == self.indexes['sfi']:
-                item.sfi =\
-                    cell.value if cell.value is not None else ''
+            if cell.column == self.indexes["sfi"]:
+                item.sfi = cell.value if cell.value is not None else ""
 
-            elif cell.column == self.indexes['item_name']:
-                item.item_name =\
-                    cell.value if cell.value is not None else ''
+            elif cell.column == self.indexes["item_name"]:
+                item.item_name = cell.value if cell.value is not None else ""
 
-            elif cell.column == self.indexes['class']:
-                item.class_attendance =\
-                    Xlparser.correct_attendance(cell.value)\
-                    if cell.value is not None else ''
+            elif cell.column == self.indexes["class"]:
+                item.class_attendance = (
+                    Xlparser.correct_attendance(cell.value)
+                    if cell.value is not None
+                    else ""
+                )
 
-            elif cell.column == self.indexes['flag']:
-                item.flag_attendance =\
-                    Xlparser.correct_attendance(cell.value)\
-                    if cell.value is not None else ''
+            elif cell.column == self.indexes["flag"]:
+                item.flag_attendance = (
+                    Xlparser.correct_attendance(cell.value)
+                    if cell.value is not None
+                    else ""
+                )
 
-            elif cell.column == self.indexes['owner']:
-                item.owner_attendance =\
-                    Xlparser.correct_attendance(cell.value)\
-                    if cell.value is not None else ''
+            elif cell.column == self.indexes["owner"]:
+                item.owner_attendance = (
+                    Xlparser.correct_attendance(cell.value)
+                    if cell.value is not None
+                    else ""
+                )
 
-            elif cell.column == self.indexes['record_stat']:
-                item.record_status =\
-                    cell.value if cell.value is not None else ''
+            elif cell.column == self.indexes["record_stat"]:
+                item.record_status = cell.value if cell.value is not None else ""
 
-            elif cell.column == self.indexes['responsible']:
-                item.responsible_dept =\
-                    cell.value if cell.value is not None else ''
+            elif cell.column == self.indexes["responsible"]:
+                item.responsible_dept = cell.value if cell.value is not None else ""
 
-            elif cell.column == self.indexes['date']:
-                item.date =\
-                    cell.value if cell.value is not None else ''
+            elif cell.column == self.indexes["date"]:
+                item.date = cell.value if cell.value is not None else ""
 
-            elif cell.column == self.indexes['start_time']:
-                item.start_hour =\
-                    cell.value if cell.value is not None else ''
+            elif cell.column == self.indexes["start_time"]:
+                item.start_hour = cell.value if cell.value is not None else ""
 
-            elif cell.column == self.indexes['est']:
+            elif cell.column == self.indexes["est"]:
                 item.est = Xlparser.correct_time_format(cell.value)
 
-        if item.date == '' or\
-                item.start_hour == '':
+        if item.date == "" or item.start_hour == "":
             return None
         else:
             self.schedule.add_item(item)
 
     @staticmethod
     def correct_attendance(char: str) -> str:
-        return tick if char == 'ü' else char
+        return tick if char == "ü" else char
 
     @staticmethod
     def correct_time_format(data: Union[datetime, time]) -> Union[time, str]:
         if isinstance(data, datetime):
             return time(data.hour, data.minute)
-        return data if isinstance(data, time) else '-'
+        return data if isinstance(data, time) else "-"
 
     def get_attendee_selection(self) -> List[str]:
         selection = []
-        for row_num in range(self.header_row_bottom+1,
-                             self.xldata.max_row):
-            val = self.xldata.cell(
-                    row_num, self.indexes['responsible']
-                ).value
+        for row_num in range(self.header_row_bottom + 1, self.xldata.max_row):
+            val = self.xldata.cell(row_num, self.indexes["responsible"]).value
             if val not in selection and val is not None:
                 selection.append(val)
         return selection
 
     def get_item_rows(self) -> None:
-        min_row = self.header_row_bottom+1
+        min_row = self.header_row_bottom + 1
         for row in self.xldata.iter_rows(min_row):
             self.add_rows2schedule(row)
 

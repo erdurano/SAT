@@ -14,7 +14,7 @@ class DashWindow(QQuickWidget):
         ico_path = Path(__file__).parent / "rsrc" / "img" / "cemre_logo.ico"
         self.setWindowIcon(QIcon(QPixmap(ico_path)))
 
-        self.setResizeMode(QQuickWidget.SizeRootObjectToView)
+        self.setResizeMode(QQuickWidget.ResizeMode.SizeRootObjectToView)
 
         self.setWindowTitle("Dash")
         self.hide()
@@ -25,6 +25,6 @@ class DashWindow(QQuickWidget):
         )
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() == Qt.Key_F12:
+        if event.key() == Qt.Key.Key_F12:
             self.request_fullscreen.emit()
         return super().keyPressEvent(event)

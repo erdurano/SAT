@@ -28,13 +28,16 @@ class TestItem:
     responsible_name: Optional[str] = ""
 
     def dt(self):
-        return datetime(
-            self.date.year,
-            self.date.month,
-            self.date.day,
-            self.start_hour.hour,
-            self.start_hour.minute,
-        )
+        if self.date and self.start_hour:
+            return datetime(
+                self.date.year,
+                self.date.month,
+                self.date.day,
+                self.start_hour.hour,
+                self.start_hour.minute,
+            )
+        else:
+            return datetime(0, 0, 0, 0, 0)
 
 
 @dataclass

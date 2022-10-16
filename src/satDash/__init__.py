@@ -5,7 +5,7 @@ from .main_win import MainWindow
 
 
 def main():
-    QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
+    QQuickWindow.setGraphicsApi(QSGRendererInterface.GraphicsApi.OpenGLRhi)
     app = QApplication()
     window = MainWindow()
 

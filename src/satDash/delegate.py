@@ -41,7 +41,7 @@ class ItemEditor(QWidget):
 
         self.option = option
 
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.edit_layout = QGridLayout()
         self.setLayout(self.edit_layout)
         self.edit_layout.setSpacing(2)
@@ -49,7 +49,7 @@ class ItemEditor(QWidget):
         self.sfi_edit = QLineEdit(parent=self)
         self.sfi_edit.setMaximumWidth(40)
         self.edit_layout.addWidget(self.sfi_edit, 1, 0, 3, 1)
-        self.edit_layout.setAlignment(self.sfi_edit, Qt.AlignBottom)
+        self.edit_layout.setAlignment(self.sfi_edit, Qt.AlignmentFlag.AlignBottom)
 
         self.name_edit = QLineEdit(parent=self)
         self.edit_layout.addWidget(self.name_edit, 0, 1, 3, 2)
@@ -105,7 +105,7 @@ class ItemEditor(QWidget):
         self.duration_edit.setDisplayFormat("HH:mm")
         self.edit_layout.addWidget(self.duration_edit, 3, 6, 3, 1)
 
-        x, y, w, h = option.rect.getRect()
+        x, y, w, h = self.rect().getCoords()
 
         self.setGeometry(x, y, w, h)
 
@@ -120,8 +120,8 @@ class ItemEditor(QWidget):
 
         painter = QPainter(self)
 
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(Qt.NoPen)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(color)
         painter.drawRect(QRect(0 + 6, 0 + 6, w - 12, h - 12))
         painter.end()
@@ -131,7 +131,7 @@ class ItemEditor(QWidget):
         if self.dept_edit.findText(self.dept_edit.currentText()) == -1:
             self.dept_edit.addItem(self.dept_edit.currentText())
         view = self.parent().parent()
-        view.closeEditor(self, QStyledItemDelegate.SubmitModelCache)
+        view.closeEditor(self, QStyledItemDelegateSubmitModelCache)
         view.model().sourceModel().check_activated()
 
 
@@ -139,8 +139,8 @@ class TestItemDelegate(QStyledItemDelegate):
     """A delegate to show test items in listview in qt side"""
 
     COLORS = {
-        "Set State": Qt.white,
-        "Not Started": Qt.lightGray,
+        "Set State": Qt.GlobalColor.white,
+        "Not Started": Qt.GlobalColor.lightGray,
         "Active": QColor(0, 114, 206),
         "Passed": QColor(68, 214, 44),
         "Failed": QColor(227, 120, 120),
@@ -236,13 +236,13 @@ class TestItemDelegate(QStyledItemDelegate):
 
         painter.drawText(
             QRect(x + w - 100, y, 100, h // 2),
-            Qt.AlignCenter,
+            Qt.AlignmentFlag.AlignCenter,
             date_str.strftime("%d-%m-%Y"),
         )
 
         painter.drawText(
             QRect(x + w - 100, y + h // 2, 50, h // 2),
-            Qt.AlignCenter,
+            Qt.AlignmentFlag.AlignCenter,
             hour_str.strftime("%H:%M"),
         )
 
@@ -252,7 +252,9 @@ class TestItemDelegate(QStyledItemDelegate):
             est_str = est_duration
 
         painter.drawText(
-            QRect(x + w - 50, y + h // 2, 50, h // 2), Qt.AlignCenter, est_str
+            QRect(x + w - 50, y + h // 2, 50, h // 2),
+            Qt.AlignmentFlag.AlignCenter,
+            est_str,
         )
 
     def createEditor(self, parent, option, index):
