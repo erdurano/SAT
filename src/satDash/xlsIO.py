@@ -1,5 +1,5 @@
 from datetime import datetime, time
-from typing import Any, List, Optional, Union
+from typing import Any, Iterable, List, Optional, Union
 
 import openpyxl
 from openpyxl.cell.cell import Cell
@@ -18,8 +18,8 @@ class XlsIO(QObject):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__file_path = ""
-        self.__worksheet = None
+        self.__file_path: str = ""
+        self.__worksheet: Worksheet
         self.parser = Xlparser()
 
     @property
@@ -97,14 +97,15 @@ class Xlparser:
             if cell.coordinate in r:
                 return r
 
-    def get_hull_and_owner(self, cell: Cell):
-        for val in cell.value.strip(" "):
-            if "NB" in val:
-                self.schedule.hull_number = val
-                owner_cell = self.xldata.cell(cell.row + 1, cell.column)
-                self.schedule.owner_firm = owner_cell.value.title()
+    def get_hull_and_owner(self, cell: Cell) -> None:
+        if type(cell.value) is str:
+            for val in cell.value.strip(" "):
+                if "NB" in val:
+                    self.schedule.hull_number = val
+                    owner_cell = self.xldata.cell(cell.row + 1, cell.column)
+                    self.schedule.owner_firm = owner_cell.value.title()
 
-    def add_rows2schedule(self, row: tuple) -> None:
+    def add_rows2schedule(self, row: Iterable[Cell]) -> None:
         item = TestItem()
 
         for cell in row:
